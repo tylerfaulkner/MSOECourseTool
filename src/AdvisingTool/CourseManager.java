@@ -9,16 +9,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
+import org.apache.pdfbox.*;
 
 public class CourseManager {
 
     private HashMap<String, Course> catalog = new HashMap<>();
 
-    public CourseManager(){
+    public CourseManager() {
         try {
             Scanner prereqs = new Scanner(new File("src/Data/prerequisites_updated.csv"));
             prereqs.nextLine();
-            while (prereqs.hasNextLine()){
+            while (prereqs.hasNextLine()) {
                 Scanner line = new Scanner(prereqs.nextLine()).useDelimiter(",");
                 String name = line.next();
                 int credits = line.nextInt();
@@ -34,8 +35,8 @@ public class CourseManager {
                 String[] line = offerings.nextLine().split(",");
                 String courseName = line[0];
                 Course course = catalog.get(courseName);
-                for (int i = 1; i<line.length; i++){
-                    if (!line[i].equals("") && course != null){
+                for (int i = 1; i < line.length; i++) {
+                    if (!line[i].equals("") && course != null) {
                         int term = Integer.valueOf(line[i]);
                         course.addTerm(term, header[i]);
                     }
@@ -47,15 +48,15 @@ public class CourseManager {
         }
     }
 
-    public void listCourses(ListView listView, int term){
+    public void listCourses(ListView listView, int term) {
         listView.getItems().clear();
         Iterator iter = catalog.keySet().iterator();
-        while (iter.hasNext()){
+        while (iter.hasNext()) {
             String name = (String) iter.next();
             Course course = catalog.get(name);
             System.out.println(course.toString());
             ArrayList<String> majors = course.getTerm(term);
-            if (majors.size() != 0){
+            if (majors.size() != 0) {
                 listView.getItems().add(course.toString());
             }
         }
