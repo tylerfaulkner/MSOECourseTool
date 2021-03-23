@@ -9,9 +9,15 @@ public class AdvisingToolController {
 
     @FXML ListView listView;
 
+
     @FXML
     public void initialize(){
         manager = new CourseManager();
         manager.listCourses(listView, 1);
+    }
+
+    @FXML
+    public void search() {
+
     }
 }
