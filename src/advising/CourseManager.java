@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
+import java.util.Comparator;
 
 /**
  * Manages all courses available from the prerequisites csv
@@ -82,6 +83,33 @@ public class CourseManager {
             if (majors.size() != 0) {
                 listView.getItems().add(course.toString());
             }
+        }
+        listView.getItems().sort(new Sort());
+    }
+
+    /**
+     * Used to sort listed course in list view
+     */
+    private class Sort implements Comparator<String> {
+
+        public int compare(String a, String b) {
+            a = a.split(" ")[0];
+            b = b.split(" ")[0];
+            String aMajor = a.substring(0, 2);
+            String bMajor = b.substring(0, 2);
+            int compare = aMajor.compareTo(bMajor);
+            if (compare != 0) {
+                return compare;
+            } else {
+                int aNum = Integer.valueOf(a.substring(2));
+                int bNum = Integer.valueOf(b.substring(2));
+                if (aNum < bNum) {
+                    return -1;
+                } else if (aNum > bNum) {
+                    return 1;
+                }
+            }
+            return 0;
         }
     }
 }
