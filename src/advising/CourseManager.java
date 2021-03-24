@@ -1,6 +1,16 @@
-package AdvisingTool;
+/**
+ * Course: SE 2800
+ * Section 41
+ * Dr. Jonathon Magana
+ * Advising Tool
+ * Created by: Derek Gauger, Kian Dettlaff, Roberto Garcia, and Tyler Faulkner
+ * March 18th, 2021
+ */
+
+package advising;
 
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 
 import java.io.File;
@@ -10,10 +20,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
 
+/**
+ * Manages all courses available from the prerequisites csv
+ */
 public class CourseManager {
 
     private HashMap<String, Course> catalog = new HashMap<>();
 
+    /**
+     * Course Manager reads in course data upon initialization
+     */
     public CourseManager() {
         try {
             Scanner prereqs = new Scanner(new File("src/Data/prerequisites_updated.csv"));
@@ -43,10 +59,19 @@ public class CourseManager {
             }
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR,
+                    "The needed csv files were not found in the directory");
+            alert.setHeaderText("Critical Error");
+            alert.showAndWait();
         }
     }
 
+    /**
+     * Adds courses to the given listView item that are available in the given term
+     *
+     * @param listView the item to list all courses
+     * @param term     the term of courses to add
+     */
     public void listCourses(ListView listView, int term) {
         listView.getItems().clear();
         Iterator iter = catalog.keySet().iterator();

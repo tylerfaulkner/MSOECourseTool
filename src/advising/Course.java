@@ -1,18 +1,29 @@
-package AdvisingTool;
+/**
+ * Course: SE 2800
+ * Section 41
+ * Dr. Jonathon Magana
+ * Advising Tool
+ * Created by: Derek Gauger, Kian Dettlaff, Roberto Garcia, and Tyler Faulkner
+ * March 18th, 2021
+ */
+
+package advising;
 
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Course class contains data for an instance of a class.
+ */
 public class Course {
     private String name;
     private int credits;
     private String prerequisites;
     private String description;
-
     private HashMap<Integer, ArrayList<String>> terms = new HashMap<>();
 
-    public Course(String name, int credits, String prerequisites, String description ){
+    public Course(String name, int credits, String prerequisites, String description) {
         this.name = name;
         this.credits = credits;
         this.prerequisites = prerequisites;
