@@ -22,6 +22,7 @@ public class Course {
     private String prerequisites;
     private String description;
     private HashMap<Integer, ArrayList<String>> terms = new HashMap<>();
+    private boolean completed;
 
     public Course(String name, int credits, String prerequisites, String description) {
         this.name = name;
@@ -31,6 +32,7 @@ public class Course {
         terms.put(1, new ArrayList<>());
         terms.put(2, new ArrayList<>());
         terms.put(3, new ArrayList<>());
+        completed = false;
     }
 
     public ArrayList getTerm(int term){
@@ -44,5 +46,13 @@ public class Course {
     @Override
     public String toString(){
         return name + " " + description;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }
