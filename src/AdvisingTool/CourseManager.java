@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
-import org.apache.pdfbox.*;
 
 public class CourseManager {
 
@@ -54,7 +53,6 @@ public class CourseManager {
         while (iter.hasNext()) {
             String name = (String) iter.next();
             Course course = catalog.get(name);
-            System.out.println(course.toString());
             ArrayList<String> majors = course.getTerm(term);
             if (majors.size() != 0) {
                 listView.getItems().add(course.toString());
