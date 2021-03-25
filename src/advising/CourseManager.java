@@ -12,14 +12,19 @@ package advising;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Manages all courses available from the prerequisites csv
@@ -27,6 +32,7 @@ import java.util.Comparator;
 public class CourseManager {
 
     private HashMap<String, Course> catalog = new HashMap<>();
+    private String major;
 
     /**
      * Course Manager reads in course data upon initialization
@@ -110,6 +116,39 @@ public class CourseManager {
                 }
             }
             return 0;
+        }
+    }
+
+    public void importTranscript(File transcriptFile) throws IOException {
+        PDDocument document = PDDocument.load(transcriptFile);
+        PDFTextStripper pdfStripper = new PDFTextStripper();
+        pdfStripper.setSortByPosition(false);
+        String transcriptString = pdfStripper.getText(document);
+        transcriptString.lines().forEach(this::processPDFLine);
+    }
+
+    private void processPDFLine(String line) {
+        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
+        Matcher courseMatcher;
+        if(line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")){
+            courseMatcher = coursePattern.matcher(line);
+            courseMatcher.find();
+            String courseCode = courseMatcher.group();
+            try {
+                catalog.get(courseCode).setCompleted(true);
+            } catch (NullPointerException e) {
+                System.out.println("Course not listed in offerings: " + courseCode);
+            }
+        } else if (line.startsWith("BS in")){
+            if(line.contains("Computer Science")){
+                major = "Computer Science";
+                System.out.println("Hey you're a CS");
+            } else if (line.contains("Software Engineering")){
+                major = "Software Engineering";
+                System.out.println("Hey you're a SE");
+            } else {
+                System.out.println("Unrecognized Major");
+            }
         }
     }
 }

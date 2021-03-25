@@ -15,7 +15,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -77,6 +79,23 @@ public class AdvisingToolController {
             }
         } catch (NullPointerException e) {
             //Used to throwaway search call if there is no input
+        }
+    }
+
+    public void importTranscript() {
+        FileChooser loadChooser = new FileChooser();
+        loadChooser.setInitialDirectory(new File("./"));
+        loadChooser.setTitle("Open Dot File");
+        loadChooser.getExtensionFilters().add(new FileChooser.
+                ExtensionFilter("PDF Files", "*.pdf"));
+        try {
+            File transcriptFile = loadChooser.showOpenDialog(null);
+            if (transcriptFile == null) {
+                throw new IllegalStateException("A .pdf file must be selected to open.");
+            }
+            manager.importTranscript(transcriptFile);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
