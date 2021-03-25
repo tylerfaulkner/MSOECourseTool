@@ -93,6 +93,10 @@ public class CourseManager {
         listView.getItems().sort(new Sort());
     }
 
+    public String getMajor() {
+        return major;
+    }
+
     /**
      * Used to sort listed course in list view
      */
@@ -142,10 +146,8 @@ public class CourseManager {
         } else if (line.startsWith("BS in")){
             if(line.contains("Computer Science")){
                 major = "Computer Science";
-                System.out.println("Hey you're a CS");
             } else if (line.contains("Software Engineering")){
                 major = "Software Engineering";
-                System.out.println("Hey you're a SE");
             } else {
                 System.out.println("Unrecognized Major");
             }

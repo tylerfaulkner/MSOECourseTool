@@ -94,6 +94,8 @@ public class AdvisingToolController {
                 throw new IllegalStateException("A .pdf file must be selected to open.");
             }
             manager.importTranscript(transcriptFile);
+            listView.getItems().clear();
+            listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
         } catch (Exception e) {
             e.printStackTrace();
         }
