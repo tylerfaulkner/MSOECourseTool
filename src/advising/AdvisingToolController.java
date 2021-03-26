@@ -65,7 +65,9 @@ public class AdvisingToolController {
                     Boolean found = false;
                     for (int i = 0; i < termAltNames.length && !found; i++) {
                         if (termAltNames[i].contains(search)) {
-                            manager.listCourses(listView, i + 1);
+                            List courses = manager.listCourses(i + 1);
+                            listView.getItems().clear();
+                            listView.getItems().addAll(courses);
                             found = true;
                         }
                     }

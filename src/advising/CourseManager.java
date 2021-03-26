@@ -18,11 +18,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Scanner;
-import java.util.Comparator;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,21 +72,21 @@ public class CourseManager {
     /**
      * Adds courses to the given listView item that are available in the given term
      *
-     * @param listView the item to list all courses
      * @param term     the term of courses to add
      */
-    public void listCourses(ListView listView, int term) {
-        listView.getItems().clear();
+    public List listCourses(int term) {
+        List<String> courses = new ArrayList<>();
         Iterator iter = catalog.keySet().iterator();
         while (iter.hasNext()) {
             String name = (String) iter.next();
             Course course = catalog.get(name);
             ArrayList<String> majors = course.getTerm(term);
             if (majors.size() != 0) {
-                listView.getItems().add(course.toString());
+                courses.add(course.toString());
             }
         }
-        listView.getItems().sort(new Sort());
+        courses.sort(new Sort());
+        return courses;
     }
 
     public String getMajor() {
