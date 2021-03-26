@@ -17,14 +17,13 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Import" onAction="#importTranscript" />
+              <MenuItem mnemonicParsing="false" onAction="#importTranscript" text="Import" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Features">
             <items>
-              <MenuItem mnemonicParsing="false" text="Feature 1" />
-                  <MenuItem mnemonicParsing="false" text="Feature 2" />
-                  <MenuItem mnemonicParsing="false" text="Feature 4" />
+              <MenuItem mnemonicParsing="false" onAction="#listCSCourses" text="View CS Courses" />
+                  <MenuItem mnemonicParsing="false" onAction="#listSECourses" text="View SE Courses" />
             </items>
           </Menu>
         </menus>

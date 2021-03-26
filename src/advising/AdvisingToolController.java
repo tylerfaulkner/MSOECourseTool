@@ -56,6 +56,18 @@ public class AdvisingToolController {
     }
 
     @FXML
+    private void listCSCourses(){
+        listView.getItems().clear();
+        listView.getItems().addAll(manager.getCSTrack());
+    }
+
+    @FXML
+    private void listSECourses(){
+        listView.getItems().clear();
+        listView.getItems().addAll(manager.getSETrack());
+    }
+
+    @FXML
     private void search() {
         try {
             String searchType = (String) comboBox.getValue();

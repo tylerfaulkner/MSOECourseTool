@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
 public class CourseManager {
 
     private HashMap<String, Course> catalog = new HashMap<>();
+    private List<String> csTrack = new ArrayList<>();
+    private List<String> seTrack = new ArrayList<>();
     private String major;
 
     /**
@@ -61,6 +63,15 @@ public class CourseManager {
                 }
             }
 
+            Scanner curiculum = new Scanner(new File("src/Data/curriculum.csv"));
+            curiculum.nextLine();
+            while (curiculum.hasNextLine()){
+                String[] courses = curiculum.nextLine().split(",");
+                csTrack.add(courses[0]);
+                seTrack.add(courses[1]);
+            }
+
+
         } catch (FileNotFoundException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR,
                     "The needed csv files were not found in the directory");
@@ -91,6 +102,14 @@ public class CourseManager {
 
     public String getMajor() {
         return major;
+    }
+
+    public List getCSTrack(){
+        return csTrack;
+    }
+
+    public List getSETrack(){
+        return seTrack;
     }
 
     /**
