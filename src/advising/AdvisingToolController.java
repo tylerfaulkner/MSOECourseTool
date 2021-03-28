@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class AdvisingToolController {
     private static final String FEATURE_1 = "Courses by Term";
+    private static final String FEATURE_4 = "Recommended Courses for next term";
+
 
     /**
      * Alternate names for terms that could be used when a user searches
@@ -36,8 +38,9 @@ public class AdvisingToolController {
             Arrays.asList("third", "third quarter", "3", "spring", "spring quarter", "quarter 3")
     };
 
-    private List features = Arrays.asList(FEATURE_1);
+    private List features = Arrays.asList(FEATURE_1, FEATURE_4);
     private CourseManager manager;
+    private File transcriptFile;
 
     @FXML
     ListView listView;
@@ -68,6 +71,12 @@ public class AdvisingToolController {
     }
 
     @FXML
+    private void listCourseToDate() {
+        listView.getItems().clear();
+        listView.getItems().addAll(manager.getCoursesToDate());
+    }
+
+    @FXML
     private void search() {
         try {
             String searchType = (String) comboBox.getValue();
@@ -90,6 +99,11 @@ public class AdvisingToolController {
                         alert.showAndWait();
                     }
                 }
+            } else if (searchType.equals(FEATURE_4)) {
+                if (transcriptFile != null) {
+                    listView.getItems().clear();
+                    listView.getItems().addAll(manager.recommendCourses());
+                }
             }
         } catch (NullPointerException e) {
             //Used to throwaway search call if there is no input
@@ -103,7 +117,7 @@ public class AdvisingToolController {
         loadChooser.getExtensionFilters().add(new FileChooser.
                 ExtensionFilter("PDF Files", "*.pdf"));
         try {
-            File transcriptFile = loadChooser.showOpenDialog(null);
+            transcriptFile = loadChooser.showOpenDialog(null);
             if (transcriptFile == null) {
                 throw new IllegalStateException("A .pdf file must be selected to open.");
             }

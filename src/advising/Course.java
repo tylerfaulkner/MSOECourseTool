@@ -16,13 +16,15 @@ import java.util.HashMap;
 /**
  * Course class contains data for an instance of a class.
  */
-public class Course {
+public class Course implements Comparable<Course>{
     private String name;
     private int credits;
     private String prerequisites;
     private String description;
     private HashMap<Integer, ArrayList<String>> terms = new HashMap<>();
     private boolean completed;
+    private boolean passed;
+    private String gradeReceived;
 
     public Course(String name, int credits, String prerequisites, String description) {
         this.name = name;
@@ -35,6 +37,18 @@ public class Course {
         completed = false;
     }
 
+    public void setGradeReceived (String grade) {
+        this.gradeReceived = grade;
+    }
+
+    public String getGradeReceived () {
+        return gradeReceived;
+    }
+
+    public String getName () {
+        return name;
+    }
+
     public ArrayList getTerm(int term){
         return terms.get(term);
     }
@@ -45,7 +59,7 @@ public class Course {
 
     @Override
     public String toString(){
-        return name + " " + description;
+        return name + " " + description + "     " + credits;
     }
 
     public boolean isCompleted() {
@@ -54,5 +68,23 @@ public class Course {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public boolean isPassed() {
+        return passed;
+    }
+
+    public void setPassed(boolean passed) {
+        this.passed = passed;
+    }
+
+    public int getCredits() {
+        return credits;
+    }
+
+    @Override
+    public int compareTo(Course o) {
+        int compare = ((Course)o).getCredits();
+        return compare - this.credits ;
     }
 }

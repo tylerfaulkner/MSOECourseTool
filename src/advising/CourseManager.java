@@ -11,7 +11,6 @@ package advising;
 
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
@@ -30,6 +29,7 @@ public class CourseManager {
     private HashMap<String, Course> catalog = new HashMap<>();
     private List<String> csTrack = new ArrayList<>();
     private List<String> seTrack = new ArrayList<>();
+    private List<Course> coursesToDate = new ArrayList<>();
     private String major;
 
     /**
@@ -112,6 +112,11 @@ public class CourseManager {
         return seTrack;
     }
 
+    public List getCoursesToDate() {
+        return coursesToDate;
+    }
+
+
     /**
      * Used to sort listed course in list view
      */
@@ -139,6 +144,7 @@ public class CourseManager {
     }
 
     public void importTranscript(File transcriptFile) throws IOException {
+        coursesToDate.clear();
         PDDocument document = PDDocument.load(transcriptFile);
         PDFTextStripper pdfStripper = new PDFTextStripper();
         pdfStripper.setSortByPosition(false);
@@ -153,6 +159,7 @@ public class CourseManager {
             courseMatcher = coursePattern.matcher(line);
             courseMatcher.find();
             String courseCode = courseMatcher.group();
+            processCourses(line);
             try {
                 catalog.get(courseCode).setCompleted(true);
             } catch (NullPointerException e) {
@@ -168,4 +175,75 @@ public class CourseManager {
             }
         }
     }
+
+    public void processCourses (String line) {
+
+        String[] split = line.split(" ");
+
+        if (catalog.containsKey(split[0])) {
+
+            coursesToDate.add(catalog.get(split[0]));
+
+            int firstIndex = split[split.length - 1].indexOf('.') + 3;
+            int lastIndex = split[split.length - 1].lastIndexOf('.') + 3;
+
+            String qualPts = split[split.length -1].substring(0,firstIndex);
+            String credsEarned = split[split.length - 1].substring(firstIndex,lastIndex);
+            String grade = split[split.length - 1].substring(lastIndex);
+
+            if (grade.equals("F") || grade.equals("WIP") || grade.equals("W")) {
+                coursesToDate.get(coursesToDate.size() - 1).setPassed(false);
+
+            } else {
+                coursesToDate.get(coursesToDate.size() - 1).setPassed(true);
+                coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
+
+            }
+            coursesToDate.get(coursesToDate.size() - 1).setGradeReceived(grade);
+
+        }
+    }
+
+    public List<Course> recommendCourses () {
+        List<Course> recommendedCourses = new ArrayList<>();
+
+        for (Course c : coursesToDate) {
+            if (c.getGradeReceived().equals("F") && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+                recommendedCourses.sort(Course::compareTo);
+                recommendedCourses.add(c);
+            }
+        }
+        int index = 0;
+
+        List<String> courses = new ArrayList<>();
+        if (major.equals("Computer Science")) {
+            courses = csTrack;
+        } else if (major.equals("Software Engineering")) {
+            courses = seTrack;
+        }
+
+
+        for (String s : courses) {
+            if (s.equalsIgnoreCase(coursesToDate.get(coursesToDate.size() - 1).getName())) {
+                break;
+            }
+            ++index;
+        }
+        while (recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+            recommendedCourses.add(catalog.get(courses.get(++index)));
+            recommendedCourses.sort(Course::compareTo);
+
+        }
+
+        return recommendedCourses;
+    }
+
+    public double recommendedCoursesTotalCredits(List<Course> recCourses) {
+        double totalCreds = 0;
+        for (Course c : recCourses) {
+            totalCreds += c.getCredits();
+        }
+        return totalCreds;
+    }
+
 }
