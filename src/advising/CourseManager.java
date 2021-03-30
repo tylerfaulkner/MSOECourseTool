@@ -55,6 +55,10 @@ public class CourseManager {
                 String[] line = offerings.nextLine().split(",");
                 String courseName = line[0];
                 Course course = catalog.get(courseName);
+                if (course == null){
+                    course = new Course(courseName, 3, "", "");
+                    catalog.put(courseName, course);
+                }
                 for (int i = 1; i < line.length; i++) {
                     if (!line[i].equals("") && course != null) {
                         int term = Integer.valueOf(line[i]);
