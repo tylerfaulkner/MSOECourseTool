@@ -62,7 +62,7 @@ public class Course implements Comparable<Course>{
 
     @Override
     public String toString(){
-        return name + " " + description + "     " + credits;
+        return name + " " + description;
     }
 
     public boolean isCompleted() {
