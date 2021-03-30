@@ -191,9 +191,11 @@ public class CourseManager {
             String credsEarned = split[split.length - 1].substring(firstIndex,lastIndex);
             String grade = split[split.length - 1].substring(lastIndex);
 
-            if (grade.equals("F") || grade.equals("WIP") || grade.equals("W")) {
+            if (grade.equals("F") || grade.equals("W")) {
                 coursesToDate.get(coursesToDate.size() - 1).setPassed(false);
 
+            } else if (grade.equals("WIP")) {
+                coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
             } else {
                 coursesToDate.get(coursesToDate.size() - 1).setPassed(true);
                 coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
@@ -230,8 +232,10 @@ public class CourseManager {
             ++index;
         }
         while (recommendedCoursesTotalCredits(recommendedCourses) < 15) {
-            recommendedCourses.add(catalog.get(courses.get(++index)));
-            recommendedCourses.sort(Course::compareTo);
+            if (!coursesToDate.contains(catalog.get(courses.get(index + 1)))) {
+                recommendedCourses.add(catalog.get(courses.get(++index)));
+                recommendedCourses.sort(Course::compareTo);
+            }
 
         }
 
