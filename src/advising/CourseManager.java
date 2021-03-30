@@ -226,7 +226,7 @@ public class CourseManager {
             }
             ++index;
         }
-        while (recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+        while (index < courses.size() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
             String courseName = courses.get(index+1);
             Course course = catalog.get(courseName);
             if (!coursesToDate.contains(course)) {
