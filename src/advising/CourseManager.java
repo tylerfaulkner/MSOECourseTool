@@ -283,8 +283,16 @@ public class CourseManager {
                 StringBuilder optionsString = new StringBuilder();
                 String[] options = prereq.split("\\|");
                 for(String current : options){
-                    optionsString.append(catalog.get(current).getName() + " (" + catalog.get(current).getDescription());
-                    optionsString.append(") or ");
+                    Course preCourse = catalog.get(current);
+                    if (preCourse != null) {
+                        String name = preCourse.getName();
+                        String description = preCourse.getDescription();
+                        optionsString.append(name + " (" + description);
+                        optionsString.append(") or ");
+                    } else {
+                        optionsString.append(current);
+                        optionsString.append(" or ");
+                    }
                 }
                 optionsString.delete(optionsString.lastIndexOf(" or "), optionsString.length() - 1);
                 courses.add(optionsString.toString());

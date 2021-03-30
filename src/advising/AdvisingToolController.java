@@ -112,12 +112,12 @@ public class AdvisingToolController {
                 if(prereqs == null){
                     listView.getItems().add("Class Entered is Invalid");
                 } else {
-                    listView.getItems().addAll(manager.showPrerequisites(search));
+                    listView.getItems().addAll(prereqs);
                 }
             }
         } catch (NullPointerException e) {
             //Used to throwaway search call if there is no input
-            System.out.println("CSV File missing information");
+            e.printStackTrace();
         }
     }
 
