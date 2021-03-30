@@ -160,11 +160,6 @@ public class CourseManager {
             courseMatcher.find();
             String courseCode = courseMatcher.group();
             processCourses(line);
-            try {
-                catalog.get(courseCode).setCompleted(true);
-            } catch (NullPointerException e) {
-                System.out.println("Course not listed in offerings: " + courseCode);
-            }
         } else if (line.startsWith("BS in")){
             if(line.contains("Computer Science")){
                 major = "Computer Science";
