@@ -232,9 +232,18 @@ public class CourseManager {
             ++index;
         }
         while (recommendedCoursesTotalCredits(recommendedCourses) < 15) {
-            if (!coursesToDate.contains(catalog.get(courses.get(index + 1)))) {
-                recommendedCourses.add(catalog.get(courses.get(++index)));
-                recommendedCourses.sort(Course::compareTo);
+            String courseName = courses.get(index+1);
+            Course course = catalog.get(courseName);
+            if (!coursesToDate.contains(course)) {
+                if (course == null){
+                    recommendedCourses.add(new Course(courseName, 3, null, "Free"));
+                    recommendedCourses.sort(Course::compareTo);
+                } else {
+                    recommendedCourses.add(catalog.get(courses.get(++index)));
+                    recommendedCourses.sort(Course::compareTo);
+                }
+            } else{
+                index++;
             }
 
         }
