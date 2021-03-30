@@ -37,6 +37,9 @@ public class Course implements Comparable<Course>{
         completed = false;
     }
 
+    public String getPrerequisites(){
+        return prerequisites;
+    }
     public void setGradeReceived (String grade) {
         this.gradeReceived = grade;
     }
@@ -82,6 +85,9 @@ public class Course implements Comparable<Course>{
         return credits;
     }
 
+    public String getDescription(){
+        return description;
+    }
     @Override
     public int compareTo(Course o) {
         int compare = ((Course)o).getCredits();

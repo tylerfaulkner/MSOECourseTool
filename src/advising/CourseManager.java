@@ -246,4 +246,42 @@ public class CourseManager {
         return totalCreds;
     }
 
+    /**
+     * Method to take in a course name and find the course associated and display the perquisites for that course
+     * @param courseName The course code/name taken from the user
+     * @return Returns a the list of courses that need to be taken before course, or null if course is invalid
+     */
+    public List<String> showPrerequisites(String courseName) {
+        List<String> courses = new ArrayList<>();
+        // Allows for spaces and dashes in course entry
+        Course course = catalog.get(courseName.replaceAll("-| ", "").toUpperCase());
+
+        // Check if course exists
+        if(course == null) {
+            return null;
+        }
+
+        String prerequisiteString = course.getPrerequisites();
+        String[] prerequisites = prerequisiteString.split(" ");
+
+        // Splits prereq string into seperate entries
+        for(String prereq : prerequisites){
+            if(prereq.contains("|")){
+                // If there are classes with options for prereqs, split them and display in a visually pleasing way
+                StringBuilder optionsString = new StringBuilder();
+                String[] options = prereq.split("\\|");
+                for(String current : options){
+                    optionsString.append(catalog.get(current).getName() + " (" + catalog.get(current).getDescription());
+                    optionsString.append(") or ");
+                }
+                optionsString.delete(optionsString.lastIndexOf(" or "), optionsString.length() - 1);
+                courses.add(optionsString.toString());
+            } else {
+                // Otherwise just add the course to the list with description
+                Course singlePrereq = catalog.get(prereq);
+                courses.add(singlePrereq.getName() + " (" + singlePrereq.getDescription() + ")");
+            }
+        }
+        return courses;
+    }
 }

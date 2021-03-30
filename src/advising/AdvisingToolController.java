@@ -26,6 +26,7 @@ import java.util.List;
  */
 public class AdvisingToolController {
     private static final String FEATURE_1 = "Courses by Term";
+    private static final String FEATURE_2 = "Show Prerequisites";
     private static final String FEATURE_4 = "Recommended Courses for next term";
 
 
@@ -38,7 +39,7 @@ public class AdvisingToolController {
             Arrays.asList("third", "third quarter", "3", "spring", "spring quarter", "quarter 3")
     };
 
-    private List features = Arrays.asList(FEATURE_1, FEATURE_4);
+    private List features = Arrays.asList(FEATURE_1, FEATURE_2, FEATURE_4);
     private CourseManager manager;
     private File transcriptFile;
 
@@ -104,9 +105,19 @@ public class AdvisingToolController {
                     listView.getItems().clear();
                     listView.getItems().addAll(manager.recommendCourses());
                 }
+            } else if (searchType.equals(FEATURE_2)) {
+                String search = searchBar.getText();
+                listView.getItems().clear();
+                List<String> prereqs = manager.showPrerequisites(search);
+                if(prereqs == null){
+                    listView.getItems().add("Class Entered is Invalid");
+                } else {
+                    listView.getItems().addAll(manager.showPrerequisites(search));
+                }
             }
         } catch (NullPointerException e) {
             //Used to throwaway search call if there is no input
+            System.out.println("CSV File missing information");
         }
     }
 
@@ -118,12 +129,11 @@ public class AdvisingToolController {
                 ExtensionFilter("PDF Files", "*.pdf"));
         try {
             transcriptFile = loadChooser.showOpenDialog(null);
-            if (transcriptFile == null) {
-                throw new IllegalStateException("A .pdf file must be selected to open.");
+            if (transcriptFile != null) {
+                manager.importTranscript(transcriptFile);
+                listView.getItems().clear();
+                listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
             }
-            manager.importTranscript(transcriptFile);
-            listView.getItems().clear();
-            listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
         } catch (Exception e) {
             e.printStackTrace();
         }
