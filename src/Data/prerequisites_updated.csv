@@ -1,0 +1,188 @@
+Course,Credits,Prereqs,Description
+BI1010,3,,Human Anatomy and Physiology I
+BI102,4,,Cell Biology and Genetics
+BI1020,4,BI1010,Human Anatomy and Physiology II
+BI1030,4,BI1010,Human Anatomy and Physiology III
+BI2020,4,BI102 CH223,Cellular Microbiology
+BI2040,4,BI1010,Human Anatomy and Physiology IV
+BI2305,4,BI102 CH200,Physiology I
+BI2315,3,BI2305,Physiology II
+BI256,4,BI1010,Microbiology
+BI499,3,IC,Life Science Independent Study
+BA1220,3,,Microeconomics
+BA2220,3,,Foundations of Business Economics
+BA2222,3,BA1220,Macroeconomics
+BA2331,3,,Business Law
+BA2401,3,JR,Project Management
+BA2440,3,BA1220|BA2220|BA2222|IE423,Production Management
+BA2442,3,,Management
+BA2501,3,,Finance I
+BA2661,3,,Marketing
+BA3411,3,SO,Leading Project Teams
+BA3423,3,SO,Innovation and Business Markets
+BA3444,3,SO,Organizational Behavior and Leadership
+BA3801,3,,Continuous Improvement I
+BA4330,3,JR,Legal Aspects of Innovation and Entrepreneurship:
+BA4520,3,,Investment and Portfolio Analysis
+BA4530,3,JR,Personal Finance & Planning
+BA4970,3,JR,Practicum in Entrepreneurship
+CE1901,4,,Digital Logic 1
+CE1911,4,CE1901,Digital Logic 2
+CE1921,4,CE1911,Computer Architecture
+CE2801,4,CS1011|SE1011 CE1901,Embedded Systems I
+CE2812,4,CE2801 CS1011|SE1011,Embedded Systems II
+CE2820,4,CE2812,Embedded Systems III
+CE3101,4,EE2050,Digital Electronics and Computer Interfacing
+CE3200,3,CE2812|EE2930,Wireless Sensor Networks
+CE4951,4,MA262 CE2812|EE2931,Networking I
+CE4961,4,CS3841,Networking II
+CE4000,3,JR,Senior Design Project I
+CE4010,3,JR,Senior Design Project II
+CE4020,3,JR,Senior Design Project III
+CE498,3,IC,Topics in Computer Engineering
+CH200,4,,Chemistry I
+CH200A,4,,Chemistry I
+CH201,4,CH200,Chemistry II
+CH222,3,CH200,Organic Chemistry I
+CH223,4,CH222,Biochemistry
+CH302,3,CH201,Chemistry III
+CH3020,3,CH200|CH2050|CH103,Chemistry III
+CH303,3,CH302,Chemistry III Lab
+CH322,3,CH222 CH223,Organic Chemistry II
+CH323,2,CH322,Organic Chemistry II Lab
+CH353,3,CH200 JR,Fundamentals of Environmental Chem
+CH3650,3,CH200 PH2031,Materials Chemistry
+CH3660,3,CH200 PH2031,Surface Properties of Materials
+CH3670,3,CH200,Polymer Chemistry
+CH371,3,CH200,Modern Biotechnology
+CH373,3,CH200,Advanced Biotechnology
+CH401,3,IC,Topics in Chemistry
+CH499,3,IC,Independent Study
+CS1011,4,,Software Development I
+CS1021,4,CS1011|SE1011,Software Development II
+CS2040,4,CS2852,Programming in C and C++
+CS2300,4,CS1021|SE1021,Computational Science
+CS2400,3,CS2852 CS2300 MA2310,Introduction to Artificial Intelligence
+CS2711,4,CS1011|SE1011,Computer Organization
+CS2852,4,CS1021|SE1021,Data Structures
+CS2911,4,CS1011|SE1011,Network Protocols
+CS3040,4,CS2040,Programming Languages
+CS3210,4,CE,Computer Graphics
+CS3300,4,CS3400 MA262,Data Science
+CS3310,4,CS3300,Data Science Practicum
+CS3400,4,CS2852 MA383,Machine Learning
+CS3840,4,CS2711 CS2040|SE2040,Operating Systems
+CS3841,4,CE2812 CS2852,Design of Operating Systems
+CS3851,4,CS2852 MA3320,Algorithms
+CS3860,4,CS2852 MA2310,Database Systems
+CS4000,3,SR,Senior Design I
+CS4010,3,SR,Senior Design II
+CS4020,3,SR,Senior Design III
+CS421,3,SE2811|CS3210,Advanced Computer Graphics
+CS4230,3,CS2852,Distributed and Cloud Computing
+CS3450,4,CS3400,Deep Learning
+CS4860,3,CS2852,C# and Program Language Design
+CS4881,3,CS2852 MA2310,Artificial Intelligence
+CS4920,3,CE2801|CS2711|EE2905,Information Security
+CS493,3,CE2930|CE2812|EE3921,Advanced Digital Design
+CS4980,3,IC,Topics in Computer Science
+CS4981,3,IC,Topics in Computer Science with Lab
+CS4999,3,IC,Independent Study
+EB2240,3,BI102 CH223,Engineering Applications in Biochemistry
+EB3300,3,BI102 PH2031,Molecular Nanotechnology
+EB3400,3,CH223,Food Engineering
+EE2050,4,MA136,Linear Circuits - Steady State I
+EE2060,4,EE2050 MA137,Linear Circuits - Steady State II
+EE2070,3,EE2060 MA235,Linear Circuits - Transients
+EE3032,4,EE2070|EE2725,Signals and Systems
+EE3050,3,EE2070 EE3002B PH2011 MA383,Dynamic Systems
+EE3221,4,EE3032 EE1910|EE2905|CE2812,Digital Signal Processing
+EE3720,4,EE3050,Control Systems
+EE484,3,CS2510 CS1021|SE1021 MA383,Neural Networks
+GS1001,4,,Freshman Studies I
+GS1002,4,,Freshman Studies II
+GS1003,4,,Freshman Studies III
+HU432,3,JR,Ethics for Professional Managers and Engineers
+HU4321,3,JR,Ethics of Digital Technologies and AI
+IE423,3,SO,Engineering Economy
+MA136,4,,Calculus I
+MA137,4,MA136,Calculus II
+MA231,4,MA137,Calculus III
+MA2314,4,MA137,Calculus III
+MA2310,3,SO,Discrete Mathematics I
+MA232,4,MA231,Calculus IV
+MA2323,4,MA2314,Calculus IV
+MA235,4,MA231|MA226,Differential Equations
+MA262,3,MA137,Probability and Statistics
+MA327,4,MA235,Mathematical Modeling
+MA330,3,MA232 MA226,Vector Analysis
+MA3320,3,MA2310,Discrete Mathematics II
+MA343,3,MA383 MA2831,Linear Programming
+MA344,3,MA231 MA343,Nonlinear Programming
+MA3710,3,MA235,Mathematical Biology
+MA380,3,MA232 MA235,Advanced Differential Equations
+MA381,3,MA232 MA235,Complex Variables
+MA382,3,MA232 MA235,Laplace and Fourier Transforms
+MA383,3,MA231|MA225|MA3501,Linear Algebra
+MA384,3,MA262 MA3610 MA3620,Statistical Methods for Use in Research
+MA385,3,MA235,Modern Algebra with Applications
+MA386,3,MA232,Functions of a Real Variable
+MA387,3,MA232 MA235,Partial Differential Equations
+MA388,3,MA231,Introduction to Number Theory
+MA390,4,,Financial Mathematics
+MA461,4,MA2630 MA2631,Applied Probability Models
+OR402,1,JR,Professional Guidance
+PH2011,4,MA136,Physics I - Mechanics
+PH2021,4,PH2011 MA137,Physics II - ElectroMagnetism
+PH2031,4,PH2021 MA137 MA232,Waves, Optics, Thermodynamics, and Quantum Physics
+PH320,3,PH2021 MA137 MA225,Lasers and Applications
+PH322,3,PH2021,Intro-Optics and Photonics
+PH324,3,PH2021 PH2031,Fiber Optics/Fiber Optic Sensors
+PH325,3,PH2021,Acoustics & Illumination
+PH341,3,PH2021,Intro-Astronomy/Astrophysics
+PH342,3,JR IC,Relativity and Cosmology
+PH352,3,PH2031 IC,Quantum Physics
+PH354,3,PH2031 IC,Nuclear Power, Applications and Safety
+PH3600,4,PH2031,Physics of Semiconductor Materials and Devices
+PH3710,3,CH223 PH2031,Intro to Biophysics
+PH401,3,IC,Topics in Physics
+PH499,3,IC,Independent Study
+SC310,3,CH200 MA136,Nanoscience and Nanotechnology
+SE1011,4,,Software Development I
+SE1021,4,CS1011|SE1011,Software Development II
+SE2030,3,CS2852,Software Engineering Tools and Practices
+SE2800,3,CS2852 SE2030,Software Engineering Process I
+SE2811,4,CS2852 SE2030,Software Component Design
+SE2832,4,CS2852 MA2310,Introduction to Software Verification
+SE2840,4,CS2852 CS2911,Web Application Development
+SE3010,3,SE2800 SE2811,Software Development Laboratory I
+SE3020,3,SE3010,Software Development Laboratory II
+SE3030,3,SE3020,Software Development Laboratory III
+SE3250,3,CS2852,Introduction to Game Development
+SE3800,3,SE2800 SE2832,Software Engineering Process II
+SE3810,4,SE2811 SE3821,Software Architecture
+SE3821,4,SE2030,Software Requirements and Specification
+SE3830,3,MA262 CS2852 SE3821,Human-Computer Interaction
+SE3910,4,CS2711|CE2930 CS3840|CS3841,Real-Time Systems
+SE4000,3,SR,Senior Design Project I
+SE4010,3,SR,Senior Design Project II
+SE4020,3,SR,Senior Design Project III
+SE4910,3,CS2852,Mobile Application Development
+SE4930,3,SE2800 IC,Developing Secure Software
+SE4940,3,CS2911 CE4960,Network Security Tools and Practices
+SE4980,3,IC,Topics in Software Engineering
+SE4999,3,IC,Independent Study
+TC342,3,,Professional Presentations
+TC452,3,,Interpersonal Communication
+TC4510,3,GS1001 GS1002 GS1003 SO,Mass Media, Culture, and Society
+UR4981,1,JR,Undergraduate Research I
+UR4982,2,UR4981,Undergraduate Research II
+UR4983,3,UR4982,Undergraduate Research III
+UX1400,3,,Foundations of User Experience
+UX242,3,GS1002 GS1003,Collaborative Design
+UX253,3,GS1002,Global User Experience
+UX255,3,GS1002 TC321,User Interface Design
+UX333,3,GS1002,Knowledge and Content Management
+UX345,3,UX,Agile Project Management
+UX361,3,GS1002,UX Research
+UX498,3,SO IC,UX Practicum
