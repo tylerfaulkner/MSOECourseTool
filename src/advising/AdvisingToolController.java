@@ -10,7 +10,9 @@
 package advising;
 
 
+import advising.courseGraph.CourseGraph;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
@@ -42,6 +44,7 @@ public class AdvisingToolController {
     private List features = Arrays.asList(FEATURE_1, FEATURE_2, FEATURE_4);
     private CourseManager manager;
     private File transcriptFile;
+    private CourseGraph courseGraph;
 
     @FXML
     ListView listView;
@@ -52,11 +55,15 @@ public class AdvisingToolController {
     @FXML
     TextField searchBar;
 
+    @FXML
+    Canvas canvas;
+
 
     @FXML
     private void initialize() {
         manager = new CourseManager();
         comboBox.getItems().addAll(features);
+        courseGraph = new CourseGraph(manager.getCatalog());
     }
 
     @FXML
@@ -75,6 +82,13 @@ public class AdvisingToolController {
     private void listCourseToDate() {
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCoursesToDate());
+    }
+
+    @FXML
+    private void showPreReqGraph(){
+        canvas.setDisable(false);
+        canvas.setVisible(true);
+        courseGraph.draw(canvas.getGraphicsContext2D());
     }
 
     @FXML
