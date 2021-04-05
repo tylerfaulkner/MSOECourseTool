@@ -45,7 +45,7 @@
       <Button layoutX="447.0" layoutY="72.0" mnemonicParsing="false" onAction="#search" text="Submit" />
       <ScrollPane fx:id="canvasScroll" disable="true" fitToHeight="true" layoutY="24.0" prefHeight="376.0" prefWidth="600.0" visible="false">
          <content>
-            <Canvas fx:id="canvas" height="7000.0" width="600.0" />
+            <Canvas fx:id="canvas" height="8000.0" width="1800.0" />
          </content>
       </ScrollPane>
    </children>
