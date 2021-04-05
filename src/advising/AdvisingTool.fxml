@@ -43,6 +43,10 @@
       </ScrollPane>
       <ComboBox fx:id="comboBox" layoutX="172.0" layoutY="38.0" prefHeight="25.0" prefWidth="256.0" />
       <Button layoutX="447.0" layoutY="72.0" mnemonicParsing="false" onAction="#search" text="Submit" />
-      <Canvas fx:id="canvas" disable="true" height="375.0" layoutY="25.0" visible="false" width="600.0" />
+      <ScrollPane fx:id="canvasScroll" disable="true" fitToHeight="true" layoutY="24.0" prefHeight="376.0" prefWidth="600.0" visible="false">
+         <content>
+            <Canvas fx:id="canvas" height="7000.0" width="600.0" />
+         </content>
+      </ScrollPane>
    </children>
 </Pane>

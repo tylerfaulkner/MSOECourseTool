@@ -13,10 +13,7 @@ package advising;
 import advising.courseGraph.CourseGraph;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -58,6 +55,9 @@ public class AdvisingToolController {
     @FXML
     Canvas canvas;
 
+    @FXML
+    ScrollPane canvasScroll;
+
 
     @FXML
     private void initialize() {
@@ -86,8 +86,8 @@ public class AdvisingToolController {
 
     @FXML
     private void showPreReqGraph(){
-        canvas.setDisable(false);
-        canvas.setVisible(true);
+        canvasScroll.setDisable(false);
+        canvasScroll.setVisible(true);
         courseGraph.draw(canvas.getGraphicsContext2D());
     }
 

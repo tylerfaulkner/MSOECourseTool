@@ -88,6 +88,7 @@ public class Course implements Comparable<Course>{
     public String getDescription(){
         return description;
     }
+
     @Override
     public int compareTo(Course o) {
         int compare = ((Course)o).getCredits();
