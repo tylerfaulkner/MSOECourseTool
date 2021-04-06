@@ -204,6 +204,34 @@ public class CourseManager {
 
         }
     }
+    public List<Course> graduationPlan() {
+
+        List<Course> graduation = new ArrayList<>();
+
+        List<String> courses = new ArrayList<>();
+        if (major.equals("Computer Science")) {
+            courses = csTrack;
+        } else if (major.equals("Software Engineering")) {
+            courses = seTrack;
+        }
+
+        String electives[] = {"HUSS", "TECHEL", "MASCIEL", "FREE", "BUSEL", "SCIEL"};
+
+        for (String code : courses) {
+
+            Course course = catalog.get(code);
+
+            if (Arrays.asList(electives).contains(code)) {
+                graduation.add(new Course(code,3,"",""));
+            } else {
+                if (!coursesToDate.contains(course)) {
+                    graduation.add(course);
+                }
+            }
+        }
+
+        return graduation;
+    }
 
     public List<Course> recommendCourses () {
         List<Course> recommendedCourses = new ArrayList<>();
@@ -216,7 +244,6 @@ public class CourseManager {
                 recommendedCourses.add(c);
             }
         }
-        int index = 0;
 
         List<String> courses = new ArrayList<>();
         if (major.equals("Computer Science")) {
