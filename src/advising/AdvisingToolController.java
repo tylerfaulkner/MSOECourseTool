@@ -78,6 +78,12 @@ public class AdvisingToolController {
     }
 
     @FXML
+    private void listGraduationPlan() {
+        listView.getItems().clear();
+        listView.getItems().addAll(manager.graduationPlan());
+    }
+
+    @FXML
     private void search() {
         try {
             String searchType = (String) comboBox.getValue();

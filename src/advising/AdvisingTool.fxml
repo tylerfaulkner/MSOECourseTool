@@ -25,6 +25,7 @@
               <MenuItem mnemonicParsing="false" onAction="#listCSCourses" text="View CS Courses" />
                   <MenuItem mnemonicParsing="false" onAction="#listSECourses" text="View SE Courses" />
                 <MenuItem mnemonicParsing="false" onAction="#listCourseToDate" text="Courses to Date" />
+                <MenuItem mnemonicParsing="false" onAction="#listGraduationPlan" text="Graduation Plan" />
             </items>
           </Menu>
         </menus>
