@@ -55,7 +55,7 @@ public class CourseManager {
                 String[] line = offerings.nextLine().split(",");
                 String courseName = line[0];
                 Course course = catalog.get(courseName);
-                if (course == null){
+                if (course == null) {
                     course = new Course(courseName, 3, "", "");
                     catalog.put(courseName, course);
                 }
@@ -69,7 +69,7 @@ public class CourseManager {
 
             Scanner curiculum = new Scanner(new File("src/Data/curriculum.csv"));
             curiculum.nextLine();
-            while (curiculum.hasNextLine()){
+            while (curiculum.hasNextLine()) {
                 String[] courses = curiculum.nextLine().split(",");
                 csTrack.add(courses[0]);
                 seTrack.add(courses[1]);
@@ -108,11 +108,11 @@ public class CourseManager {
         return major;
     }
 
-    public List getCSTrack(){
+    public List getCSTrack() {
         return csTrack;
     }
 
-    public List getSETrack(){
+    public List getSETrack() {
         return seTrack;
     }
 
@@ -159,15 +159,15 @@ public class CourseManager {
     private void processPDFLine(String line) {
         Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
         Matcher courseMatcher;
-        if(line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")){
+        if (line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")) {
             courseMatcher = coursePattern.matcher(line);
             courseMatcher.find();
             String courseCode = courseMatcher.group();
             processCourses(line);
-        } else if (line.startsWith("BS in")){
-            if(line.contains("Computer Science")){
+        } else if (line.startsWith("BS in")) {
+            if (line.contains("Computer Science")) {
                 major = "Computer Science";
-            } else if (line.contains("Software Engineering")){
+            } else if (line.contains("Software Engineering")) {
                 major = "Software Engineering";
             } else {
                 System.out.println("Unrecognized Major");
@@ -175,7 +175,7 @@ public class CourseManager {
         }
     }
 
-    public void processCourses (String line) {
+    public void processCourses(String line) {
 
         String[] split = line.split(" ");
 
@@ -186,8 +186,8 @@ public class CourseManager {
             int firstIndex = split[split.length - 1].indexOf('.') + 3;
             int lastIndex = split[split.length - 1].lastIndexOf('.') + 3;
 
-            String qualPts = split[split.length -1].substring(0,firstIndex);
-            String credsEarned = split[split.length - 1].substring(firstIndex,lastIndex);
+            String qualPts = split[split.length - 1].substring(0, firstIndex);
+            String credsEarned = split[split.length - 1].substring(firstIndex, lastIndex);
             String grade = split[split.length - 1].substring(lastIndex);
 
             if (grade.equals("F") || grade.equals("W")) {
@@ -205,7 +205,7 @@ public class CourseManager {
         }
     }
 
-    public List<Course> recommendCourses () {
+    public List<Course> recommendCourses() {
         List<Course> recommendedCourses = new ArrayList<>();
 
         for (Course c : coursesToDate) {
@@ -231,17 +231,17 @@ public class CourseManager {
             ++index;
         }
         while (index < courses.size() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
-            String courseName = courses.get(index+1);
+            String courseName = courses.get(index + 1);
             Course course = catalog.get(courseName);
             if (!coursesToDate.contains(course)) {
-                if (course == null){
+                if (course == null) {
                     recommendedCourses.add(new Course(courseName, 3, null, "Free"));
                     recommendedCourses.sort(Course::compareTo);
                 } else {
                     recommendedCourses.add(catalog.get(courses.get(++index)));
                     recommendedCourses.sort(Course::compareTo);
                 }
-            } else{
+            } else {
                 index++;
             }
 
@@ -269,7 +269,7 @@ public class CourseManager {
         Course course = catalog.get(courseName.replaceAll("-| ", "").toUpperCase());
 
         // Check if course exists
-        if(course == null) {
+        if (course == null) {
             return null;
         }
 
@@ -277,12 +277,12 @@ public class CourseManager {
         String[] prerequisites = prerequisiteString.split(" ");
 
         // Splits prereq string into seperate entries
-        for(String prereq : prerequisites){
-            if(prereq.contains("|")){
+        for (String prereq : prerequisites) {
+            if (prereq.contains("|")) {
                 // If there are classes with options for prereqs, split them and display in a visually pleasing way
                 StringBuilder optionsString = new StringBuilder();
                 String[] options = prereq.split("\\|");
-                for(String current : options){
+                for (String current : options) {
                     Course preCourse = catalog.get(current);
                     if (preCourse != null) {
                         String name = preCourse.getName();
