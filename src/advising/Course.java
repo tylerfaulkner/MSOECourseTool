@@ -16,7 +16,7 @@ import java.util.HashMap;
 /**
  * Course class contains data for an instance of a class.
  */
-public class Course implements Comparable<Course>{
+public class Course implements Comparable<Course> {
     private String name;
     private int credits;
     private String prerequisites;
@@ -24,7 +24,7 @@ public class Course implements Comparable<Course>{
     private HashMap<Integer, ArrayList<String>> terms = new HashMap<>();
     private boolean completed;
     private boolean passed;
-    private String gradeReceived;
+    private String completedTerm;
 
     public Course(String name, int credits, String prerequisites, String description) {
         this.name = name;
@@ -35,33 +35,27 @@ public class Course implements Comparable<Course>{
         terms.put(2, new ArrayList<>());
         terms.put(3, new ArrayList<>());
         completed = false;
+        completedTerm = "N/A";
     }
 
-    public String getPrerequisites(){
+    public String getPrerequisites() {
         return prerequisites;
     }
-    public void setGradeReceived (String grade) {
-        this.gradeReceived = grade;
-    }
 
-    public String getGradeReceived () {
-        return gradeReceived;
-    }
-
-    public String getName () {
+    public String getName() {
         return name;
     }
 
-    public ArrayList getTerm(int term){
+    public ArrayList getTerm(int term) {
         return terms.get(term);
     }
 
-    public void addTerm(int term, String major){
+    public void addTerm(int term, String major) {
         terms.get(term).add(major);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return name + " " + description;
     }
 
@@ -85,12 +79,21 @@ public class Course implements Comparable<Course>{
         return credits;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
+
     @Override
     public int compareTo(Course o) {
-        int compare = ((Course)o).getCredits();
-        return compare - this.credits ;
+        int compare = ((Course) o).getCredits();
+        return compare - this.credits;
+    }
+
+    public String getCompletedTerm() {
+        return completedTerm;
+    }
+
+    public void setCompletedTerm(String completedTerm) {
+        this.completedTerm = completedTerm;
     }
 }
