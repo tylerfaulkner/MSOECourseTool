@@ -192,6 +192,7 @@ public class CourseManager {
 
             if (grade.equals("F") || grade.equals("W")) {
                 coursesToDate.get(coursesToDate.size() - 1).setPassed(false);
+                coursesToDate.get(coursesToDate.size() -1).setCompleted(true);
 
             } else if (grade.equals("WIP")) {
                 coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
@@ -200,8 +201,6 @@ public class CourseManager {
                 coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
 
             }
-            coursesToDate.get(coursesToDate.size() - 1).setGradeReceived(grade);
-
         }
     }
     public List<Course> graduationPlan() {
@@ -239,7 +238,7 @@ public class CourseManager {
         String electives[] = {"HUSS", "TECHEL", "MASCIEL", "FREE", "BUSEL", "SCIEL"};
 
         for (Course c : coursesToDate) {
-            if (c.getGradeReceived().equals("F") && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+            if (!c.isPassed() && !c.isCompleted() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
                 recommendedCourses.sort(Course::compareTo);
                 recommendedCourses.add(c);
             }
