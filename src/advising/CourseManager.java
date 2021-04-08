@@ -192,6 +192,7 @@ public class CourseManager {
 
             if (grade.equals("F") || grade.equals("W")) {
                 coursesToDate.get(coursesToDate.size() - 1).setPassed(false);
+                coursesToDate.get(coursesToDate.size() -1).setCompleted(true);
 
             } else if (grade.equals("WIP")) {
                 coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
@@ -200,21 +201,11 @@ public class CourseManager {
                 coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
 
             }
-            coursesToDate.get(coursesToDate.size() - 1).setGradeReceived(grade);
-
         }
     }
+    public List<Course> graduationPlan() {
 
-    public List<Course> recommendCourses () {
-        List<Course> recommendedCourses = new ArrayList<>();
-
-        for (Course c : coursesToDate) {
-            if (c.getGradeReceived().equals("F") && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
-                recommendedCourses.sort(Course::compareTo);
-                recommendedCourses.add(c);
-            }
-        }
-        int index = 0;
+        List<Course> graduation = new ArrayList<>();
 
         List<String> courses = new ArrayList<>();
         if (major.equals("Computer Science")) {
@@ -223,26 +214,48 @@ public class CourseManager {
             courses = seTrack;
         }
 
+        String electives[] = {"HUSS", "TECHEL", "MASCIEL", "FREE", "BUSEL", "SCIEL"};
 
-        for (String s : courses) {
-            if (s.equalsIgnoreCase(coursesToDate.get(coursesToDate.size() - 1).getName())) {
-                break;
-            }
-            ++index;
-        }
-        while (index < courses.size() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
-            String courseName = courses.get(index+1);
-            Course course = catalog.get(courseName);
-            if (!coursesToDate.contains(course)) {
-                if (course == null){
-                    recommendedCourses.add(new Course(courseName, 3, null, "Free"));
-                    recommendedCourses.sort(Course::compareTo);
-                } else {
-                    recommendedCourses.add(catalog.get(courses.get(++index)));
-                    recommendedCourses.sort(Course::compareTo);
+        for (String code : courses) {
+
+            Course course = catalog.get(code);
+
+            if (Arrays.asList(electives).contains(code)) {
+                graduation.add(new Course(code,3,"",""));
+            } else {
+                if (!coursesToDate.contains(course)) {
+                    graduation.add(course);
                 }
-            } else{
-                index++;
+            }
+        }
+
+        return graduation;
+    }
+
+    public List<Course> recommendCourses () {
+        List<Course> recommendedCourses = new ArrayList<>();
+
+        String electives[] = {"HUSS", "TECHEL", "MASCIEL", "FREE", "BUSEL", "SCIEL"};
+
+        for (Course c : coursesToDate) {
+            if (!c.isPassed() && !c.isCompleted() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+                recommendedCourses.sort(Course::compareTo);
+                recommendedCourses.add(c);
+            }
+        }
+
+        List<String> courses = new ArrayList<>();
+        if (major.equals("Computer Science")) {
+            courses = csTrack;
+        } else if (major.equals("Software Engineering")) {
+            courses = seTrack;
+        }
+
+        for (String code : courses) {
+
+            Course course = catalog.get(code);
+            if (!recommendedCourses.contains(course) && !coursesToDate.contains(course) && recommendedCoursesTotalCredits(recommendedCourses) < 15 && !Arrays.asList(electives).contains(code)) {
+                recommendedCourses.add(course);
             }
 
         }
@@ -253,7 +266,9 @@ public class CourseManager {
     public double recommendedCoursesTotalCredits(List<Course> recCourses) {
         double totalCreds = 0;
         for (Course c : recCourses) {
-            totalCreds += c.getCredits();
+            if (c != null) {
+                totalCreds += c.getCredits();
+            }
         }
         return totalCreds;
     }
