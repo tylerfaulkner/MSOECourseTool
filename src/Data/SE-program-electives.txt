@@ -1,0 +1,29 @@
+CE3200 - Wireless Sensor Networks [prereq: CE2812]
+CE4951 - Networking I (4 credits) [prereqs: CE2812]
+CE498 - Topics in Computer Engineering
+CS3040 - Progamming Languages and Translators (4 credits)
+CS3300 - Introduction to Data Science (4 credits) [prereq: CS2300]
+CS3310 - Data Science Practicum (4 credits) [prereq: CS3300]
+CS3400 - Machine Learning (4 credits) [prereq: CS2400]
+CS3450 - Deep Learning (4 credits) [prereq: CS3400]
+CS421 - Advanced Computer Graphics
+CS4230 - Distributed and Cloud Computing
+CS4881 - Artificial Intelligence
+CS4920 - Information Security
+CS493 - Advanced Digital Design [prereq: CE2812]
+CS4980 - Topics in Computer Science
+CS4981 - Topics in Computer Science
+CS4999 - Independent Study
+EE3050 - Dynamic Systems [prereq: EE2070]
+EE481 - Fuzzy Sets and Applications
+EE484 - Neural Networks
+SE3250 - Introduction to Game Development
+SE3830 - Human-Computer Interaction
+SE4980 - Topics in Software Engineering
+SE4981 - Topics in Software Engineering
+SE4999 - Independent Study
+SE4910 - Mobile Application Development
+SE4910I - Mobile Application Development-iOS
+SE4930 - Developing Secure Software
+SE4940 - Network Security Tools and Practices
+UGR498x - Undergraduate Research course sequence1

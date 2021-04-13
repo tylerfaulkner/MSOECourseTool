@@ -1,0 +1,31 @@
+CE2820 - Embedded Systems III (4 credits)
+CE3101 - Digital Electronics and Computer Interfacing (4 credits)
+CE3200 - Wireless Sensor Networks
+CE4951 - Networking I (4 credits)
+CE498 - Topics in Computer Engineering
+CS421 - Advanced Computer Graphics
+CS4230 - Distributed and Cloud Computing
+CS4802 - Digital Image Processing
+CS4881 - Artificial Intelligence
+CS4920 - Information Security
+CS493 - Advanced Digital Design
+CS498 - Topics in Computer Science
+CS499 - Independent Study
+EE3032 - Signals and Systems (4 credits)
+EE3050 - Dynamic Systems
+EE3221 - Digital Signal Processing (4 credits)
+EE3720 - Control Systems (4 credits)
+EE481 - Fuzzy Sets and Applications
+SE2832 - Introduction to Software Verification (4 credits)
+SE3250 - Introduction to Game Development
+SE3800 - Software Process II
+SE3810 - Software Architecture (4 credits)
+SE3821 - Software Requirements and Specification (4 credits)
+SE3830 - Human-Computer Interaction
+SE3910 - Real-Time Systems
+SE498 - Topics in Software Engineering
+SE499 - Independent Study
+SE4910 - Mobile Application Development
+SE4910I - Mobile Application Development-iOS
+SE4930 - Developing Secure Software
+SE4940 - Network Security Tools and Practices
