@@ -1,0 +1,47 @@
+BA1220 - Microeconomics
+BA1227 - Global Business
+BA2220 - Foundations of Business Economics
+BA2222 - Macroeconomics
+BA2331 - Business Law
+BA2401 - Project Management
+BA2440 - Production Management
+BA2442 - Management Principles
+BA2501 - Finance I
+BA2661 - Marketing
+BA3411 - Leading Project Teams
+BA3420 - International Management
+BA3423 - Innovation and Business Markets
+BA3440 - Business Communication and Commerce
+BA3447 - Leadership
+BA3491 - Supply Chain Management
+BA3801 - Continuous Improvement I
+BA4330 - Legal Aspects of Innovation and Entrepreneurship
+BA4344 - Business and Government Relations
+BA4348 - Employment Law
+BA4350 - Business Startups for Entrepreneurs
+BA4410 - Negotiations
+BA4449 - Human Resource Management
+BA4520 - Investment and Portfolio Analysis
+BA4530 - Personal Finance & Planning
+BA4970 - Entrepreneurship Practicum
+MS221 - Microeconomics
+MS2220 - Foundations of Business Economics
+MS3010 - Introduction to Health Care Industry
+MS322 - Macroeconomics
+MS331 - Business Law
+MS3330 - Legal Aspects of Innovation and Entrepreneurship
+MS340 - Production Management
+MS3401 - Applied Operations Management: Lean Techniques
+MS3411 - Leading Project Teams
+MS342 - Management Principles
+MS3420 - International Management
+MS3423 - Innovation and Business Markets
+MS3425 - Entrepreneurship - An Overview, MS 3427 - Entrepreneurial Business Plans, and MS 3429 - Entrepreneurial Finance
+MS344 - Organizational Behavior and Leadership Development
+MS354 - Accounting
+MS361 - Marketing
+MS4080 - Information Technology Systems in Health Care
+MS452 - Investment & Portfolio Analysis
+MS453 - Personal Investments
+MS4545 - Finance and Accounting
+MS4801 - Project Management
