@@ -28,6 +28,7 @@ public class Main extends Application {
 
         stage.setTitle("Advising Tool");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 }
