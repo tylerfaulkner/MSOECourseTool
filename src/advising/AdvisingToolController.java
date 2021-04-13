@@ -67,6 +67,9 @@ public class AdvisingToolController {
     @FXML
     ScrollPane searchCode;
 
+    @FXML
+    CheckBox preReqTail;
+
 
     @FXML
     private void initialize() {
@@ -102,7 +105,7 @@ public class AdvisingToolController {
 
     @FXML
     private void searchPreReq(){
-        courseGraph.drawCourse(textPreReq.getText(), singleCourse.getGraphicsContext2D());
+        courseGraph.drawCourse(textPreReq.getText(), singleCourse.getGraphicsContext2D(), preReqTail.isSelected());
     }
 
     @FXML

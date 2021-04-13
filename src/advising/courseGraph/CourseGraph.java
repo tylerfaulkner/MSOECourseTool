@@ -42,14 +42,39 @@ public class CourseGraph {
             CourseNode node = nodes.get(i);
             previousNodeY = offset + previousNodeY + (i > 0 ? NODE_DISTANCE : Y_PADDING);
             int x = PADDING + (col>=1 ? COL_OFFSET*col : 0);
-            offset = node.draw(gc, x, previousNodeY);
+            offset = node.draw(gc, x, previousNodeY, false);
         }
     }
 
-    public void drawCourse(String name, GraphicsContext gc){
+    public void drawCourse(String name, GraphicsContext gc, boolean trailingPreReqs){
+        gc.clearRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         CourseNode node = findCourseNode(name);
         if(node != null) {
-            node.draw(gc, (int) 150, (int) 150);
+            int x = 150;
+            int y = 100;
+            if(trailingPreReqs) {
+                getPreReqNodes(node);
+                x=300;
+                y=125;
+            }
+            node.draw(gc, x, y, trailingPreReqs);
+        }
+    }
+
+    private void getPreReqNodes(CourseNode node){
+        if(node.getCourse().getName() != "") {
+            String[] preReqs = node.getCourse().getPrerequisites().split(" ");
+            for (String preReq : preReqs) {
+                if(preReq != null) {
+                    CourseNode preReqNode = findCourseNode(preReq);
+                    if (preReqNode != null) {
+                        getPreReqNodes(preReqNode);
+                        node.addPreReqNode(preReqNode);
+                    } else {
+                        node.addPreReqNode(new CourseNode(new Course(preReq, 0, "", "")));
+                    }
+                }
+            }
         }
     }
 
@@ -60,7 +85,7 @@ public class CourseGraph {
                 return node;
             }
         }
-        System.out.println("Course Not Found");
+        System.out.println("Course Not Found" + name);
         return null;
     }
 
