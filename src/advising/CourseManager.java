@@ -299,7 +299,9 @@ public class CourseManager {
             } else {
                 // Otherwise just add the course to the list with description
                 Course singlePrereq = catalog.get(prereq);
-                courses.add(singlePrereq.getName() + " (" + singlePrereq.getDescription() + ")");
+                if(singlePrereq != null){
+                    courses.add(singlePrereq.getName() + " (" + singlePrereq.getDescription() + ")");
+                }
             }
         }
         return courses;
