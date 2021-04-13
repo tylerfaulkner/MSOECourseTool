@@ -1,0 +1,5 @@
+BI102 - Cell Biology and Genetics (4 credits) [in place of CH200 or as a science elective]
+BI2305 - Physiology I (4 credits) [prereq: BI102]
+CH201 - Chemistry II (4 credits) [prereq: CH200]
+CH223 - Biochemistry (4 credits) [prereq: CH222 (which can be taken for a MA/SCI elective)]
+PH2021 - Electromagnetics (4 credits) [prereq: PH2011]

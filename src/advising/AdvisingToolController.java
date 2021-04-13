@@ -9,8 +9,6 @@
 
 package advising;
 
-
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -101,11 +99,6 @@ public class AdvisingToolController {
         listView.getItems().clear();
         listView.getItems().addAll(manager.graduationPlan());
     }
-
-    @FXML
-    private void search() {
-
-    }
     public void populateContextMenu(){
         MenuItem prereqs = new MenuItem("Show Prerequisites");
         prereqs.setOnAction(actionEvent -> showPrerequisites());
@@ -141,7 +134,7 @@ public class AdvisingToolController {
         if(itemSelected instanceof Course){
             courseName = ((Course) itemSelected).getName();
         } else if(itemSelected instanceof String){
-            courseName = (String)itemSelected;
+            courseName = ((String) itemSelected).substring(0, ((String) itemSelected).indexOf(" "));
         }
         detailView.getItems().clear();
         List<String> prereqs = manager.showPrerequisites(courseName);
