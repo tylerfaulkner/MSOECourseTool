@@ -10,25 +10,22 @@
 package advising;
 
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Controller for the Advising Tool GUI using FXML
  */
 public class AdvisingToolController {
-    private static final String FEATURE_1 = "Courses by Term";
-    private static final String FEATURE_2 = "Show Prerequisites";
-    private static final String FEATURE_4 = "Recommended Courses for next term";
-
+    private final List<MenuItem> buttonFeatures = new LinkedList<>();
 
     /**
      * Alternate names for terms that could be used when a user searches
@@ -39,24 +36,36 @@ public class AdvisingToolController {
             Arrays.asList("third", "third quarter", "3", "spring", "spring quarter", "quarter 3")
     };
 
-    private List features = Arrays.asList(FEATURE_1, FEATURE_2, FEATURE_4);
     private CourseManager manager;
     private File transcriptFile;
 
     @FXML
-    ListView listView;
-
-    @FXML
-    ComboBox comboBox;
+    ListView listView, detailView;
 
     @FXML
     TextField searchBar;
 
+    @FXML
+    MenuButton optionBox;
 
+    @FXML
+    Button recommendButton, feature2Button, feature3Button, feature4Button;
+
+    @FXML
+    ContextMenu courseMenu;
     @FXML
     private void initialize() {
         manager = new CourseManager();
-        comboBox.getItems().addAll(features);
+        populateContextMenu();
+        //Creating and setting each new feature/menu item
+        //Course By Term
+        MenuItem courseByTerm = new MenuItem("Courses By Term");
+        courseByTerm.setOnAction(actionEvent -> showCourseByTerm());
+        buttonFeatures.add(courseByTerm);
+
+
+        //Attach to menuButton
+        optionBox.getItems().addAll(buttonFeatures);
     }
 
     @FXML
@@ -76,7 +85,17 @@ public class AdvisingToolController {
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCoursesToDate());
     }
-
+    @FXML
+    public void recommendCourses(){
+        try {
+            if (transcriptFile != null) {
+                listView.getItems().clear();
+                listView.getItems().addAll(manager.recommendCourses());
+            }
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+    }
     @FXML
     private void listGraduationPlan() {
         listView.getItems().clear();
@@ -85,45 +104,53 @@ public class AdvisingToolController {
 
     @FXML
     private void search() {
+
+    }
+    public void populateContextMenu(){
+        MenuItem prereqs = new MenuItem("Show Prerequisites");
+        prereqs.setOnAction(actionEvent -> showPrerequisites());
+        courseMenu.getItems().add(prereqs);
+    }
+    public void showCourseByTerm(){
         try {
-            String searchType = (String) comboBox.getValue();
-            if (searchType.equals(FEATURE_1)) {
-                String search = searchBar.getText();
-                if (!search.equals("")) {
-                    Boolean found = false;
-                    for (int i = 0; i < termAltNames.length && !found; i++) {
-                        if (termAltNames[i].contains(search)) {
-                            List courses = manager.listCourses(i + 1);
-                            listView.getItems().clear();
-                            listView.getItems().addAll(courses);
-                            found = true;
-                        }
-                    }
-                    if (!found) {
-                        Alert alert = new Alert(Alert.AlertType.WARNING, "There are no matches " +
-                                "for the current input.");
-                        alert.setHeaderText("Unknown Input");
-                        alert.showAndWait();
+            String search = searchBar.getText();
+            if (!search.equals("")) {
+                Boolean found = false;
+                for (int i = 0; i < termAltNames.length && !found; i++) {
+                    if (termAltNames[i].contains(search)) {
+                        List courses = manager.listCourses(i + 1);
+                        listView.getItems().clear();
+                        listView.getItems().addAll(courses);
+                        found = true;
                     }
                 }
-            } else if (searchType.equals(FEATURE_4)) {
-                if (transcriptFile != null) {
-                    listView.getItems().clear();
-                    listView.getItems().addAll(manager.recommendCourses());
-                }
-            } else if (searchType.equals(FEATURE_2)) {
-                String search = searchBar.getText();
-                listView.getItems().clear();
-                List<String> prereqs = manager.showPrerequisites(search);
-                if(prereqs == null){
-                    listView.getItems().add("Class Entered is Invalid");
-                } else {
-                    listView.getItems().addAll(prereqs);
+                if (!found) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "There are no matches " +
+                            "for the current input.");
+                    alert.setHeaderText("Unknown Input");
+                    alert.showAndWait();
                 }
             }
-        } catch (NullPointerException e) {
-            //Used to throwaway search call if there is no input
+        } catch (NullPointerException e){
             e.printStackTrace();
+        }
+    }
+    public void showPrerequisites(){
+        Object itemSelected = listView.getSelectionModel().getSelectedItem();
+        String courseName = "";
+        if(itemSelected instanceof Course){
+            courseName = ((Course) itemSelected).getName();
+        } else if(itemSelected instanceof String){
+            courseName = (String)itemSelected;
+        }
+        detailView.getItems().clear();
+        List<String> prereqs = manager.showPrerequisites(courseName);
+        if(prereqs == null){
+            detailView.getItems().add("Class Entered is Invalid");
+        } else if (prereqs.size() == 0){
+            detailView.getItems().add("No prerequisites found");
+        } else {
+            detailView.getItems().addAll(prereqs);
         }
     }
 
@@ -139,6 +166,11 @@ public class AdvisingToolController {
                 manager.importTranscript(transcriptFile);
                 listView.getItems().clear();
                 listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
+                feature2Button.setDisable(false);
+                feature3Button.setDisable(false);
+                feature4Button.setDisable(false);
+                recommendButton.setDisable(false);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
