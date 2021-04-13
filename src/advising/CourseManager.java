@@ -204,8 +204,6 @@ public class CourseManager {
                 coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
 
             }
-            coursesToDate.get(coursesToDate.size() - 1).setGradeReceived(grade);
-
         }
     }
 
@@ -213,7 +211,7 @@ public class CourseManager {
         List<Course> recommendedCourses = new ArrayList<>();
 
         for (Course c : coursesToDate) {
-            if (c.getGradeReceived().equals("F") && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+            if (recommendedCoursesTotalCredits(recommendedCourses) < 15) {
                 recommendedCourses.sort(Course::compareTo);
                 recommendedCourses.add(c);
             }

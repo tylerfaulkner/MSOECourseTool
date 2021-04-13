@@ -46,6 +46,24 @@ public class CourseGraph {
         }
     }
 
+    public void drawCourse(String name, GraphicsContext gc){
+        CourseNode node = findCourseNode(name);
+        if(node != null) {
+            node.draw(gc, (int) 150, (int) 150);
+        }
+    }
+
+    private CourseNode findCourseNode(String name){
+        for(int i = 0; i < nodes.size(); ++i){
+            CourseNode node = nodes.get(i);
+            if(node.getCourse().getName().equals(name)){
+                return node;
+            }
+        }
+        System.out.println("Course Not Found");
+        return null;
+    }
+
     private void addPreReqs(){
         ArrayList newNodes = (ArrayList) nodes.clone();
         for (int i = 0; i<nodes.size(); ++i){

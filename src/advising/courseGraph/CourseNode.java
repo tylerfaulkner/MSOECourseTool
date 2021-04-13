@@ -81,7 +81,7 @@ public class CourseNode {
             int yPreReq = cord[1];
             gc.strokeLine(xPreReq+(NODE_RADIUS/1.5), yPreReq, xCord, yCord);
         }
-        gc.setFill(Paint.valueOf("blue"));
+        gc.setFill(Paint.valueOf("white"));
         gc.fillOval(xCord - 25, yCord - (NODE_RADIUS/2), NODE_RADIUS, NODE_RADIUS);
         gc.setFill(Paint.valueOf("black"));
         gc.fillText(course.getName(), xCord, yCord);

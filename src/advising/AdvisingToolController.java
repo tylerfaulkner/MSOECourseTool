@@ -53,10 +53,19 @@ public class AdvisingToolController {
     TextField searchBar;
 
     @FXML
+    TextField textPreReq;
+
+    @FXML
     Canvas canvas;
 
     @FXML
+    Canvas singleCourse;
+
+    @FXML
     ScrollPane canvasScroll;
+
+    @FXML
+    ScrollPane searchCode;
 
 
     @FXML
@@ -86,9 +95,14 @@ public class AdvisingToolController {
 
     @FXML
     private void showPreReqGraph(){
-        canvasScroll.setDisable(false);
-        canvasScroll.setVisible(true);
-        courseGraph.draw(canvas.getGraphicsContext2D());
+        searchCode.setDisable(false);
+        searchCode.setVisible(true);
+        //courseGraph.draw(canvas.getGraphicsContext2D());
+    }
+
+    @FXML
+    private void searchPreReq(){
+        courseGraph.drawCourse(textPreReq.getText(), singleCourse.getGraphicsContext2D());
     }
 
     @FXML
