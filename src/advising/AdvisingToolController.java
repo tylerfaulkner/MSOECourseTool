@@ -9,14 +9,10 @@
 
 package advising;
 
-<<<<<<< HEAD
 
 import advising.courseGraph.CourseGraph;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-=======
-import javafx.fxml.FXML;
->>>>>>> dev
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 
@@ -70,7 +66,7 @@ public class AdvisingToolController {
     ScrollPane canvasScroll;
 
     @FXML
-    ScrollPane searchCode;
+    ScrollPane nodeGraph;
 
     @FXML
     CheckBox preReqTail;
@@ -84,7 +80,7 @@ public class AdvisingToolController {
     @FXML
     private void initialize() {
         manager = new CourseManager();
-        comboBox.getItems().addAll(features);
+        //comboBox.getItems().addAll(features);
         courseGraph = new CourseGraph(manager.getCatalog());
         // Create the context menu and have a menuitem that calls show prerequisites
         populateContextMenu();
@@ -131,13 +127,13 @@ public class AdvisingToolController {
      */
     @FXML
     private void showPreReqGraph(){
-        searchCode.setDisable(false);
-        searchCode.setVisible(true);
+        nodeGraph.setDisable(false);
+        nodeGraph.setVisible(true);
         //courseGraph.draw(canvas.getGraphicsContext2D());
     }
 
     @FXML
-    private void searchPreReq(){
+    private void drawPreReq(){
         courseGraph.drawCourse(textPreReq.getText(), singleCourse.getGraphicsContext2D(), preReqTail.isSelected());
     }
 
