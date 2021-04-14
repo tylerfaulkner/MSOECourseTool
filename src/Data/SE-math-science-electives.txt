@@ -1,0 +1,52 @@
+BI2020 - Cellular Microbiology (4 credits) [prereq: BI102, CH223]
+BI2315 - Physiology II [prereq: BI2305]
+BI499 - Life Science Independent Study
+CH222 - Organic Chemistry I [prereq: CH200]
+CH302 - Chemistry III [prereq: CH201]
+CH303 - Chemistry III Lab [coreq: CH302]
+CH3020 - Food Chemistry [prereq: CH200]
+CH322 - Organic Chemistry II [prereq: CH222, CH223]
+CH323 - Organic Chemistry II Lab [coreq: CH322]
+CH353 - Fundamentals of Environmental Chem [prereq: CH200]
+CH3650 - Materials Chemistry [prereq: CH200]
+CH3660 - Surface Properties of Material [prereq: CH200]
+CH3670 - Polymer Chemistry [prereq: CH200]
+CH371 - Modern Biotechnology [prereq: CH200]
+CH373 - Advanced Biotechnology [prereq: CH200]
+CH401 - Topics in Chemistry
+CH499 - Independent Study
+EB2240 - Engineering Applications in Biochemistry [prereq: BI102, CH223]
+EB3300 - Molecular Nanotechnology [prereq: BI102, PH2031]
+EB3400 - Food Engineering [prereq: CH223]
+MA2323 - Calculus for Engineers IV
+MA2320 - Introduction to Graph Theory
+MA235 - Differential Equations for Engineers (4 credits)
+MA327 - Mathematical Modeling (4 credits) [prereq: MA235]
+MA330 - Vector Analysis [prereq: MA232]
+MA343 - Linear Programming
+MA344 - Nonlinear Programming [prereq: MA343]
+MA380 - Advanced Differential Equations [prereq: MA232, MA235]
+MA381 - Complex Variables [prereq: MA232, MA235]
+MA382 - Laplace and Fourier Transforms [prereq: MA232, MA235]
+MA384 - Statistical Methods for Use in Research
+MA385 - Modern Algebra with Applications [prereq: MA235]
+MA386 - Functions of a Real Variable [prereq: MA232]
+MA387 - Partial Differential Equations [prereq: MA232, MA235]
+MA388 - Introduction to Number Theory
+MA390 - Financial Mathematics (4 credits)
+MA3710 - Mathematical Biology [prereq: MA235]
+PH320 - Lasers and Applications
+PH322 - Intro-Optics and Photonics
+PH324 - Fiber Optics/Fiber Optic Sensors [prereq: PH2031]
+PH325 - Acoustics & Illumination [prereq: PH2031]
+PH341 - Intro-Astronomy/Astrophysics
+PH342 - Relativity and Cosmology
+PH352 - Quantum Physics [prereq: PH2031]
+PH354 - Nuclear Power, Applications and Safety [prereq: PH2031]
+PH3600 - Physics of Semiconductor Materials and Devices [prereq: PH2031]
+PH3710 - Intro to Biophysics [prereq: CH223, PH2031]
+PH401 - Topics in Physics
+PH499 - Independent Study
+SC310 - Nanoscience and Nanotechnology [prereq: CH200]
+SC370 - Geology and Geophysics
+SC371 - Oceanography

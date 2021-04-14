@@ -30,6 +30,14 @@ public class CourseManager {
     private List<String> csTrack = new ArrayList<>();
     private List<String> seTrack = new ArrayList<>();
     private List<Course> coursesToDate = new ArrayList<>();
+    private List<Course> mathScienceElectives = new ArrayList<>();
+    private List<Course> businessElectives = new ArrayList<>();
+    private List<Course> programElectives = new ArrayList<>();
+    private List<Course> scienceElectives = new ArrayList<>();
+    private List<Course> freeElectives = new ArrayList<>();
+    private List<List<Course>> totalElectives = new ArrayList<>();
+    private int electiveCount = 0;
+
     private String major;
 
     /**
@@ -173,10 +181,107 @@ public class CourseManager {
                 major = "Computer Science";
             } else if (line.contains("Software Engineering")){
                 major = "Software Engineering";
+                initializeSEElectives();
+                System.out.println("");
             } else {
                 System.out.println("Unrecognized Major");
             }
         }
+    }
+
+    private void countElectives() {
+        electiveCount = 0;
+        for (Course c : coursesToDate) {
+            if (c.isElective()) {
+                electiveCount++;
+            }
+        }
+    }
+
+    private void initializeSEElectives() {
+        Map<File, List<Course>> files = new HashMap<>();
+
+        files.put(new File("src/Data/SE-business-electives.txt"), businessElectives);
+        files.put(new File("src/Data/SE-free-electives.txt"), freeElectives);
+        files.put(new File("src/Data/SE-math-science-electives.txt"), mathScienceElectives);
+        files.put(new File("src/Data/SE-program-electives.txt"), programElectives);
+        files.put(new File("src/Data/SE-science-electives.txt"), scienceElectives);
+
+        Iterator iterator = files.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            Scanner scan = null;
+            try {
+                scan = new Scanner((File) entry.getKey());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                String[] split = line.split(" - ");
+                int credits = 3;
+                String description = "";
+                String code = "";
+                if (split[1].contains("(")) {
+                    credits = Integer.parseInt(String.valueOf(split[1].charAt(split[1].indexOf("(") + 1)));
+                    description = split[1].substring(0, split[1].indexOf("("));
+                } else {
+                    description = split[1];
+                }
+                if (split[1].contains("[")) {
+                    description = split[1].substring(0, split[1].indexOf("["));
+                }
+                code = split[0];
+                List<Course> list = (List<Course>) entry.getValue();
+
+                list.add(new Course(code, credits, "", description));
+            }
+            totalElectives.add((List<Course>) entry.getValue());
+        }
+    }
+
+    private void initializeCSElectives() {
+        Map<File, List<Course>> files = new HashMap<>();
+
+        files.put(new File("src/Data/CS-math-science-electives.txt"), mathScienceElectives);
+        files.put(new File("src/Data/CS-program-electives.txt"), programElectives);
+        files.put(new File("src/Data/CS-science-electives.txt"), scienceElectives);
+
+        Iterator iterator = files.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            Scanner scan = null;
+            try {
+                scan = new Scanner((File) entry.getKey());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                String[] split = line.split(" - ");
+                int credits = 3;
+                String description = "";
+                String code = "";
+                if (split[1].contains("(")) {
+                    credits = Integer.parseInt(String.valueOf(split[1].charAt(split[1].indexOf("(") + 1)));
+                    description = split[1].substring(0, split[1].indexOf("("));
+                } else {
+                    description = split[1];
+                }
+                if (split[1].contains("[")) {
+                    description = split[1].substring(0, split[1].indexOf("["));
+                }
+                code = split[0];
+                List<Course> list = (List<Course>) entry.getValue();
+
+                list.add(new Course(code, credits, "", description));
+            }
+            totalElectives.add((List<Course>) entry.getValue());
+
+        }
+
     }
 
     public void processCourses (String line) {
@@ -196,6 +301,7 @@ public class CourseManager {
 
             if (grade.equals("F") || grade.equals("W")) {
                 coursesToDate.get(coursesToDate.size() - 1).setPassed(false);
+                coursesToDate.get(coursesToDate.size() -1).setCompleted(true);
 
             } else if (grade.equals("WIP")) {
                 coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
@@ -204,19 +310,18 @@ public class CourseManager {
                 coursesToDate.get(coursesToDate.size() - 1).setCompleted(true);
 
             }
-        }
-    }
-
-    public List<Course> recommendCourses () {
-        List<Course> recommendedCourses = new ArrayList<>();
-
-        for (Course c : coursesToDate) {
-            if (recommendedCoursesTotalCredits(recommendedCourses) < 15) {
-                recommendedCourses.sort(Course::compareTo);
-                recommendedCourses.add(c);
+            for (List<Course> list : totalElectives) {
+                for (Course course : list) {
+                    if (coursesToDate.get(coursesToDate.size() -1).getName().equalsIgnoreCase(course.getName())) {
+                        coursesToDate.get(coursesToDate.size() - 1).setElective(true);
+                    }
+                }
             }
         }
-        int index = 0;
+    }
+    public List<Course> graduationPlan() {
+
+        List<Course> graduation = new ArrayList<>();
 
         List<String> courses = new ArrayList<>();
         if (major.equals("Computer Science")) {
@@ -225,26 +330,50 @@ public class CourseManager {
             courses = seTrack;
         }
 
+        String electives[] = {"HUSS", "TECHEL", "MASCIEL", "FREE", "BUSEL", "SCIEL"};
+        countElectives();
+        for (String code : courses) {
 
-        for (String s : courses) {
-            if (s.equalsIgnoreCase(coursesToDate.get(coursesToDate.size() - 1).getName())) {
-                break;
-            }
-            ++index;
-        }
-        while (index < courses.size() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
-            String courseName = courses.get(index+1);
-            Course course = catalog.get(courseName);
-            if (!coursesToDate.contains(course)) {
-                if (course == null){
-                    recommendedCourses.add(new Course(courseName, 3, null, "Free"));
-                    recommendedCourses.sort(Course::compareTo);
-                } else {
-                    recommendedCourses.add(catalog.get(courses.get(++index)));
-                    recommendedCourses.sort(Course::compareTo);
+            Course course = catalog.get(code);
+            if (!Arrays.asList(electives).contains(code) && course != null) {
+                if (!coursesToDate.contains(course)) {
+                    graduation.add(course);
                 }
-            } else{
-                index++;
+            } else {
+                if (electiveCount <= 0) {
+                    graduation.add(new Course(code, 3, "", ""));
+                }
+                electiveCount--;
+            }
+        }
+
+        return graduation;
+    }
+
+    public List<Course> recommendCourses () {
+        List<Course> recommendedCourses = new ArrayList<>();
+
+        String electives[] = {"HUSS", "TECHEL", "MASCIEL", "FREE", "BUSEL", "SCIEL"};
+
+        for (Course c : coursesToDate) {
+            if (!c.isPassed() && !c.isCompleted() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+                recommendedCourses.sort(Course::compareTo);
+                recommendedCourses.add(c);
+            }
+        }
+
+        List<String> courses = new ArrayList<>();
+        if (major.equals("Computer Science")) {
+            courses = csTrack;
+        } else if (major.equals("Software Engineering")) {
+            courses = seTrack;
+        }
+
+        for (String code : courses) {
+
+            Course course = catalog.get(code);
+            if (!recommendedCourses.contains(course) && !coursesToDate.contains(course) && recommendedCoursesTotalCredits(recommendedCourses) < 15 && !Arrays.asList(electives).contains(code)) {
+                recommendedCourses.add(course);
             }
 
         }
@@ -255,7 +384,9 @@ public class CourseManager {
     public double recommendedCoursesTotalCredits(List<Course> recCourses) {
         double totalCreds = 0;
         for (Course c : recCourses) {
-            totalCreds += c.getCredits();
+            if (c != null) {
+                totalCreds += c.getCredits();
+            }
         }
         return totalCreds;
     }
@@ -301,7 +432,9 @@ public class CourseManager {
             } else {
                 // Otherwise just add the course to the list with description
                 Course singlePrereq = catalog.get(prereq);
-                courses.add(singlePrereq.getName() + " (" + singlePrereq.getDescription() + ")");
+                if(singlePrereq != null){
+                    courses.add(singlePrereq.getName() + " (" + singlePrereq.getDescription() + ")");
+                }
             }
         }
         return courses;
