@@ -13,7 +13,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -51,6 +50,7 @@ public class AdvisingToolController {
 
     @FXML
     ContextMenu courseMenu;
+
     @FXML
     private void initialize() {
         manager = new CourseManager();
@@ -67,13 +67,13 @@ public class AdvisingToolController {
     }
 
     @FXML
-    private void listCSCourses(){
+    private void listCSCourses() {
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCSTrack());
     }
 
     @FXML
-    private void listSECourses(){
+    private void listSECourses() {
         listView.getItems().clear();
         listView.getItems().addAll(manager.getSETrack());
     }
@@ -83,28 +83,32 @@ public class AdvisingToolController {
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCoursesToDate());
     }
+
     @FXML
-    public void recommendCourses(){
+    public void recommendCourses() {
         try {
             if (transcriptFile != null) {
                 listView.getItems().clear();
                 listView.getItems().addAll(manager.recommendCourses());
             }
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void listGraduationPlan() {
         listView.getItems().clear();
         listView.getItems().addAll(manager.graduationPlan());
     }
-    public void populateContextMenu(){
+
+    public void populateContextMenu() {
         MenuItem prereqs = new MenuItem("Show Prerequisites");
         prereqs.setOnAction(actionEvent -> showPrerequisites());
         courseMenu.getItems().add(prereqs);
     }
-    public void showCourseByTerm(){
+
+    public void showCourseByTerm() {
         try {
             String search = searchBar.getText();
             if (!search.equals("")) {
@@ -124,23 +128,24 @@ public class AdvisingToolController {
                     alert.showAndWait();
                 }
             }
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
-    public void showPrerequisites(){
+
+    public void showPrerequisites() {
         Object itemSelected = listView.getSelectionModel().getSelectedItem();
         String courseName = "";
-        if(itemSelected instanceof Course){
+        if (itemSelected instanceof Course) {
             courseName = ((Course) itemSelected).getName();
-        } else if(itemSelected instanceof String){
+        } else if (itemSelected instanceof String) {
             courseName = ((String) itemSelected).substring(0, ((String) itemSelected).indexOf(" "));
         }
         detailView.getItems().clear();
         List<String> prereqs = manager.showPrerequisites(courseName);
-        if(prereqs == null){
+        if (prereqs == null) {
             detailView.getItems().add("Class Entered is Invalid");
-        } else if (prereqs.size() == 0){
+        } else if (prereqs.size() == 0) {
             detailView.getItems().add("No prerequisites found");
         } else {
             detailView.getItems().addAll(prereqs);
@@ -150,7 +155,7 @@ public class AdvisingToolController {
     public void importTranscript() {
         FileChooser loadChooser = new FileChooser();
         loadChooser.setInitialDirectory(new File("./"));
-        loadChooser.setTitle("Open Dot File");
+        loadChooser.setTitle("Open Transcript File");
         loadChooser.getExtensionFilters().add(new FileChooser.
                 ExtensionFilter("PDF Files", "*.pdf"));
         try {
@@ -164,6 +169,24 @@ public class AdvisingToolController {
                 feature4Button.setDisable(false);
                 recommendButton.setDisable(false);
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void exportTranscript() {
+        FileChooser saveChooser = new FileChooser();
+        saveChooser.setInitialDirectory(new File("./"));
+        saveChooser.setTitle("Save Transcirpt File");
+        saveChooser.getExtensionFilters().add(new FileChooser.
+                ExtensionFilter("PDF Files", "*.pdf"));
+        try {
+            transcriptFile = saveChooser.showSaveDialog(null);
+            if (transcriptFile != null) {
+                manager.exportTranscript(transcriptFile.toPath());
+                listView.getItems().clear();
+                listView.getItems().add("Export successful");
             }
         } catch (Exception e) {
             e.printStackTrace();
