@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -52,10 +53,15 @@ public class AdvisingToolController {
     @FXML
     ContextMenu courseMenu;
 
+    /**
+     * Method that creates the instance of course manager, actually creates the context menu, and adds the courses by
+     * term to the button.
+     */
     @FXML
     private void initialize() {
         manager = new CourseManager();
         pdfManager = new PDFManager(manager);
+        // Create the context menu and have a menuitem that calls show prerequisites
         populateContextMenu();
         //Creating and setting each new feature/menu item
         //Course By Term
@@ -68,24 +74,37 @@ public class AdvisingToolController {
         optionBox.getItems().addAll(buttonFeatures);
     }
 
+    /**
+     * Method for listing all CS courses in the catalog
+     */
     @FXML
     private void listCSCourses() {
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCSTrack());
     }
 
+    /**
+     * Method for listing all SE courses in the catalog
+     */
     @FXML
     private void listSECourses() {
         listView.getItems().clear();
         listView.getItems().addAll(manager.getSETrack());
     }
 
+    /**
+     * Method that lists all courses present on unofficial transcript
+     */
     @FXML
     private void listCourseToDate() {
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCoursesToDate());
     }
 
+
+    /**
+     * Method for recommending courses to take the next term based on unofficial transcript
+     */
     @FXML
     public void recommendCourses() {
         try {
@@ -98,19 +117,29 @@ public class AdvisingToolController {
         }
     }
 
+
+    /**
+     * Presents the graduation plan of a given student based on transcript
+     */
     @FXML
     private void listGraduationPlan() {
         listView.getItems().clear();
         listView.getItems().addAll(manager.graduationPlan());
     }
 
-    public void populateContextMenu() {
+    /**
+     * Method to prompt for showing prerequisites and to set the onAction
+     */
+    private void populateContextMenu(){
         MenuItem prereqs = new MenuItem("Show Prerequisites");
         prereqs.setOnAction(actionEvent -> showPrerequisites());
         courseMenu.getItems().add(prereqs);
     }
 
-    public void showCourseByTerm() {
+    /**
+     * Method called when transcript is imported and the course by term button is clicked
+     */
+    private void showCourseByTerm(){
         try {
             String search = searchBar.getText();
             if (!search.equals("")) {
@@ -129,13 +158,18 @@ public class AdvisingToolController {
                     alert.setHeaderText("Unknown Input");
                     alert.showAndWait();
                 }
+            } else{
+                searchBar.setPromptText("Please input a Term (1, 2, or 3)");
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
-    public void showPrerequisites() {
+    /**
+     * Method called using context menu that presents prerequisites in detail window
+     */
+    private void showPrerequisites(){
         Object itemSelected = listView.getSelectionModel().getSelectedItem();
         String courseName = "";
         if (itemSelected instanceof Course) {
@@ -154,7 +188,11 @@ public class AdvisingToolController {
         }
     }
 
-    public void importTranscript() {
+    /**
+     * Method that prompts user for their unofficial transcript
+     */
+    @FXML
+    private void importTranscript() {
         FileChooser loadChooser = new FileChooser();
         loadChooser.setInitialDirectory(new File("./"));
         loadChooser.setTitle("Open Transcript File");
