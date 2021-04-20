@@ -134,7 +134,7 @@ public class AdvisingToolController {
 
     @FXML
     private void drawPreReq(){
-        courseGraph.drawCourse(textPreReq.getText(), singleCourse.getGraphicsContext2D(), preReqTail.isSelected());
+        courseGraph.draw(textPreReq.getText(), singleCourse.getGraphicsContext2D(), preReqTail.isSelected());
     }
 
     //@FXML
