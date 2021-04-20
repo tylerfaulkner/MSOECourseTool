@@ -128,6 +128,10 @@ public class CourseManager {
         return coursesToDate;
     }
 
+    public HashMap<String, Course> getCatalog(){
+        return catalog;
+    }
+
 
     /**
      * Used to sort listed course in list view
