@@ -100,6 +100,8 @@ public class AdvisingToolController {
      */
     @FXML
     private void listCSCourses(){
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCSTrack());
     }
@@ -109,6 +111,8 @@ public class AdvisingToolController {
      */
     @FXML
     private void listSECourses(){
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         listView.getItems().clear();
         listView.getItems().addAll(manager.getSETrack());
     }
@@ -118,6 +122,8 @@ public class AdvisingToolController {
      */
     @FXML
     private void listCourseToDate() {
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCoursesToDate());
     }
@@ -127,6 +133,8 @@ public class AdvisingToolController {
      */
     @FXML
     private void showPreReqGraph(){
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         nodeGraph.setDisable(false);
         nodeGraph.setVisible(true);
         //courseGraph.draw(canvas.getGraphicsContext2D());
@@ -141,6 +149,8 @@ public class AdvisingToolController {
     //private void search() {
 
     public void recommendCourses(){
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         try {
             if (transcriptFile != null) {
                 listView.getItems().clear();
@@ -156,6 +166,8 @@ public class AdvisingToolController {
      */
     @FXML
     private void listGraduationPlan() {
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         listView.getItems().clear();
         listView.getItems().addAll(manager.graduationPlan());
     }
