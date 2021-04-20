@@ -9,7 +9,10 @@
 
 package advising;
 
+
+import advising.courseGraph.CourseGraph;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 
@@ -36,6 +39,7 @@ public class AdvisingToolController {
 
     private CourseManager manager;
     private File transcriptFile;
+    private CourseGraph courseGraph;
     private PDFManager pdfManager;
 
     @FXML
@@ -51,8 +55,25 @@ public class AdvisingToolController {
     Button recommendButton, feature2Button, feature3Button, feature4Button;
 
     @FXML
-    ContextMenu courseMenu;
+    TextField textPreReq;
 
+    @FXML
+    Canvas canvas;
+
+    @FXML
+    Canvas singleCourse;
+
+    @FXML
+    ScrollPane canvasScroll;
+
+    @FXML
+    ScrollPane nodeGraph;
+
+    @FXML
+    CheckBox preReqTail;
+
+    @FXML
+    ContextMenu courseMenu;
     /**
      * Method that creates the instance of course manager, actually creates the context menu, and adds the courses by
      * term to the button.
@@ -61,6 +82,8 @@ public class AdvisingToolController {
     private void initialize() {
         manager = new CourseManager();
         pdfManager = new PDFManager(manager);
+        //comboBox.getItems().addAll(features);
+        courseGraph = new CourseGraph(manager.getCatalog());
         // Create the context menu and have a menuitem that calls show prerequisites
         populateContextMenu();
         //Creating and setting each new feature/menu item
@@ -78,7 +101,9 @@ public class AdvisingToolController {
      * Method for listing all CS courses in the catalog
      */
     @FXML
-    private void listCSCourses() {
+    private void listCSCourses(){
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCSTrack());
     }
@@ -87,7 +112,9 @@ public class AdvisingToolController {
      * Method for listing all SE courses in the catalog
      */
     @FXML
-    private void listSECourses() {
+    private void listSECourses(){
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         listView.getItems().clear();
         listView.getItems().addAll(manager.getSETrack());
     }
@@ -97,16 +124,35 @@ public class AdvisingToolController {
      */
     @FXML
     private void listCourseToDate() {
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCoursesToDate());
     }
-
 
     /**
      * Method for recommending courses to take the next term based on unofficial transcript
      */
     @FXML
-    public void recommendCourses() {
+    private void showPreReqGraph(){
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
+        nodeGraph.setDisable(false);
+        nodeGraph.setVisible(true);
+        //courseGraph.draw(canvas.getGraphicsContext2D());
+    }
+
+    @FXML
+    private void drawPreReq(){
+        courseGraph.draw(textPreReq.getText(), singleCourse.getGraphicsContext2D(), preReqTail.isSelected());
+    }
+
+    //@FXML
+    //private void search() {
+
+    public void recommendCourses(){
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         try {
             if (transcriptFile != null) {
                 listView.getItems().clear();
@@ -117,12 +163,13 @@ public class AdvisingToolController {
         }
     }
 
-
     /**
      * Presents the graduation plan of a given student based on transcript
      */
     @FXML
     private void listGraduationPlan() {
+        nodeGraph.setDisable(true);
+        nodeGraph.setVisible(false);
         listView.getItems().clear();
         listView.getItems().addAll(manager.graduationPlan());
     }

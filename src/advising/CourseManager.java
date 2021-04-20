@@ -12,17 +12,11 @@ package advising;
 
 import javafx.scene.control.Alert;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -132,6 +126,10 @@ public class CourseManager {
 
     public List getCoursesToDate() {
         return coursesToDate;
+    }
+
+    public HashMap<String, Course> getCatalog(){
+        return catalog;
     }
 
     public void setMajor(String major) {

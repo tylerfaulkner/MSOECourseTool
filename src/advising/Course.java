@@ -25,7 +25,9 @@ public class Course implements Comparable<Course> {
     private boolean completed;
     private boolean passed;
     private String completedTerm;
+
     private boolean elective;
+
 
     public Course(String name, int credits, String prerequisites, String description) {
         this.name = name;
