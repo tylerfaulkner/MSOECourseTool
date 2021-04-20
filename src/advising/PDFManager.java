@@ -27,6 +27,9 @@ public class PDFManager {
     private static final int TOP_MARGIN = 80;
     private static final int TITLE_SIZE = 16;
 
+    private float x;
+    private float y;
+
     public PDFManager(CourseManager courseManager){
         this.courseManager = courseManager;
     }
@@ -84,8 +87,8 @@ public class PDFManager {
         stream.setFont(PDFManager.OBLIQUE_FONT, TITLE_SIZE);
         stream.setLeading(TITLE_SIZE * PDFManager.LEADING_FACTOR);
         float width = PDFManager.OBLIQUE_FONT.getStringWidth("Milwaukee School of Engineering") / 1000 * TITLE_SIZE;
-        float x = (page.getMediaBox().getWidth() - width) / 2;
-        float y = page.getMediaBox().getHeight() - TOP_MARGIN;
+        x = (page.getMediaBox().getWidth() - width) / 2;
+        y = page.getMediaBox().getHeight() - TOP_MARGIN;
         stream.beginText();
         stream.newLineAtOffset(x, y);
         stream.showText("Milwaukee School of Engineering");
@@ -125,7 +128,8 @@ public class PDFManager {
     }
 
     private void writeCourses(HashMap<String, Set<Course>> coursesByTerm, PDPageContentStream stream, PDPage page) throws IOException {
-        boolean firstColumn = true;
+        boolean firstColumnFull = false;
+        boolean secondColumnFull = false;
         float columnTop = page.getMediaBox().getHeight() * 3 / 5;
 
         for (String term : coursesByTerm.keySet()) {
@@ -135,11 +139,19 @@ public class PDFManager {
             for (Course course : termCourses) {
                 //print out course details in first column until space runs out
                 //print out course details in second column until space runs out
-                //return
-                System.out.println(course.getName());
                 coursesByTerm.get(term).remove(course);
             }
             coursesByTerm.remove(term);
         }
+    }
+
+    private void newColumnLine(){
+
+    }
+    private void startColumnOne(){
+
+    }
+    private void startColumnTwo(){
+
     }
 }
