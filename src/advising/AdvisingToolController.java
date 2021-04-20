@@ -35,6 +35,7 @@ public class AdvisingToolController {
 
     private CourseManager manager;
     private File transcriptFile;
+    private PDFManager pdfManager;
 
     @FXML
     ListView listView, detailView;
@@ -54,6 +55,7 @@ public class AdvisingToolController {
     @FXML
     private void initialize() {
         manager = new CourseManager();
+        pdfManager = new PDFManager(manager);
         populateContextMenu();
         //Creating and setting each new feature/menu item
         //Course By Term
@@ -161,7 +163,7 @@ public class AdvisingToolController {
         try {
             transcriptFile = loadChooser.showOpenDialog(null);
             if (transcriptFile != null) {
-                manager.importTranscript(transcriptFile);
+                pdfManager.importTranscript(transcriptFile);
                 listView.getItems().clear();
                 listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
                 feature2Button.setDisable(false);
@@ -184,7 +186,7 @@ public class AdvisingToolController {
         try {
             transcriptFile = saveChooser.showSaveDialog(null);
             if (transcriptFile != null) {
-                manager.exportTranscript(transcriptFile.toPath());
+                pdfManager.exportTranscript(transcriptFile.toPath());
                 listView.getItems().clear();
                 listView.getItems().add("Export successful");
             }

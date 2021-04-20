@@ -134,6 +134,10 @@ public class CourseManager {
         return coursesToDate;
     }
 
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
 
     /**
      * Used to sort listed course in list view
@@ -161,37 +165,6 @@ public class CourseManager {
         }
     }
 
-    public void importTranscript(File transcriptFile) throws IOException {
-        coursesToDate.clear();
-        PDDocument document = PDDocument.load(transcriptFile);
-        PDFTextStripper pdfStripper = new PDFTextStripper();
-        pdfStripper.setSortByPosition(false);
-        String transcriptString = pdfStripper.getText(document);
-        transcriptString.lines().forEach(this::processPDFLine);
-    }
-
-    private void processPDFLine(String line) {
-        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
-        Matcher courseMatcher;
-        if (line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")) {
-            courseMatcher = coursePattern.matcher(line);
-            courseMatcher.find();
-            String courseCode = courseMatcher.group();
-            processCourses(line);
-        } else if (line.startsWith("BS in")) {
-            if (line.contains("Computer Science")) {
-                major = "Computer Science";
-                initializeCSElectives();
-            } else if (line.contains("Software Engineering")) {
-                major = "Software Engineering";
-                initializeSEElectives();
-                System.out.println();
-            } else {
-                System.out.println("Unrecognized Major");
-            }
-        }
-    }
-
     private void countElectives() {
         electiveCount = 0;
         for (Course c : coursesToDate) {
@@ -201,7 +174,7 @@ public class CourseManager {
         }
     }
 
-    private void initializeSEElectives() {
+    public void initializeSEElectives() {
         Map<File, List<Course>> files = new HashMap<>();
 
         files.put(new File("src/Data/SE-business-electives.txt"), businessElectives);
@@ -244,7 +217,7 @@ public class CourseManager {
         }
     }
 
-    private void initializeCSElectives() {
+    public void initializeCSElectives() {
         Map<File, List<Course>> files = new HashMap<>();
 
         files.put(new File("src/Data/CS-math-science-electives.txt"), mathScienceElectives);
@@ -323,73 +296,7 @@ public class CourseManager {
         }
     }
 
-    public void exportTranscript(Path path) throws IOException {
-        PDDocument transcript = new PDDocument();
-
-        HashMap<String, Set<Course>> coursesByTerm = getCoursesByTerm();
-
-        PDPage page = new PDPage(new PDRectangle(PDRectangle.LETTER.getHeight(), PDRectangle.LETTER.getWidth()));
-        transcript.addPage(page);
-        PDPageContentStream contentStream = new PDPageContentStream(transcript, page);
-
-        writeHeader(contentStream, page);
-
-        contentStream.close();
-        transcript.save(path.toString());
-        transcript.close();
-    }
-
-    private void writeHeader(PDPageContentStream stream, PDPage page) throws IOException {
-        PDFont standardFont = PDType1Font.HELVETICA;
-        PDFont boldFont = PDType1Font.HELVETICA_BOLD;
-        PDFont obliqueFont = PDType1Font.HELVETICA_OBLIQUE;
-        int topMargin = 40;
-        int titleSize = 16;
-        float leadingFactor = 1.2f;
-        stream.setFont(obliqueFont, titleSize);
-        stream.setLeading(titleSize * leadingFactor);
-        float width = obliqueFont.getStringWidth("Milwaukee School of Engineering") / 1000 * titleSize;
-        float x = (page.getMediaBox().getWidth() - width) / 2;
-        float y = page.getMediaBox().getHeight() - topMargin;
-        stream.beginText();
-        stream.newLineAtOffset(x, y);
-        stream.showText("Milwaukee School of Engineering");
-        stream.newLine();
-        stream.showText("Unofficial Transcript");
-        stream.endText();
-
-        int textSize = 8;
-        stream.setFont(boldFont, textSize);
-        stream.setLeading(textSize * leadingFactor);
-        stream.beginText();
-        x = page.getMediaBox().getWidth() / 4;
-        y = y - 2*titleSize;
-        stream.newLineAtOffset(x, y);
-        stream.showText("DEGREE SOUGHT:");
-        stream.newLine();
-        stream.showText("BS in " + major);
-        stream.newLineAtOffset(x, textSize);
-        stream.showText("DATE DEGREE GRANTED");
-        stream.newLine();
-        stream.showText("Incomplete");
-        stream.endText();
-
-        stream.beginText();
-        stream.setFont(standardFont, textSize);
-        x = page.getMediaBox().getWidth() / 8;
-        y = y - 4*textSize;
-        stream.newLineAtOffset(x, y);
-        stream.showText("ID: 101010");
-        stream.newLine();
-        stream.showText("NAME: Case, Edge T");
-        stream.newLine();
-        stream.showText("SSN: xxx-xx-0101");
-        stream.newLine();
-        stream.showText("Date Printed: MM/DD/YYYY");
-        stream.endText();
-    }
-
-    private HashMap<String, Set<Course>> getCoursesByTerm() {
+    public HashMap<String, Set<Course>> getCoursesByCompleteTerm() {
         HashMap<String, Set<Course>> coursesByTerm = new HashMap<>();
         for (Course course : coursesToDate) {
             if (course.isCompleted()) {
