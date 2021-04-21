@@ -231,7 +231,7 @@ public class AdvisingToolController {
         if (itemSelected instanceof Course) {
             courseName = ((Course) itemSelected).getName();
         } else if (itemSelected instanceof String) {
-            courseName = ((String) itemSelected).substring(0, ((String) itemSelected).indexOf(" "));
+            courseName = ((String) itemSelected);
         }
         detailView.getItems().clear();
         List<String> prereqs = manager.showPrerequisites(courseName);

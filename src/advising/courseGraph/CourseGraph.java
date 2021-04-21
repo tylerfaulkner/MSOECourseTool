@@ -15,7 +15,7 @@ import java.util.HashMap;
  */
 public class CourseGraph {
     private static final double SEARCH_Y = 250;
-    private static final double SEARCH_X = 450;
+    private static final double SEARCH_X = 600;
 
     private ArrayList<CourseNode> nodes = new ArrayList<>();
     private HashMap<String, Course> catalog;

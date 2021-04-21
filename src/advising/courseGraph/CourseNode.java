@@ -68,7 +68,7 @@ public class CourseNode {
      */
     public int draw(GraphicsContext gc, double x, double y, boolean trailingPreReqs, String color) {
         if(!trailingPreReqs || preReqNodes.isEmpty()) {
-            if(course.getPrerequisites() != "") {
+            if(!course.getPrerequisites().equals("")) {
                 String[] preReqs = course.getPrerequisites().split(" ");
                 ArrayList<double[]> cords = new ArrayList<>();
                 int offset = 0;
@@ -106,12 +106,14 @@ public class CourseNode {
                 gc.fillText(course.getName(), xCord + MAX_WIDTH/2, yCord, MAX_WIDTH);
                 return offset;
             } else {
-                gc.setFill(Paint.valueOf("orange"));
-                gc.fillOval(x, y, NODE_RADIUS, NODE_RADIUS);
-                gc.setFill(Paint.valueOf("black"));
-                String preReq = course.getName();
-                preReq = preReq.replaceAll("\\|", " or\n");
-                gc.fillText(preReq, x+OR_OFFSET, y+(Y_SPACING/3), MAX_WIDTH);
+                if(!course.getName().equals("")) {
+                    gc.setFill(Paint.valueOf("orange"));
+                    gc.fillOval(x, y, NODE_RADIUS, NODE_RADIUS);
+                    gc.setFill(Paint.valueOf("black"));
+                    String preReq = course.getName();
+                    preReq = preReq.replaceAll("\\|", " or\n");
+                    gc.fillText(preReq, x + OR_OFFSET, y + (Y_SPACING / 3), MAX_WIDTH);
+                }
             }
         } else {
             drawNodes(gc, x, y, color);
@@ -120,18 +122,23 @@ public class CourseNode {
     }
 
     private void drawNodes(GraphicsContext gc, double x, double y, String color){
-        gc.setFill(Paint.valueOf(color));
-        gc.fillOval(x, y, NODE_RADIUS, NODE_RADIUS);
-        gc.setFill(Paint.valueOf("black"));
-        gc.fillText(course.getName(), x+(Y_SPACING/4), y+(NODE_RADIUS/2), MAX_WIDTH);
-        if (preReqNodes.size() == 2){
-            gc.strokeLine(x, y+NODE_RADIUS/2, x-X_OFFSET, y+NODE_RADIUS+X_OFFSET);
-            preReqNodes.get(0).draw(gc, x-NODE_RADIUS, y+NODE_RADIUS, true, "green");
-            gc.strokeLine(x, y+NODE_RADIUS/2, x-X_OFFSET, y-NODE_RADIUS/2);
-            preReqNodes.get(1).draw(gc, x-NODE_RADIUS, y-NODE_RADIUS, true, "green");
-        } else if (preReqNodes.size() == 1) {
-            gc.strokeLine(x, y+NODE_RADIUS/2, x-X_OFFSET, y+NODE_RADIUS/2);
-            preReqNodes.get(0).draw(gc, x-(NODE_RADIUS+X_OFFSET), y, true, "cyan");
+        if(!course.getName().equals("")) {
+            gc.setFill(Paint.valueOf(color));
+            gc.fillOval(x, y, NODE_RADIUS, NODE_RADIUS);
+            gc.setFill(Paint.valueOf("black"));
+            gc.fillText(course.getName(), x + (Y_SPACING / 4), y + (NODE_RADIUS / 2), MAX_WIDTH);
+            if (preReqNodes.size() == 2) {
+                gc.strokeLine(x, y + NODE_RADIUS / 2, x - X_OFFSET, y + NODE_RADIUS + X_OFFSET);
+                preReqNodes.get(0).draw(gc, x - NODE_RADIUS, y + NODE_RADIUS, true, "green");
+                gc.strokeLine(x, y + NODE_RADIUS / 2, x - X_OFFSET, y - NODE_RADIUS / 2);
+                preReqNodes.get(1).draw(gc, x - NODE_RADIUS, y - NODE_RADIUS, true, "green");
+            } else if (preReqNodes.size() == 1) {
+                CourseNode preReq = preReqNodes.get(0);
+                if(!preReq.course.getName().equals("")) {
+                    gc.strokeLine(x, y + NODE_RADIUS / 2, x - X_OFFSET, y + NODE_RADIUS / 2);
+                    preReq.draw(gc, x - (NODE_RADIUS + X_OFFSET), y, true, "cyan");
+                }
+            }
         }
     }
 }
