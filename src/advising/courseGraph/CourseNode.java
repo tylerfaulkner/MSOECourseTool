@@ -100,7 +100,7 @@ public class CourseNode {
                     gc.strokeLine(xPreReq + STROKE_OFFSET, yPreReq, xCord, yCord);
                 }
                 //non-trailing head color
-                gc.setFill(Paint.valueOf("white"));
+                gc.setFill(Paint.valueOf(color));
                 gc.fillOval(x, yCord - (NODE_RADIUS / 2), NODE_RADIUS, NODE_RADIUS);
                 gc.setFill(Paint.valueOf("black"));
                 gc.fillText(course.getName(), xCord + MAX_WIDTH/2, yCord, MAX_WIDTH);

@@ -42,7 +42,7 @@ public class CourseGraph {
             if(trailingPreReqs) {
                 getPreReqNodes(node);
             }
-            node.draw(gc, SEARCH_X, SEARCH_Y, trailingPreReqs, "white");
+            node.draw(gc, SEARCH_X, SEARCH_Y, trailingPreReqs, "brown");
         } else {
             throw new UnknownCourseException("Unknown Course: " + name);
         }

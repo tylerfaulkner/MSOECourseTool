@@ -188,6 +188,7 @@ public class AdvisingToolController {
     private void showCourseByTerm(){
         if(graphIsVisible()) {
             hideGraph();
+            listView.getItems().clear();
             searchBar.setText("");
             searchBar.setPromptText("Please input a Term (1, 2, or 3)");
         }
@@ -231,7 +232,8 @@ public class AdvisingToolController {
         if (itemSelected instanceof Course) {
             courseName = ((Course) itemSelected).getName();
         } else if (itemSelected instanceof String) {
-            courseName = ((String) itemSelected);
+            String[] strings = ((String) itemSelected).split(" ") ;
+            courseName = strings[0];
         }
         detailView.getItems().clear();
         List<String> prereqs = manager.showPrerequisites(courseName);
