@@ -14,8 +14,8 @@ import java.util.HashMap;
  * Represents the entire drawn graph of pre-requisites
  */
 public class CourseGraph {
-    private static final double SEARCH_Y = 325;
-    private static final double SEARCH_X = 400;
+    private static final double SEARCH_Y = 250;
+    private static final double SEARCH_X = 450;
 
     private ArrayList<CourseNode> nodes = new ArrayList<>();
     private HashMap<String, Course> catalog;
@@ -33,8 +33,9 @@ public class CourseGraph {
      * @param name course to draw
      * @param gc GraphicsContext to draw on
      * @param trailingPreReqs determines if prereqs of prereqs should be shown
+     * @throws UnknownCourseException if the course is not found
      */
-    public void draw(String name, GraphicsContext gc, boolean trailingPreReqs){
+    public void draw(String name, GraphicsContext gc, boolean trailingPreReqs) throws UnknownCourseException {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         CourseNode node = findCourseNode(name);
         if(node != null) {
@@ -42,6 +43,8 @@ public class CourseGraph {
                 getPreReqNodes(node);
             }
             node.draw(gc, SEARCH_X, SEARCH_Y, trailingPreReqs, "white");
+        } else {
+            throw new UnknownCourseException("Unknown Course: " + name);
         }
     }
 
@@ -82,6 +85,12 @@ public class CourseGraph {
             if (!nodes.contains(newNode)) {
                 nodes.add(newNode);
             }
+        }
+    }
+
+    public class UnknownCourseException extends Exception{
+        public UnknownCourseException(String errorMessage){
+            super(errorMessage);
         }
     }
 }

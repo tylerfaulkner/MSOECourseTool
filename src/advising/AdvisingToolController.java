@@ -15,8 +15,6 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
-
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -55,16 +53,7 @@ public class AdvisingToolController {
     Button recommendButton, feature2Button, feature3Button, feature4Button;
 
     @FXML
-    TextField textPreReq;
-
-    @FXML
-    Canvas canvas;
-
-    @FXML
     Canvas singleCourse;
-
-    @FXML
-    ScrollPane canvasScroll;
 
     @FXML
     ScrollPane nodeGraph;
@@ -92,6 +81,10 @@ public class AdvisingToolController {
         courseByTerm.setOnAction(actionEvent -> showCourseByTerm());
         buttonFeatures.add(courseByTerm);
 
+        MenuItem prereqGraph = new MenuItem("Show PreReq Graph");
+        prereqGraph.setOnAction(actionEvent -> drawPreReq());
+        buttonFeatures.add(prereqGraph);
+
 
         //Attach to menuButton
         optionBox.getItems().addAll(buttonFeatures);
@@ -102,8 +95,7 @@ public class AdvisingToolController {
      */
     @FXML
     private void listCSCourses(){
-        nodeGraph.setDisable(true);
-        nodeGraph.setVisible(false);
+        hideGraph();
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCSTrack());
     }
@@ -113,8 +105,7 @@ public class AdvisingToolController {
      */
     @FXML
     private void listSECourses(){
-        nodeGraph.setDisable(true);
-        nodeGraph.setVisible(false);
+        hideGraph();
         listView.getItems().clear();
         listView.getItems().addAll(manager.getSETrack());
     }
@@ -124,35 +115,44 @@ public class AdvisingToolController {
      */
     @FXML
     private void listCourseToDate() {
-        nodeGraph.setDisable(true);
-        nodeGraph.setVisible(false);
+        hideGraph();
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCoursesToDate());
     }
 
-    /**
-     * Method for recommending courses to take the next term based on unofficial transcript
-     */
-    @FXML
-    private void showPreReqGraph(){
+    private void hideGraph(){
         nodeGraph.setDisable(true);
         nodeGraph.setVisible(false);
-        nodeGraph.setDisable(false);
-        nodeGraph.setVisible(true);
-        //courseGraph.draw(canvas.getGraphicsContext2D());
     }
 
     @FXML
     private void drawPreReq(){
-        courseGraph.draw(textPreReq.getText(), singleCourse.getGraphicsContext2D(), preReqTail.isSelected());
+        if(!graphIsVisible()) {
+            nodeGraph.setDisable(false);
+            nodeGraph.setVisible(true);
+            singleCourse.getGraphicsContext2D().clearRect(0, 0, singleCourse.getWidth(), singleCourse.getHeight());
+            searchBar.setText("");
+            searchBar.setPromptText("Enter Course Code");
+        }
+        searchBar.setOnAction(actionEvent -> drawPreReq());
+        if (!searchBar.getText().equals("")) {
+            try {
+                courseGraph.draw(searchBar.getText().toUpperCase().replaceAll(" ", ""),
+                        singleCourse.getGraphicsContext2D(), preReqTail.isSelected());
+            } catch (CourseGraph.UnknownCourseException e) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "There are no matches " +
+                        "for the inputted course.");
+                alert.setHeaderText("Class Not Found");
+                alert.showAndWait();
+            }
+        }
     }
 
     //@FXML
     //private void search() {
 
     public void recommendCourses(){
-        nodeGraph.setDisable(true);
-        nodeGraph.setVisible(false);
+        hideGraph();
         try {
             if (transcriptFile != null) {
                 listView.getItems().clear();
@@ -168,8 +168,7 @@ public class AdvisingToolController {
      */
     @FXML
     private void listGraduationPlan() {
-        nodeGraph.setDisable(true);
-        nodeGraph.setVisible(false);
+        hideGraph();
         listView.getItems().clear();
         listView.getItems().addAll(manager.graduationPlan());
     }
@@ -187,6 +186,12 @@ public class AdvisingToolController {
      * Method called when transcript is imported and the course by term button is clicked
      */
     private void showCourseByTerm(){
+        if(graphIsVisible()) {
+            hideGraph();
+            searchBar.setText("");
+            searchBar.setPromptText("Please input a Term (1, 2, or 3)");
+        }
+        searchBar.setOnAction(actionEvent -> showCourseByTerm());
         try {
             String search = searchBar.getText();
             if (!search.equals("")) {
@@ -211,6 +216,10 @@ public class AdvisingToolController {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean graphIsVisible(){
+        return nodeGraph.isVisible();
     }
 
     /**
