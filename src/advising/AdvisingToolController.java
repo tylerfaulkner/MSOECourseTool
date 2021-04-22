@@ -121,6 +121,7 @@ public class AdvisingToolController {
     }
 
     private void hideGraph(){
+        searchBar.setOnAction(null);
         nodeGraph.setDisable(true);
         nodeGraph.setVisible(false);
     }
@@ -131,8 +132,8 @@ public class AdvisingToolController {
             nodeGraph.setDisable(false);
             nodeGraph.setVisible(true);
             singleCourse.getGraphicsContext2D().clearRect(0, 0, singleCourse.getWidth(), singleCourse.getHeight());
-            searchBar.setText("");
-            searchBar.setPromptText("Enter Course Code");
+            //searchBar.setText("");
+            //searchBar.setPromptText("Enter Course Code");
         }
         searchBar.setOnAction(actionEvent -> drawPreReq());
         if (!searchBar.getText().equals("")) {
@@ -188,9 +189,9 @@ public class AdvisingToolController {
     private void showCourseByTerm(){
         if(graphIsVisible()) {
             hideGraph();
-            listView.getItems().clear();
-            searchBar.setText("");
-            searchBar.setPromptText("Please input a Term (1, 2, or 3)");
+           // listView.getItems().clear();
+            //searchBar.setText("");
+            //searchBar.setPromptText("Please input a Term (1, 2, or 3)");
         }
         searchBar.setOnAction(actionEvent -> showCourseByTerm());
         try {
