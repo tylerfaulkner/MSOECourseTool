@@ -264,7 +264,7 @@ public class AdvisingToolController {
                 listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
                 feature2Button.setDisable(false);
                 feature3Button.setDisable(false);
-                feature4Button.setDisable(false);
+//                feature4Button.setDisable(false);
                 recommendButton.setDisable(false);
 
             }

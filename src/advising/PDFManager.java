@@ -22,15 +22,17 @@ public class PDFManager {
     private static final PDFont STANDARD_FONT = PDType1Font.HELVETICA;
     private static final PDFont BOLD_FONT = PDType1Font.HELVETICA_BOLD;
     private static final PDFont OBLIQUE_FONT = PDType1Font.HELVETICA_OBLIQUE;
-    private static final int TEXT_SIZE = 8;
+    private static final int TEXT_SIZE = 10;
     private static final float LEADING_FACTOR = 1.2f;
     private static final int TOP_MARGIN = 80;
     private static final int TITLE_SIZE = 16;
+    private static final int LEFT_MARGIN = 80;
+    private static final int BOTTOM_MARGIN = 80;
 
     private float x;
     private float y;
 
-    public PDFManager(CourseManager courseManager){
+    public PDFManager(CourseManager courseManager) {
         this.courseManager = courseManager;
     }
 
@@ -96,9 +98,8 @@ public class PDFManager {
         stream.showText("Unofficial Transcript");
         stream.endText();
 
-        int textSize = 8;
-        stream.setFont(PDFManager.BOLD_FONT, textSize);
-        stream.setLeading(textSize * PDFManager.LEADING_FACTOR);
+        stream.setFont(PDFManager.BOLD_FONT, TEXT_SIZE);
+        stream.setLeading(TEXT_SIZE * PDFManager.LEADING_FACTOR);
         stream.beginText();
         x = page.getMediaBox().getWidth() / 4;
         y = y - 2 * TITLE_SIZE;
@@ -106,16 +107,16 @@ public class PDFManager {
         stream.showText("DEGREE SOUGHT:");
         stream.newLine();
         stream.showText("BS in " + courseManager.getMajor());
-        stream.newLineAtOffset(x, textSize);
+        stream.newLineAtOffset(x, TEXT_SIZE);
         stream.showText("DATE DEGREE GRANTED");
         stream.newLine();
         stream.showText("Incomplete");
         stream.endText();
 
         stream.beginText();
-        stream.setFont(PDFManager.STANDARD_FONT, textSize);
+        stream.setFont(PDFManager.STANDARD_FONT, TEXT_SIZE);
         x = page.getMediaBox().getWidth() / 8;
-        y = y - 4 * textSize;
+        y = y - 4 * TEXT_SIZE;
         stream.newLineAtOffset(x, y);
         stream.showText("ID: 101010");
         stream.newLine();
@@ -130,28 +131,70 @@ public class PDFManager {
     private void writeCourses(HashMap<String, Set<Course>> coursesByTerm, PDPageContentStream stream, PDPage page) throws IOException {
         boolean firstColumnFull = false;
         boolean secondColumnFull = false;
-        float columnTop = page.getMediaBox().getHeight() * 3 / 5;
 
+        boolean result = false;
+        startColumnOne(stream, page);
         for (String term : coursesByTerm.keySet()) {
-            stream.setFont(OBLIQUE_FONT, TEXT_SIZE);
-            stream.setLeading(TEXT_SIZE * LEADING_FACTOR);
-            Course[] termCourses = coursesByTerm.get(term).toArray(Course[]::new);
-            for (Course course : termCourses) {
-                //print out course details in first column until space runs out
-                //print out course details in second column until space runs out
-                coursesByTerm.get(term).remove(course);
+            if(!secondColumnFull) {
+                stream.setFont(BOLD_FONT, TEXT_SIZE);
+                stream.setLeading(TEXT_SIZE * LEADING_FACTOR);
+
+                newColumnLine(stream, page, term);
+
+                Course[] termCourses = coursesByTerm.get(term).toArray(Course[]::new);
+                for (Course course : termCourses) {
+                    stream.setFont(STANDARD_FONT, TEXT_SIZE);
+
+                    if (!secondColumnFull) {
+                        if (course.isPassed()) {
+                            result = newColumnLine(stream, page,
+                                    course.getName() + " " + course.getDescription() + "   P");
+                        } else if (course.isCompleted()) {
+                            result = newColumnLine(stream, page,
+                                    course.getName() + " " + course.getDescription() + "   WIP");
+                        } else {
+                            result = newColumnLine(stream, page,
+                                    course.getName() + " " + course.getDescription() + "   F");
+                        }
+                        coursesByTerm.get(term).remove(course);
+                        if (result && firstColumnFull) {
+                            secondColumnFull = true;
+                        } else if (result) {
+                            firstColumnFull = true;
+                            stream.endText();
+                            startColumnTwo(stream, page);
+                        }
+                    }
+                }
+                if(coursesByTerm.get(term).isEmpty()) {
+                    coursesByTerm.remove(term);
+                }
             }
-            coursesByTerm.remove(term);
+            stream.endText();
         }
-    }
-
-    private void newColumnLine(){
 
     }
-    private void startColumnOne(){
 
+    private boolean newColumnLine(PDPageContentStream stream, PDPage page, String contents) throws IOException{
+        stream.showText(contents);
+        stream.newLine();
+        y -= TEXT_SIZE * LEADING_FACTOR;
+        return y < BOTTOM_MARGIN;
     }
-    private void startColumnTwo(){
 
+    private void startColumnOne(PDPageContentStream stream, PDPage page) throws IOException{
+        float columnTop = page.getMediaBox().getHeight() * 3 / 5;
+        x = LEFT_MARGIN;
+        y = columnTop;
+        stream.beginText();
+        stream.newLineAtOffset(x, y);
+    }
+
+    private void startColumnTwo(PDPageContentStream stream, PDPage page) throws IOException{
+        float columnTop = page.getMediaBox().getHeight() * 3 / 5;
+        x = LEFT_MARGIN + page.getMediaBox().getWidth()/2;
+        y = columnTop;
+        stream.beginText();
+        stream.newLineAtOffset(x, y);
     }
 }
