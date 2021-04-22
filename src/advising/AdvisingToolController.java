@@ -44,13 +44,13 @@ public class AdvisingToolController {
     ListView listView, detailView;
 
     @FXML
-    TextField searchBar;
+    Button recommendButton, feature2Button, feature3Button, feature4Button;
 
     @FXML
     MenuButton optionBox;
 
     @FXML
-    Button recommendButton, feature2Button, feature3Button, feature4Button;
+    TextField searchBar;
 
     @FXML
     Canvas singleCourse;
@@ -265,7 +265,6 @@ public class AdvisingToolController {
                 listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
                 feature2Button.setDisable(false);
                 feature3Button.setDisable(false);
-                feature4Button.setDisable(false);
                 recommendButton.setDisable(false);
 
             }

@@ -12,6 +12,7 @@ package advising;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Course class contains data for an instance of a class.
@@ -49,7 +50,7 @@ public class Course implements Comparable<Course> {
         return name;
     }
 
-    public ArrayList getTerm(int term) {
+    public ArrayList<String> getTerm(int term) {
         return terms.get(term);
     }
 
