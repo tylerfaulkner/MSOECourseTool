@@ -5,9 +5,11 @@
 package advising.courseGraph;
 
 import advising.Course;
+import advising.CourseManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A class that represents a single node within the visualized pre-req graph
@@ -26,9 +28,11 @@ public class CourseNode {
     private ArrayList<CourseNode> preReqNodes = new ArrayList<>();
 
     private Course course;
+    private HashMap<String, Course> catalog;
 
-    public CourseNode(Course course) {
+    public CourseNode(Course course, HashMap<String, Course> catalog) {
         this.course = course;
+        this.catalog = catalog;
     }
 
     public Course getCourse() {
@@ -79,6 +83,9 @@ public class CourseNode {
                         double ovalX = x - (NODE_RADIUS / 3) - X_SPACING;
                         double ovalY = yCord - (NODE_RADIUS / 2);
                         gc.setFill(Paint.valueOf("green"));
+                        if(catalog.containsKey(preReq) && catalog.get(preReq).isCompleted()){
+                            gc.setFill(Paint.valueOf("yellow"));
+                        }
                         gc.fillOval(ovalX, ovalY, NODE_RADIUS, NODE_RADIUS);
                         gc.setFill(Paint.valueOf("black"));
                         preReq = preReq.replaceAll("\\|", " or\n");
@@ -101,6 +108,9 @@ public class CourseNode {
                 }
                 //non-trailing head color
                 gc.setFill(Paint.valueOf(color));
+                if(course.isCompleted()){
+                    gc.setFill(Paint.valueOf("yellow"));
+                }
                 gc.fillOval(x, yCord - (NODE_RADIUS / 2), NODE_RADIUS, NODE_RADIUS);
                 gc.setFill(Paint.valueOf("black"));
                 gc.fillText(course.getName(), xCord + MAX_WIDTH/2, yCord, MAX_WIDTH);
@@ -108,9 +118,16 @@ public class CourseNode {
             } else {
                 if(!course.getName().equals("")) {
                     gc.setFill(Paint.valueOf("orange"));
+                    String preReq = course.getName();
+                    String[] preReqs = preReq.split("\\|");
+                    for (int i=0; i<preReqs.length; ++i){
+                        Course pre = catalog.get(preReqs[i]);
+                        if(pre != null && pre.isCompleted()){
+                            gc.setFill(Paint.valueOf("yellow"));
+                        }
+                    }
                     gc.fillOval(x, y, NODE_RADIUS, NODE_RADIUS);
                     gc.setFill(Paint.valueOf("black"));
-                    String preReq = course.getName();
                     preReq = preReq.replaceAll("\\|", " or\n");
                     gc.fillText(preReq, x + OR_OFFSET, y + (Y_SPACING / 3), MAX_WIDTH);
                 }
@@ -124,6 +141,9 @@ public class CourseNode {
     private void drawNodes(GraphicsContext gc, double x, double y, String color){
         if(!course.getName().equals("")) {
             gc.setFill(Paint.valueOf(color));
+            if(course.isCompleted()){
+                gc.setFill(Paint.valueOf("yellow"));
+            }
             gc.fillOval(x, y, NODE_RADIUS, NODE_RADIUS);
             gc.setFill(Paint.valueOf("black"));
             gc.fillText(course.getName(), x + (Y_SPACING / 4), y + (NODE_RADIUS / 2), MAX_WIDTH);

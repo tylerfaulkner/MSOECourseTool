@@ -58,7 +58,7 @@ public class CourseGraph {
                         getPreReqNodes(preReqNode);
                         node.addPreReqNode(preReqNode);
                     } else {
-                        node.addPreReqNode(new CourseNode(new Course(preReq, 0, "", "")));
+                        node.addPreReqNode(new CourseNode(new Course(preReq, 0, "", ""), catalog));
                     }
                 }
             }
@@ -81,7 +81,7 @@ public class CourseGraph {
             if (course == null) {
                 course = new Course(key, 0, "", "");
             }
-            CourseNode newNode = new CourseNode(course);
+            CourseNode newNode = new CourseNode(course, catalog);
             if (!nodes.contains(newNode)) {
                 nodes.add(newNode);
             }
