@@ -123,7 +123,7 @@ MA3710,3,MA235,Mathematical Biology
 MA380,3,MA232 MA235,Advanced Differential Equations
 MA381,3,MA232 MA235,Complex Variables
 MA382,3,MA232 MA235,Laplace and Fourier Transforms
-MA383,3,MA231|MA225|MA3501,Linear Algebra
+MA383,3,MA231|MA2314|MA3501,Linear Algebra
 MA384,3,MA262 MA3610 MA3620,Statistical Methods for Use in Research
 MA385,3,MA235,Modern Algebra with Applications
 MA386,3,MA232,Functions of a Real Variable
