@@ -7,6 +7,7 @@ package advising.courseGraph;
 import advising.Course;
 import advising.CourseManager;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,9 +69,11 @@ public class CourseNode {
      * @param y y-coordinate
      * @param trailingPreReqs if prereqs of prereqs should be shown
      * @param color color of head node
+     * @param markCompleted if completed courses should be marked
+     * @param completedColor the color that completed courses should be
      * @return
      */
-    public int draw(GraphicsContext gc, double x, double y, boolean trailingPreReqs, String color) {
+    public int draw(GraphicsContext gc, double x, double y, boolean trailingPreReqs, String color, boolean markCompleted, Color completedColor) {
         if(!trailingPreReqs || preReqNodes.isEmpty()) {
             if(!course.getPrerequisites().equals("")) {
                 String[] preReqs = course.getPrerequisites().split(" ");
@@ -83,8 +86,8 @@ public class CourseNode {
                         double ovalX = x - (NODE_RADIUS / 3) - X_SPACING;
                         double ovalY = yCord - (NODE_RADIUS / 2);
                         gc.setFill(Paint.valueOf("green"));
-                        if(catalog.containsKey(preReq) && catalog.get(preReq).isCompleted()){
-                            gc.setFill(Paint.valueOf("yellow"));
+                        if(markCompleted && catalog.containsKey(preReq) && catalog.get(preReq).isCompleted()){
+                            gc.setFill(completedColor);
                         }
                         gc.fillOval(ovalX, ovalY, NODE_RADIUS, NODE_RADIUS);
                         gc.setFill(Paint.valueOf("black"));
@@ -108,8 +111,8 @@ public class CourseNode {
                 }
                 //non-trailing head color
                 gc.setFill(Paint.valueOf(color));
-                if(course.isCompleted()){
-                    gc.setFill(Paint.valueOf("yellow"));
+                if(markCompleted && course.isCompleted()){
+                    gc.setFill(completedColor);
                 }
                 gc.fillOval(x, yCord - (NODE_RADIUS / 2), NODE_RADIUS, NODE_RADIUS);
                 gc.setFill(Paint.valueOf("black"));
@@ -119,11 +122,13 @@ public class CourseNode {
                 if(!course.getName().equals("")) {
                     gc.setFill(Paint.valueOf("orange"));
                     String preReq = course.getName();
-                    String[] preReqs = preReq.split("\\|");
-                    for (int i=0; i<preReqs.length; ++i){
-                        Course pre = catalog.get(preReqs[i]);
-                        if(pre != null && pre.isCompleted()){
-                            gc.setFill(Paint.valueOf("yellow"));
+                    if(markCompleted) {
+                        String[] preReqs = preReq.split("\\|");
+                        for (int i = 0; i < preReqs.length; ++i) {
+                            Course pre = catalog.get(preReqs[i]);
+                            if (pre != null && pre.isCompleted()) {
+                                gc.setFill(completedColor);
+                            }
                         }
                     }
                     gc.fillOval(x, y, NODE_RADIUS, NODE_RADIUS);
@@ -133,30 +138,33 @@ public class CourseNode {
                 }
             }
         } else {
-            drawNodes(gc, x, y, color);
+            drawNodes(gc, x, y, color, markCompleted, completedColor);
         }
         return 0;
     }
 
-    private void drawNodes(GraphicsContext gc, double x, double y, String color){
+    private void drawNodes(GraphicsContext gc, double x, double y, String color, boolean markCompleted, Color completedColor){
         if(!course.getName().equals("")) {
             gc.setFill(Paint.valueOf(color));
-            if(course.isCompleted()){
-                gc.setFill(Paint.valueOf("yellow"));
+            if(markCompleted && course.isCompleted()){
+                gc.setFill(completedColor);
             }
             gc.fillOval(x, y, NODE_RADIUS, NODE_RADIUS);
             gc.setFill(Paint.valueOf("black"));
             gc.fillText(course.getName(), x + (Y_SPACING / 4), y + (NODE_RADIUS / 2), MAX_WIDTH);
             if (preReqNodes.size() == 2) {
                 gc.strokeLine(x, y + NODE_RADIUS / 2, x - X_OFFSET, y + NODE_RADIUS + X_OFFSET);
-                preReqNodes.get(0).draw(gc, x - NODE_RADIUS, y + NODE_RADIUS, true, "green");
+                preReqNodes.get(0).draw(gc, x - NODE_RADIUS, y + NODE_RADIUS, true,
+                        "green", markCompleted, completedColor);
                 gc.strokeLine(x, y + NODE_RADIUS / 2, x - X_OFFSET, y - NODE_RADIUS / 2);
-                preReqNodes.get(1).draw(gc, x - NODE_RADIUS, y - NODE_RADIUS, true, "green");
+                preReqNodes.get(1).draw(gc, x - NODE_RADIUS, y - NODE_RADIUS, true,
+                        "green", markCompleted, completedColor);
             } else if (preReqNodes.size() == 1) {
                 CourseNode preReq = preReqNodes.get(0);
                 if(!preReq.course.getName().equals("")) {
                     gc.strokeLine(x, y + NODE_RADIUS / 2, x - X_OFFSET, y + NODE_RADIUS / 2);
-                    preReq.draw(gc, x - (NODE_RADIUS + X_OFFSET), y, true, "cyan");
+                    preReq.draw(gc, x - (NODE_RADIUS + X_OFFSET), y, true,
+                            "cyan", markCompleted, completedColor);
                 }
             }
         }

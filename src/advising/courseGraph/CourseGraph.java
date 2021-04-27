@@ -5,6 +5,7 @@ package advising.courseGraph;
 
 import advising.Course;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,16 +34,18 @@ public class CourseGraph {
      * @param name course to draw
      * @param gc GraphicsContext to draw on
      * @param trailingPreReqs determines if prereqs of prereqs should be shown
+     * @param markCompleted if completed courses should be labeled
+     * @param completedColor the color to label completed coursers as
      * @throws UnknownCourseException if the course is not found
      */
-    public void draw(String name, GraphicsContext gc, boolean trailingPreReqs) throws UnknownCourseException {
+    public void draw(String name, GraphicsContext gc, boolean trailingPreReqs, boolean markCompleted, Color completedColor) throws UnknownCourseException {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         CourseNode node = findCourseNode(name);
         if(node != null) {
             if(trailingPreReqs) {
                 getPreReqNodes(node);
             }
-            node.draw(gc, SEARCH_X, SEARCH_Y, trailingPreReqs, "brown");
+            node.draw(gc, SEARCH_X, SEARCH_Y, trailingPreReqs, "brown", markCompleted, completedColor);
         } else {
             throw new UnknownCourseException("Unknown Course: " + name);
         }
