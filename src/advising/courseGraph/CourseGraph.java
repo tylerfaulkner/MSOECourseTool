@@ -1,10 +1,12 @@
 /**
  * Majority Author: Tyler Faulkner
  */
+
 package advising.courseGraph;
 
 import advising.Course;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,76 +22,108 @@ public class CourseGraph {
     private ArrayList<CourseNode> nodes = new ArrayList<>();
     private HashMap<String, Course> catalog;
 
-    public CourseGraph(HashMap<String, Course> catalog){
+    /**
+     * Takes the catalog from course manager in order to operate correctly
+     *
+     * @param catalog catalog from the course manager
+     */
+    public CourseGraph(HashMap<String, Course> catalog) {
         this.catalog = catalog;
         Collection<String> keys = catalog.keySet();
-        for(String key : keys){
-            addKeytoNodes(key, nodes);
+        for (String key : keys) {
+            addKeyToNodes(key, nodes);
         }
     }
 
     /**
      * Draws the graph on the given canvas
-     * @param name course to draw
-     * @param gc GraphicsContext to draw on
+     *
+     * @param name            course to draw
+     * @param gc              GraphicsContext to draw on
      * @param trailingPreReqs determines if prereqs of prereqs should be shown
+     * @param markCompleted if completed courses should be labeled
+     * @param completedColor the color to label completed coursers as
      * @throws UnknownCourseException if the course is not found
      */
-    public void draw(String name, GraphicsContext gc, boolean trailingPreReqs) throws UnknownCourseException {
+    public void draw(String name, GraphicsContext gc, boolean trailingPreReqs, boolean markCompleted, Color completedColor) throws UnknownCourseException {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         CourseNode node = findCourseNode(name);
-        if(node != null) {
-            if(trailingPreReqs) {
+        if (node != null) {
+            if (trailingPreReqs) {
                 getPreReqNodes(node);
             }
-            node.draw(gc, SEARCH_X, SEARCH_Y, trailingPreReqs, "brown");
+            node.draw(gc, SEARCH_X, SEARCH_Y, trailingPreReqs, "brown", markCompleted, completedColor);
         } else {
             throw new UnknownCourseException("Unknown Course: " + name);
         }
     }
 
-    private void getPreReqNodes(CourseNode node){
-        if(node.getCourse().getName() != "") {
+    /**
+     * Gets the pre-requisites as nodes for the given node.
+     *
+     * @param node the node to generate pre-req nodes for
+     */
+    private void getPreReqNodes(CourseNode node) {
+        if (node.getCourse().getName() != "") {
             String[] preReqs = node.getCourse().getPrerequisites().split(" ");
             for (String preReq : preReqs) {
-                if(preReq != null) {
+                if (preReq != null) {
                     CourseNode preReqNode = findCourseNode(preReq);
                     if (preReqNode != null) {
                         getPreReqNodes(preReqNode);
                         node.addPreReqNode(preReqNode);
                     } else {
-                        node.addPreReqNode(new CourseNode(new Course(preReq, 0, "", "")));
+                        node.addPreReqNode(new CourseNode(new Course(preReq, 0, "", ""), catalog));
                     }
                 }
             }
         }
     }
 
-    private CourseNode findCourseNode(String name){
-        for(int i = 0; i < nodes.size(); ++i){
+    /**
+     * Finds a course node with the given name
+     *
+     * @param name the name to match
+     * @return the node that matches the name or null if not found
+     */
+    private CourseNode findCourseNode(String name) {
+        for (int i = 0; i < nodes.size(); ++i) {
             CourseNode node = nodes.get(i);
-            if(node.getCourse().getName().equals(name)){
+            if (node.getCourse().getName().equals(name)) {
                 return node;
             }
         }
         return null;
     }
 
-    private void addKeytoNodes(String key, ArrayList<CourseNode> nodes){
-        if(!(key.length() < 3)) {
+    /**
+     * Takes a course name creates a node of it and adds it to nodes arraylist
+     * @param key the course to generate
+     * @param nodes the arraylist to add the new node to
+     */
+    private void addKeyToNodes(String key, ArrayList<CourseNode> nodes) {
+        if (!(key.length() < 3)) {
             Course course = catalog.get(key);
             if (course == null) {
                 course = new Course(key, 0, "", "");
             }
-            CourseNode newNode = new CourseNode(course);
+            CourseNode newNode = new CourseNode(course, catalog);
             if (!nodes.contains(newNode)) {
                 nodes.add(newNode);
             }
         }
     }
 
-    public class UnknownCourseException extends Exception{
-        public UnknownCourseException(String errorMessage){
+    /**
+     * Used for when an unknown course is given.
+     */
+    public class UnknownCourseException extends Exception {
+        /**
+         * sets the message fore the error message
+         *
+         * @param errorMessage the message
+         */
+        public UnknownCourseException(String errorMessage) {
             super(errorMessage);
         }
     }

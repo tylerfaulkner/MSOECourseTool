@@ -50,6 +50,9 @@ public class AdvisingToolController {
     MenuButton optionBox;
 
     @FXML
+    ColorPicker colorPicker;
+
+    @FXML
     TextField searchBar;
 
     @FXML
@@ -59,7 +62,7 @@ public class AdvisingToolController {
     ScrollPane nodeGraph;
 
     @FXML
-    CheckBox preReqTail;
+    CheckBox preReqTail, completedMark;
 
     @FXML
     ContextMenu courseMenu;
@@ -139,7 +142,8 @@ public class AdvisingToolController {
         if (!searchBar.getText().equals("")) {
             try {
                 courseGraph.draw(searchBar.getText().toUpperCase().replaceAll(" ", ""),
-                        singleCourse.getGraphicsContext2D(), preReqTail.isSelected());
+                        singleCourse.getGraphicsContext2D(), preReqTail.isSelected(),
+                        completedMark.isSelected(), colorPicker.getValue());
             } catch (CourseGraph.UnknownCourseException e) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "There are no matches " +
                         "for the inputted course.");
@@ -267,6 +271,8 @@ public class AdvisingToolController {
                 feature3Button.setDisable(false);
 //                feature4Button.setDisable(false);
                 recommendButton.setDisable(false);
+                completedMark.setDisable(false);
+                colorPicker.setDisable(false);
 
             }
         } catch (Exception e) {
