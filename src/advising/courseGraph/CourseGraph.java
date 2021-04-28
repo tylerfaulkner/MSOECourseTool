@@ -16,7 +16,15 @@ import java.util.HashMap;
  * Represents the entire drawn graph of pre-requisites
  */
 public class CourseGraph {
+
+    /**
+     * The y location to draw the first node
+     */
     private static final double SEARCH_Y = 250;
+
+    /**
+     * the x location to draw the first node
+     */
     private static final double SEARCH_X = 600;
 
     private ArrayList<CourseNode> nodes = new ArrayList<>();
@@ -41,8 +49,8 @@ public class CourseGraph {
      * @param name            course to draw
      * @param gc              GraphicsContext to draw on
      * @param trailingPreReqs determines if prereqs of prereqs should be shown
-     * @param markCompleted if completed courses should be labeled
-     * @param completedColor the color to label completed coursers as
+     * @param markCompleted   if completed courses should be labeled
+     * @param completedColor  the color to label completed coursers as
      * @throws UnknownCourseException if the course is not found
      */
     public void draw(String name, GraphicsContext gc, boolean trailingPreReqs, boolean markCompleted, Color completedColor) throws UnknownCourseException {
@@ -98,7 +106,8 @@ public class CourseGraph {
 
     /**
      * Takes a course name creates a node of it and adds it to nodes arraylist
-     * @param key the course to generate
+     *
+     * @param key   the course to generate
      * @param nodes the arraylist to add the new node to
      */
     private void addKeyToNodes(String key, ArrayList<CourseNode> nodes) {
