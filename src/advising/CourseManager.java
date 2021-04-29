@@ -43,9 +43,9 @@ public class CourseManager {
     /**
      * Course Manager reads in course data upon initialization
      */
-    public CourseManager() {
+    public CourseManager(File prerequisitesCSV, File offeringCSV, File curriculumCSV) {
         try {
-            Scanner prereqs = new Scanner(new File("src/Data/prerequisites_updated.csv"));
+            Scanner prereqs = new Scanner(prerequisitesCSV);
             prereqs.nextLine();
             while (prereqs.hasNextLine()) {
                 Scanner line = new Scanner(prereqs.nextLine()).useDelimiter(",");
@@ -57,7 +57,7 @@ public class CourseManager {
                 catalog.put(name, newCourse);
             }
 
-            Scanner offerings = new Scanner(new File("src/Data/offerings.csv"));
+            Scanner offerings = new Scanner(offeringCSV);
             String[] header = offerings.nextLine().split(",");
             while (offerings.hasNextLine()) {
                 String[] line = offerings.nextLine().split(",");
@@ -75,7 +75,7 @@ public class CourseManager {
                 }
             }
 
-            Scanner curiculum = new Scanner(new File("src/Data/curriculum.csv"));
+            Scanner curiculum = new Scanner(curriculumCSV);
             curiculum.nextLine();
             while (curiculum.hasNextLine()){
                 String[] courses = curiculum.nextLine().split(",");

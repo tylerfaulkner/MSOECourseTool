@@ -58,7 +58,10 @@ public class AdvisingToolController {
      */
     @FXML
     private void initialize() {
-        manager = new CourseManager();
+        File prerequisites = new File("src/Data/prerequisites_updated.csv");
+        File offerings = new File("src/Data/offerings.csv");
+        File curriculum = new File("src/Data/curriculum.csv");
+        manager = new CourseManager(prerequisites, offerings, curriculum);
         // Create the context menu and have a menuitem that calls show prerequisites
         populateContextMenu();
         //Creating and setting each new feature/menu item
