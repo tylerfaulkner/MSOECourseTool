@@ -337,20 +337,32 @@ public class CourseManager {
      */
     public void processCourses(String line) {
 
-        String[] split = line.split(" ");
+        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
+        Matcher courseMatcher;
+        courseMatcher = coursePattern.matcher(line);
+        courseMatcher.find();
+        String courseCode = courseMatcher.group();
 
-        if (catalog.containsKey(split[0])) {
-
-            coursesToDate.add(catalog.get(split[0]));
-
-            String lastString = split[split.length - 1];
-
-            int firstIndex = lastString.indexOf('.') + 3;
-            int lastIndex = lastString.lastIndexOf('.') + 3;
-
-            String qualPts = lastString.substring(0, firstIndex);
-            String credsEarned = lastString.substring(firstIndex, lastIndex);
-            String grade = lastString.substring(lastIndex);
+        if (catalog.containsKey(courseCode)) {
+            String courseDetails = line.substring(courseCode.length());
+            Pattern gradePattern = Pattern.compile("[A-Z]+$");
+            Matcher gradeMatcher;
+            gradeMatcher = gradePattern.matcher(line);
+            gradeMatcher.find();
+            String grade = gradeMatcher.group();
+//       String[] split = line.split(" ");
+//       if (catalog.containsKey(split[0])) {
+//
+            coursesToDate.add(catalog.get(courseCode));
+//
+//            String lastString = split[split.length - 1];
+//
+//            int firstIndex = lastString.indexOf('.') + 3;
+//            int lastIndex = lastString.lastIndexOf('.') + 3;
+//
+//            String qualPts = lastString.substring(0, firstIndex);
+//            String credsEarned = lastString.substring(firstIndex, lastIndex);
+//            String grade = lastString.substring(lastIndex);
             Course lastCourse = coursesToDate.get(coursesToDate.size() - 1);
 
             //If you failed or withdrew from the class, you didn't pass but you did complete the class

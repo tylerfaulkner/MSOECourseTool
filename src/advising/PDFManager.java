@@ -46,12 +46,7 @@ public class PDFManager {
     }
 
     private void processPDFLine(String line) {
-        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
-        Matcher courseMatcher;
         if (line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")) {
-            courseMatcher = coursePattern.matcher(line);
-            courseMatcher.find();
-            String courseCode = courseMatcher.group();
             courseManager.processCourses(line);
         } else if (line.startsWith("BS in")) {
             if (line.contains("Computer Science")) {
