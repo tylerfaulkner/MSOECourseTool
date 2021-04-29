@@ -1,0 +1,5 @@
+BA1220,3,BA1220,Microeconomics
+BA2220,3,BA2222,Foundations of Business Economics
+BA2222,3,BA1220,Macroeconomics
+BA2331,3,,Business Law
+BA2501,3,OR|Test,Finance I
