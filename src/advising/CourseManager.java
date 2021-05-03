@@ -325,6 +325,18 @@ public class CourseManager {
 
     }
 
+    public List<Course> getCurrentCourses(){
+        Set<String> courseNames = catalog.keySet();
+        List<Course> currentCourse = new ArrayList<>();
+        for(String course : courseNames){
+            Course c = catalog.get(course);
+            if(c.getWIP()){
+                currentCourse.add(c);
+            }
+        }
+        return currentCourse;
+    }
+
 
     /**
      * This method takes in a line from the pdf and process the course associated with it
@@ -361,7 +373,7 @@ public class CourseManager {
                 //If you are currently working through the class, you completed it
             } else if (grade.equals("WIP")) {
                 lastCourse.setCompleted(true);
-
+                lastCourse.setWIP(true);
                 //Other than those two cases, you completed and passed it
             } else {
                 lastCourse.setPassed(true);

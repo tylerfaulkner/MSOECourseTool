@@ -23,6 +23,7 @@ public class Course implements Comparable<Course> {
     private String prerequisites;
     private String description;
     private HashMap<Integer, ArrayList<String>> terms = new HashMap<>();
+    private boolean wip;
     private boolean completed;
     private boolean passed;
     private String completedTerm;
@@ -48,6 +49,14 @@ public class Course implements Comparable<Course> {
 
     public String getName() {
         return name;
+    }
+
+    public void setWIP(boolean wip){
+        this.wip = wip;
+    }
+
+    public boolean getWIP(){
+        return wip;
     }
 
     public ArrayList<String> getTerm(int term) {

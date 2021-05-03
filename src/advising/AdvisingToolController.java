@@ -14,8 +14,13 @@ import advising.courseGraph.CourseGraph;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import org.apache.pdfbox.pdmodel.interactive.viewerpreferences.PDViewerPreferences;
+
+import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,10 +46,10 @@ public class AdvisingToolController {
     private PDFManager pdfManager;
 
     @FXML
-    ListView listView, detailView;
+    ListView listView, detailView, currentCourses, failedRecommend, gradPlanFailed, failedViewer;
 
     @FXML
-    Button recommendButton, feature2Button, feature3Button, feature4Button;
+    Button recommendButton, feature2Button, feature3Button, failedButton;
 
     @FXML
     MenuButton optionBox;
@@ -59,7 +64,7 @@ public class AdvisingToolController {
     Canvas singleCourse;
 
     @FXML
-    ScrollPane nodeGraph;
+    ScrollPane nodeGraph, failedCourseScreen;
 
     @FXML
     CheckBox preReqTail, completedMark;
@@ -119,6 +124,7 @@ public class AdvisingToolController {
     @FXML
     private void listCourseToDate() {
         hideGraph();
+        hideFailed();
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCoursesToDate());
     }
@@ -127,6 +133,41 @@ public class AdvisingToolController {
         searchBar.setOnAction(null);
         nodeGraph.setDisable(true);
         nodeGraph.setVisible(false);
+    }
+
+    private void hideFailed(){
+        failedCourseScreen.setVisible(false);
+        failedCourseScreen.setDisable(true);
+    }
+
+    @FXML
+    private void openFailedImpact(){
+        failedCourseScreen.setVisible(true);
+        failedCourseScreen.setDisable(false);
+        updateFailed();
+    }
+
+    private void updateFailed(){
+        List<Course> currCourses = manager.getCurrentCourses();
+        currentCourses.getItems().setAll(currCourses);
+        failedRecommend.getItems().setAll(manager.recommendCourses());
+        gradPlanFailed.getItems().setAll(manager.graduationPlan());
+        failedViewer.getItems().setAll(getFailedStatus(currCourses));
+    }
+
+    private List<Boolean> getFailedStatus(List<Course> courses){
+        List<Boolean> failedStatus = new ArrayList<>();
+        for(Course course: courses){
+            failedStatus.add(!course.isCompleted());
+        }
+        return failedStatus;
+    }
+
+    @FXML
+    private void markFailed() {
+        Course course = (Course) currentCourses.getSelectionModel().getSelectedItem();
+        course.setCompleted(false);
+        updateFailed();
     }
 
     @FXML
@@ -153,11 +194,9 @@ public class AdvisingToolController {
         }
     }
 
-    //@FXML
-    //private void search() {
-
     public void recommendCourses(){
         hideGraph();
+        hideFailed();
         try {
             if (transcriptFile != null) {
                 listView.getItems().clear();
@@ -165,7 +204,7 @@ public class AdvisingToolController {
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
-        }
+    }
     }
 
     /**
@@ -174,6 +213,7 @@ public class AdvisingToolController {
     @FXML
     private void listGraduationPlan() {
         hideGraph();
+        hideFailed();
         listView.getItems().clear();
         listView.getItems().addAll(manager.graduationPlan());
     }
@@ -269,11 +309,10 @@ public class AdvisingToolController {
                 listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
                 feature2Button.setDisable(false);
                 feature3Button.setDisable(false);
-//                feature4Button.setDisable(false);
                 recommendButton.setDisable(false);
                 completedMark.setDisable(false);
                 colorPicker.setDisable(false);
-
+                failedButton.setDisable(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
