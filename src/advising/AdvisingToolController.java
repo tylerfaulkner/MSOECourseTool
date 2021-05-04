@@ -138,12 +138,20 @@ public class AdvisingToolController {
     private void hideFailed(){
         failedCourseScreen.setVisible(false);
         failedCourseScreen.setDisable(true);
+        manager.resetVirtual();
     }
 
     @FXML
     private void openFailedImpact(){
         failedCourseScreen.setVisible(true);
         failedCourseScreen.setDisable(false);
+        updateFailed();
+    }
+
+    @FXML
+    private void markCompleted(){
+        Course course = (Course) currentCourses.getSelectionModel().getSelectedItem();
+        manager.removeFailedVirtual(course);
         updateFailed();
     }
 
@@ -166,7 +174,7 @@ public class AdvisingToolController {
     @FXML
     private void markFailed() {
         Course course = (Course) currentCourses.getSelectionModel().getSelectedItem();
-        course.setCompleted(false);
+        manager.setFailedVirtual(course);
         updateFailed();
     }
 

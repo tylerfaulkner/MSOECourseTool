@@ -10,6 +10,7 @@
 package advising;
 
 
+import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -25,6 +26,7 @@ import java.util.regex.Pattern;
  * Manages all courses available from the prerequisites csv
  */
 public class CourseManager {
+    private static final int NEXT_TERM = 1;
 
     private HashMap<String, Course> catalog = new HashMap<>();
     private List<String> csTrack = new ArrayList<>();
@@ -37,6 +39,8 @@ public class CourseManager {
     private List<Course> freeElectives = new ArrayList<>();
     private List<List<Course>> totalElectives = new ArrayList<>();
     private int electiveCount = 0;
+
+    private List<Course> virtualFailed = new ArrayList<>();
 
     private String major;
 
@@ -157,6 +161,28 @@ public class CourseManager {
         this.major = major;
     }
 
+    public void setFailedVirtual(Course course){
+        course.setCompleted(false);
+        course.setPassed(false);
+        coursesToDate.remove(course);
+        virtualFailed.add(course);
+    }
+
+    public void resetVirtual(){
+        for(Course course : virtualFailed){
+            course.setCompleted(true);
+            course.setPassed(true);
+            coursesToDate.add(course);
+        }
+        virtualFailed.clear();
+    }
+
+    public void removeFailedVirtual(Course course){
+        course.setCompleted(true);
+        course.setPassed(true);
+        coursesToDate.add(course);
+        virtualFailed.remove(course);
+    }
 
     /**
      * Used to sort listed course in list view
@@ -455,7 +481,10 @@ public class CourseManager {
 
         //Checks to see if any courses were failed, if they were add them to the list.
         for (Course c : coursesToDate) {
-            if (!c.isPassed() && !c.isCompleted() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+            ArrayList majors = c.getTerm(NEXT_TERM);
+            boolean availableNextTerm = !majors.isEmpty() && majors.contains(major);
+            if (!c.isPassed() && !c.isCompleted() && availableNextTerm
+                    && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
                 recommendedCourses.sort(Course::compareTo);
                 recommendedCourses.add(c);
             }
@@ -463,10 +492,13 @@ public class CourseManager {
 
         //Determining which track to use for your major
         List<String> courses = new ArrayList<>();
+        String majorCode = "";
         if (major.equals("Computer Science")) {
             courses = csTrack;
+            majorCode = "CS";
         } else if (major.equals("Software Engineering")) {
             courses = seTrack;
+            majorCode = "SE";
         }
 
         for (String code : courses) {
@@ -482,10 +514,13 @@ public class CourseManager {
             3. If the total recommended course credits so far is more than 15
             4. If it is an elective course
              */
-            if (!recommendedCourses.contains(course) && !coursesToDate.contains(course) &&
+            if (course != null && !recommendedCourses.contains(course) && !coursesToDate.contains(course) &&
                     recCreditsLessThan15 && !electiveCourse) {
-
-                recommendedCourses.add(course);
+                ArrayList majors = course.getTerm(NEXT_TERM);
+                boolean availableNextTerm = majors.contains(majorCode);
+                if(availableNextTerm) {
+                    recommendedCourses.add(course);
+                }
             }
 
         }

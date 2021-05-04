@@ -140,6 +140,7 @@
                                           <ContextMenu>
                                             <items>
                                               <MenuItem mnemonicParsing="false" onAction="#markFailed" text="Mark as Failed" />
+                                                <MenuItem mnemonicParsing="false" onAction="#markCompleted" text="Mark as Completed" />
                                             </items>
                                           </ContextMenu>
                                        </contextMenu>
