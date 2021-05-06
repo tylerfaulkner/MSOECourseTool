@@ -13,7 +13,16 @@ import javafx.scene.control.Alert;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Comparator;
+import java.util.Scanner;
+import java.util.Map;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,43 +54,10 @@ public class CourseManager {
      */
     public CourseManager() {
         try {
-            Scanner prereqs = new Scanner(new File("src/Data/prerequisites_updated.csv"));
-            prereqs.nextLine();
-            while (prereqs.hasNextLine()) {
-                Scanner line = new Scanner(prereqs.nextLine()).useDelimiter(",");
-                String name = line.next();
-                int credits = line.nextInt();
-                String prerequisites = line.next();
-                String desc = line.next();
-                Course newCourse = new Course(name, credits, prerequisites, desc);
-                catalog.put(name, newCourse);
-            }
 
-            Scanner offerings = new Scanner(new File("src/Data/offerings.csv"));
-            String[] header = offerings.nextLine().split(",");
-            while (offerings.hasNextLine()) {
-                String[] line = offerings.nextLine().split(",");
-                String courseName = line[0];
-                Course course = catalog.get(courseName);
-                if (course == null) {
-                    course = new Course(courseName, 3, "", "");
-                    catalog.put(courseName, course);
-                }
-                for (int i = 1; i < line.length; i++) {
-                    if (!line[i].equals("")) {
-                        int term = Integer.parseInt(line[i]);
-                        course.addTerm(term, header[i]);
-                    }
-                }
-            }
-
-            Scanner curiculum = new Scanner(new File("src/Data/curriculum.csv"));
-            curiculum.nextLine();
-            while (curiculum.hasNextLine()) {
-                String[] courses = curiculum.nextLine().split(",");
-                csTrack.add(courses[0]);
-                seTrack.add(courses[1]);
-            }
+            readPreReqs();
+            readOfferings();
+            readCurriculum();
 
 
         } catch (FileNotFoundException e) {
@@ -89,6 +65,50 @@ public class CourseManager {
                     "The needed csv files were not found in the directory");
             alert.setHeaderText("Critical Error");
             alert.showAndWait();
+        }
+    }
+
+    private void readPreReqs() throws FileNotFoundException{
+        Scanner prereqs = new Scanner(new File("src/Data/prerequisites_updated.csv"));
+        prereqs.nextLine();
+        while (prereqs.hasNextLine()) {
+            Scanner line = new Scanner(prereqs.nextLine()).useDelimiter(",");
+            String name = line.next();
+            int credits = line.nextInt();
+            String prerequisites = line.next();
+            String desc = line.next();
+            Course newCourse = new Course(name, credits, prerequisites, desc);
+            catalog.put(name, newCourse);
+        }
+    }
+
+    private void readOfferings() throws FileNotFoundException{
+        Scanner offerings = new Scanner(new File("src/Data/offerings.csv"));
+        String[] header = offerings.nextLine().split(",");
+        while (offerings.hasNextLine()) {
+            String[] line = offerings.nextLine().split(",");
+            String courseName = line[0];
+            Course course = catalog.get(courseName);
+            if (course == null) {
+                course = new Course(courseName, 3, "", "");
+                catalog.put(courseName, course);
+            }
+            for (int i = 1; i < line.length; i++) {
+                if (!line[i].equals("")) {
+                    int term = Integer.parseInt(line[i]);
+                    course.addTerm(term, header[i]);
+                }
+            }
+        }
+    }
+
+    private void readCurriculum() throws FileNotFoundException{
+        Scanner curiculum = new Scanner(new File("src/Data/curriculum.csv"));
+        curiculum.nextLine();
+        while (curiculum.hasNextLine()) {
+            String[] courses = curiculum.nextLine().split(",");
+            csTrack.add(courses[0]);
+            seTrack.add(courses[1]);
         }
     }
 
@@ -144,11 +164,11 @@ public class CourseManager {
      *
      * @return A list of courses the user has taken
      */
-    public List<Course> getCoursesToDate() {
+    List<Course> getCoursesToDate() {
         return coursesToDate;
     }
 
-    public HashMap<String, Course> getCatalog() {
+    HashMap<String, Course> getCatalog() {
         return catalog;
     }
 
@@ -378,25 +398,13 @@ public class CourseManager {
         String courseCode = courseMatcher.group();
 
         if (catalog.containsKey(courseCode)) {
-            //String courseDetails = line.substring(courseCode.length());
             Pattern gradePattern = Pattern.compile("[A-Z]+$");
             Matcher gradeMatcher;
             gradeMatcher = gradePattern.matcher(line);
             gradeMatcher.find();
             String grade = gradeMatcher.group();
-//       String[] split = line.split(" ");
-//       if (catalog.containsKey(split[0])) {
-//
             coursesToDate.add(catalog.get(courseCode));
-//
-//            String lastString = split[split.length - 1];
-//
-//            int firstIndex = lastString.indexOf('.') + 3;
-//            int lastIndex = lastString.lastIndexOf('.') + 3;
-//
-//            String qualPts = lastString.substring(0, firstIndex);
-//            String credsEarned = lastString.substring(firstIndex, lastIndex);
-//            String grade = lastString.substring(lastIndex);
+
             Course lastCourse = coursesToDate.get(coursesToDate.size() - 1);
 
             //If you failed or withdrew from the class,
@@ -588,23 +596,7 @@ public class CourseManager {
             if (prereq.contains("|")) {
                 // If there are classes with options for prereqs,
                 // split them and display in a visually pleasing way
-                StringBuilder optionsString = new StringBuilder();
-                String[] options = prereq.split("\\|");
-                for (String current : options) {
-                    Course preCourse = catalog.get(current);
-                    if (preCourse != null) {
-                        String name = preCourse.getName();
-                        String description = preCourse.getDescription();
-                        String toAppend = name + " (" + description;
-                        optionsString.append(toAppend);
-                        optionsString.append(") or ");
-                    } else {
-                        optionsString.append(current);
-                        optionsString.append(" or ");
-                    }
-                }
-                optionsString.delete(optionsString.lastIndexOf(" or "), optionsString.length() - 1);
-                courses.add(optionsString.toString());
+                courses.add(formatORPreReqs(prereq));
             } else {
                 // Otherwise just add the course to the list with description
                 Course singlePrereq = catalog.get(prereq);
@@ -615,5 +607,25 @@ public class CourseManager {
             }
         }
         return courses;
+    }
+
+    private String formatORPreReqs(String prereq){
+        StringBuilder optionsString = new StringBuilder();
+        String[] options = prereq.split("\\|");
+        for (String current : options) {
+            Course preCourse = catalog.get(current);
+            if (preCourse != null) {
+                String name = preCourse.getName();
+                String description = preCourse.getDescription();
+                String toAppend = name + " (" + description;
+                optionsString.append(toAppend);
+                optionsString.append(") or ");
+            } else {
+                optionsString.append(current);
+                optionsString.append(" or ");
+            }
+        }
+        optionsString.delete(optionsString.lastIndexOf(" or "), optionsString.length() - 1);
+        return optionsString.toString();
     }
 }

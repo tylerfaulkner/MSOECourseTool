@@ -86,16 +86,18 @@ public class AdvisingToolController {
     @FXML
     private void initialize() {
         pdfManager = new PDFManager(manager);
-        //comboBox.getItems().addAll(features);
+
         courseGraph = new CourseGraph(manager.getCatalog());
         // Create the context menu and have a menuitem that calls show prerequisites
         populateContextMenu();
+
         //Creating and setting each new feature/menu item
         //Course By Term
         MenuItem courseByTerm = new MenuItem("Courses By Term");
         courseByTerm.setOnAction(actionEvent -> showCourseByTerm());
         buttonFeatures.add(courseByTerm);
 
+        //preReq graph option
         MenuItem prereqGraph = new MenuItem("Show PreReq Graph");
         prereqGraph.setOnAction(actionEvent -> drawPreReq());
         buttonFeatures.add(prereqGraph);
@@ -187,18 +189,21 @@ public class AdvisingToolController {
 
     @FXML
     private void drawPreReq() {
+        //if preReq graph is hidden, make graph visible
         if (!graphIsVisible()) {
             nodeGraph.setDisable(false);
             nodeGraph.setVisible(true);
             singleCourse.getGraphicsContext2D().clearRect(0, 0,
                     singleCourse.getWidth(), singleCourse.getHeight());
-            //searchBar.setText("");
-            //searchBar.setPromptText("Enter Course Code");
         }
+
         searchBar.setOnAction(actionEvent -> drawPreReq());
         if (!searchBar.getText().equals("")) {
             try {
-                courseGraph.draw(searchBar.getText().toUpperCase().replaceAll(" ", ""),
+                //Removes spaces from search
+                //i.e. "CS 3330 " = "CS3330"
+                String searchedCourse = searchBar.getText().toUpperCase().replaceAll(" ", "");
+                courseGraph.draw(searchedCourse,
                         singleCourse.getGraphicsContext2D(), preReqTail.isSelected(),
                         completedMark.isSelected(), colorPicker.getValue());
             } catch (CourseGraph.UnknownCourseException e) {
@@ -248,11 +253,10 @@ public class AdvisingToolController {
     private void showCourseByTerm() {
         if (graphIsVisible()) {
             hideGraph();
-            // listView.getItems().clear();
-            //searchBar.setText("");
-            //searchBar.setPromptText("Please input a Term (1, 2, or 3)");
         }
+
         searchBar.setOnAction(actionEvent -> showCourseByTerm());
+
         String search = searchBar.getText();
         if (!search.equals("")) {
             boolean found = false;
@@ -271,10 +275,16 @@ public class AdvisingToolController {
                 alert.showAndWait();
             }
         } else {
+            searchBar.clear();
             searchBar.setPromptText("Please input a Term (1, 2, or 3)");
         }
     }
 
+    /**
+     * This is the stupidest method I have ever written
+     * Author : Tyler Faulkner
+     * @return boolean if graph is visible
+     */
     private boolean graphIsVisible() {
         return nodeGraph.isVisible();
     }
@@ -316,21 +326,23 @@ public class AdvisingToolController {
             transcriptFile = loadChooser.showOpenDialog(null);
             if (transcriptFile != null) {
                 pdfManager.importTranscript(transcriptFile);
-                listView.getItems().clear();
-                listView.getItems().add("Hello " + manager.getMajor()
-                        + " student. Import is complete!");
-                feature2Button.setDisable(false);
-                feature3Button.setDisable(false);
-                recommendButton.setDisable(false);
-                completedMark.setDisable(false);
-                colorPicker.setDisable(false);
-                failedButton.setDisable(false);
+                fileImportUnlockFunctionality();
             }
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Critical Error");
-            alert.setContentText("The system had a critical error while loading the file.");
-            alert.showAndWait();
+            showGenericAlert();
         }
+    }
+
+    private void fileImportUnlockFunctionality(){
+        listView.getItems().clear();
+        listView.getItems().add("Hello " + manager.getMajor()
+                + " student. Import is complete!");
+        feature2Button.setDisable(false);
+        feature3Button.setDisable(false);
+        recommendButton.setDisable(false);
+        completedMark.setDisable(false);
+        colorPicker.setDisable(false);
+        failedButton.setDisable(false);
     }
 
     /**
@@ -350,9 +362,13 @@ public class AdvisingToolController {
                 listView.getItems().add("Export successful");
             }
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Critical Error");
-            alert.setContentText("The system had a critical error while loading the file.");
-            alert.showAndWait();
+            showGenericAlert();
         }
+    }
+
+    private void showGenericAlert(){
+        Alert alert = new Alert(Alert.AlertType.ERROR, "Critical Error");
+        alert.setContentText("The system had a critical error while loading the file.");
+        alert.showAndWait();
     }
 }

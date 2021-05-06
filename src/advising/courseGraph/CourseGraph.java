@@ -64,7 +64,7 @@ public class CourseGraph {
         CourseNode node = findCourseNode(name);
         if (node != null) {
             if (trailingPreReqs) {
-                getPreReqNodes(node);
+                addPreReqNodes(node);
             }
             node.draw(gc, SEARCH_X, SEARCH_Y, trailingPreReqs,
                     "brown", markCompleted, completedColor);
@@ -78,14 +78,15 @@ public class CourseGraph {
      *
      * @param node the node to generate pre-req nodes for
      */
-    private void getPreReqNodes(CourseNode node) {
+    private void addPreReqNodes(CourseNode node) {
         if (!node.getCourse().getName().equals("")) {
             String[] preReqs = node.getCourse().getPrerequisites().split(" ");
             for (String preReq : preReqs) {
                 if (preReq != null) {
                     CourseNode preReqNode = findCourseNode(preReq);
                     if (preReqNode != null) {
-                        getPreReqNodes(preReqNode);
+                        //calls the mehtod on the pre-req node
+                        addPreReqNodes(preReqNode);
                         node.addPreReqNode(preReqNode);
                     } else {
                         node.addPreReqNode(new CourseNode(new Course(preReq, 0, "", ""), catalog));
