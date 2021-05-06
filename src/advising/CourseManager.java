@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Manages all courses available from the prerequisites csv
@@ -371,19 +373,34 @@ public class CourseManager {
      *
      * @param line The line from the pdf
      */
-    public void processCourses(String line) {
+    public void processCourses(String line, String term) {
 
-        String[] split = line.split(" ");
+        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
+        Matcher courseMatcher;
+        courseMatcher = coursePattern.matcher(line);
+        courseMatcher.find();
+        String courseCode = courseMatcher.group();
 
-        if (catalog.containsKey(split[0])) {
-
-            coursesToDate.add(catalog.get(split[0]));
-
-            String lastString = split[split.length - 1];
-
-            int lastIndex = lastString.lastIndexOf('.') + 3;
-
-            String grade = lastString.substring(lastIndex);
+        if (catalog.containsKey(courseCode)) {
+            String courseDetails = line.substring(courseCode.length());
+            Pattern gradePattern = Pattern.compile("[A-Z]+$");
+            Matcher gradeMatcher;
+            gradeMatcher = gradePattern.matcher(line);
+            gradeMatcher.find();
+            String grade = gradeMatcher.group();
+//       String[] split = line.split(" ");
+//       if (catalog.containsKey(split[0])) {
+//
+            coursesToDate.add(catalog.get(courseCode));
+//
+//            String lastString = split[split.length - 1];
+//
+//            int firstIndex = lastString.indexOf('.') + 3;
+//            int lastIndex = lastString.lastIndexOf('.') + 3;
+//
+//            String qualPts = lastString.substring(0, firstIndex);
+//            String credsEarned = lastString.substring(firstIndex, lastIndex);
+//            String grade = lastString.substring(lastIndex);
             Course lastCourse = coursesToDate.get(coursesToDate.size() - 1);
 
             //If you failed or withdrew from the class,
@@ -402,6 +419,7 @@ public class CourseManager {
                 lastCourse.setCompleted(true);
 
             }
+            lastCourse.setCompletedTerm(term);
             for (List<Course> list : totalElectives) {
                 for (Course course : list) {
                     if (lastCourse.getName().equalsIgnoreCase(course.getName())) {
@@ -421,13 +439,10 @@ public class CourseManager {
     public HashMap<String, Set<Course>> getCoursesByCompleteTerm() {
         HashMap<String, Set<Course>> coursesByTerm = new HashMap<>();
         for (Course course : coursesToDate) {
-            if (course.isCompleted()) {
-                if (coursesByTerm.containsKey(course.getCompletedTerm())) {
-                    coursesByTerm.get(course.getCompletedTerm()).add(course);
-                } else {
-                    coursesByTerm.put(course.getCompletedTerm(), new HashSet<>());
-                }
+            if (!coursesByTerm.containsKey(course.getCompletedTerm())) {
+                coursesByTerm.put(course.getCompletedTerm(), new HashSet<>());
             }
+            coursesByTerm.get(course.getCompletedTerm()).add(course);
         }
         return coursesByTerm;
     }

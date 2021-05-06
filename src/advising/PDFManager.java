@@ -32,6 +32,8 @@ public class PDFManager {
     private float x;
     private float y;
 
+    private String major = "External Institution";
+
     public PDFManager(CourseManager courseManager) {
         this.courseManager = courseManager;
     }
@@ -46,13 +48,11 @@ public class PDFManager {
     }
 
     private void processPDFLine(String line) {
-        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
-        Matcher courseMatcher;
+        if (line.contains("Quarter")){
+            major = line;
+        }
         if (line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")) {
-            courseMatcher = coursePattern.matcher(line);
-            courseMatcher.find();
-            String courseCode = courseMatcher.group();
-            courseManager.processCourses(line);
+            courseManager.processCourses(line, major);
         } else if (line.startsWith("BS in")) {
             if (line.contains("Computer Science")) {
                 courseManager.setMajor("Computer Science");
@@ -70,7 +70,6 @@ public class PDFManager {
         PDDocument transcript = new PDDocument();
 
         HashMap<String, Set<Course>> coursesByTerm = courseManager.getCoursesByCompleteTerm();
-
         while (!coursesByTerm.isEmpty()) {
             PDPage page = new PDPage(new PDRectangle(PDRectangle.LETTER.getHeight(), PDRectangle.LETTER.getWidth()));
             transcript.addPage(page);
@@ -134,7 +133,9 @@ public class PDFManager {
 
         boolean result = false;
         startColumnOne(stream, page);
-        for (String term : coursesByTerm.keySet()) {
+        String[] terms = {};
+        terms = coursesByTerm.keySet().toArray(terms);
+        for (String term : terms) {
             if(!secondColumnFull) {
                 stream.setFont(BOLD_FONT, TEXT_SIZE);
                 stream.setLeading(TEXT_SIZE * LEADING_FACTOR);
@@ -170,9 +171,8 @@ public class PDFManager {
                     coursesByTerm.remove(term);
                 }
             }
-            stream.endText();
         }
-
+        stream.endText();
     }
 
     private boolean newColumnLine(PDPageContentStream stream, PDPage page, String contents) throws IOException{
