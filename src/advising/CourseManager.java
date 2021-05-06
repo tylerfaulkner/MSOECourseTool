@@ -11,12 +11,9 @@ package advising;
 
 
 import javafx.scene.control.Alert;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -184,37 +181,37 @@ public class CourseManager {
         }
     }
 
-    public void importTranscript(File transcriptFile) throws IOException {
-        coursesToDate.clear();
-        PDDocument document = PDDocument.load(transcriptFile);
-        PDFTextStripper pdfStripper = new PDFTextStripper();
-        pdfStripper.setSortByPosition(false);
-        String transcriptString = pdfStripper.getText(document);
-        transcriptString.lines().forEach(this::processPDFLine);
-    }
-
-    private void processPDFLine(String line) {
-        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
-        Matcher courseMatcher;
-        if (line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")) {
-            courseMatcher = coursePattern.matcher(line);
-            courseMatcher.find();
-            processCourses(line);
-
-        } else if (line.startsWith("BS in")) {
-            if (line.contains("Computer Science")) {
-                major = "Computer Science";
-                initializeCSElectives();
-
-            } else if (line.contains("Software Engineering")) {
-                major = "Software Engineering";
-                initializeSEElectives();
-
-            } else {
-                System.out.println("Unrecognized Major");
-            }
-        }
-    }
+//    public void importTranscript(File transcriptFile) throws IOException {
+//        coursesToDate.clear();
+//        PDDocument document = PDDocument.load(transcriptFile);
+//        PDFTextStripper pdfStripper = new PDFTextStripper();
+//        pdfStripper.setSortByPosition(false);
+//        String transcriptString = pdfStripper.getText(document);
+//        transcriptString.lines().forEach(this::processPDFLine);
+//    }
+//
+//    private void processPDFLine(String line) {
+//        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
+//        Matcher courseMatcher;
+//        if (line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")) {
+//            courseMatcher = coursePattern.matcher(line);
+//            courseMatcher.find();
+//            processCourses(line);
+//
+//        } else if (line.startsWith("BS in")) {
+//            if (line.contains("Computer Science")) {
+//                major = "Computer Science";
+//                initializeCSElectives();
+//
+//            } else if (line.contains("Software Engineering")) {
+//                major = "Software Engineering";
+//                initializeSEElectives();
+//
+//            } else {
+//                System.out.println("Unrecognized Major");
+//            }
+//        }
+//    }
 
     //Method to help count the amount of electives the user has taken
     private void countElectives() {
@@ -335,7 +332,7 @@ public class CourseManager {
      *
      * @param line The line from the pdf
      */
-    public void processCourses(String line) {
+    public void processCourses(String line, String term) {
 
         Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
         Matcher courseMatcher;
@@ -380,6 +377,7 @@ public class CourseManager {
                 lastCourse.setCompleted(true);
 
             }
+            lastCourse.setCompletedTerm(term);
             for (List<Course> list : totalElectives) {
                 for (Course course : list) {
                     if (lastCourse.getName().equalsIgnoreCase(course.getName())) {
@@ -399,13 +397,10 @@ public class CourseManager {
     public HashMap<String, Set<Course>> getCoursesByCompleteTerm() {
         HashMap<String, Set<Course>> coursesByTerm = new HashMap<>();
         for (Course course : coursesToDate) {
-            if (course.isCompleted()) {
-                if (coursesByTerm.containsKey(course.getCompletedTerm())) {
-                    coursesByTerm.get(course.getCompletedTerm()).add(course);
-                } else {
-                    coursesByTerm.put(course.getCompletedTerm(), new HashSet<>());
-                }
+            if (!coursesByTerm.containsKey(course.getCompletedTerm())) {
+                coursesByTerm.put(course.getCompletedTerm(), new HashSet<>());
             }
+            coursesByTerm.get(course.getCompletedTerm()).add(course);
         }
         return coursesByTerm;
     }
