@@ -102,7 +102,7 @@ public class CourseManager {
         List<String> courses = new ArrayList<>();
         for (String name : catalog.keySet()) {
             Course course = catalog.get(name);
-            ArrayList<String> majors = course.getTerm(term);
+            List<String> majors = course.getTerm(term);
             if (majors.size() != 0) {
                 courses.add(course.toString());
             }
@@ -496,7 +496,7 @@ public class CourseManager {
 
         //Checks to see if any courses were failed, if they were add them to the list.
         for (Course c : coursesToDate) {
-            ArrayList majors = c.getTerm(NEXT_TERM);
+            List<String> majors = c.getTerm(NEXT_TERM);
             boolean availableNextTerm = !majors.isEmpty() && majors.contains(major);
             if (!c.isPassed() && !c.isCompleted() && availableNextTerm
                     && getTotalCredits(recommendedCourses) < MIN_COURSES_IN_TERM) {
@@ -534,7 +534,7 @@ public class CourseManager {
             if (course != null && !recommendedCourses.contains(course)
                     && !coursesToDate.contains(course)
                     && notEnoughCredits && !electiveCourse) {
-                ArrayList majors = course.getTerm(NEXT_TERM);
+                List<String> majors = course.getTerm(NEXT_TERM);
                 boolean availableNextTerm = majors.contains(majorCode);
                 if (availableNextTerm) {
                     recommendedCourses.add(course);
