@@ -9,22 +9,27 @@
 
 package advising;
 
-
 import javafx.scene.control.Alert;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Manages all courses available from the prerequisites csv
  */
 public class CourseManager {
+    private static final int NEXT_TERM = 1;
+    private static final int MIN_COURSES_IN_TERM = 15;
 
     private HashMap<String, Course> catalog = new HashMap<>();
     private List<String> csTrack = new ArrayList<>();
@@ -37,6 +42,8 @@ public class CourseManager {
     private List<Course> freeElectives = new ArrayList<>();
     private List<List<Course>> totalElectives = new ArrayList<>();
     private int electiveCount = 0;
+
+    private List<Course> virtualFailed = new ArrayList<>();
 
     private String major;
 
@@ -96,12 +103,11 @@ public class CourseManager {
      * Adds courses to the given listView item that are available in the given term
      *
      * @param term the term of courses to add
+     * @return list of strings of all courses available next term
      */
-    public List listCourses(int term) {
+    public List<String> listCourses(int term) {
         List<String> courses = new ArrayList<>();
-        Iterator iter = catalog.keySet().iterator();
-        while (iter.hasNext()) {
-            String name = (String) iter.next();
+        for (String name : catalog.keySet()) {
             Course course = catalog.get(name);
             ArrayList<String> majors = course.getTerm(term);
             if (majors.size() != 0) {
@@ -157,6 +163,39 @@ public class CourseManager {
         this.major = major;
     }
 
+    /**
+     * Sets a class as failed for checking what would happen if a course was failed.
+     * @param course the course to set as failed virtually
+     */
+    public void setFailedVirtual(Course course) {
+        course.setCompleted(false);
+        course.setPassed(false);
+        coursesToDate.remove(course);
+        virtualFailed.add(course);
+    }
+
+    /**
+     * Resets all course set as virtually failed
+     */
+    public void resetVirtual() {
+        for (Course course : virtualFailed) {
+            course.setCompleted(true);
+            course.setPassed(true);
+            coursesToDate.add(course);
+        }
+        virtualFailed.clear();
+    }
+
+    /**
+     * Removes one virtual failed course from the list
+     * @param course the course to return to normal
+     */
+    public void removeFailedVirtual(Course course) {
+        course.setCompleted(true);
+        course.setPassed(true);
+        coursesToDate.add(course);
+        virtualFailed.remove(course);
+    }
 
     /**
      * Used to sort listed course in list view
@@ -184,39 +223,9 @@ public class CourseManager {
         }
     }
 
-    public void importTranscript(File transcriptFile) throws IOException {
-        coursesToDate.clear();
-        PDDocument document = PDDocument.load(transcriptFile);
-        PDFTextStripper pdfStripper = new PDFTextStripper();
-        pdfStripper.setSortByPosition(false);
-        String transcriptString = pdfStripper.getText(document);
-        transcriptString.lines().forEach(this::processPDFLine);
-    }
-
-    private void processPDFLine(String line) {
-        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
-        Matcher courseMatcher;
-        if (line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")) {
-            courseMatcher = coursePattern.matcher(line);
-            courseMatcher.find();
-            processCourses(line);
-
-        } else if (line.startsWith("BS in")) {
-            if (line.contains("Computer Science")) {
-                major = "Computer Science";
-                initializeCSElectives();
-
-            } else if (line.contains("Software Engineering")) {
-                major = "Software Engineering";
-                initializeSEElectives();
-
-            } else {
-                System.out.println("Unrecognized Major");
-            }
-        }
-    }
-
-    //Method to help count the amount of electives the user has taken
+    /**
+     * Counts the amount of electives the user has taken.
+     */
     private void countElectives() {
         electiveCount = 0;
         for (Course c : coursesToDate) {
@@ -226,7 +235,9 @@ public class CourseManager {
         }
     }
 
-    //Setup method to read in the all of the different types of electives for SE Majors
+    /**
+     * Reads in all the files that dictate possible electives for SE majors
+     */
     public void initializeSEElectives() {
         Map<File, List<Course>> files = new HashMap<>();
 
@@ -240,7 +251,9 @@ public class CourseManager {
 
     }
 
-    //Setup method to read in the all of the different types of electives for CS Majors
+    /**
+     * Reads in all available electives for CS majors.
+     */
     public void initializeCSElectives() {
         Map<File, List<Course>> files = new HashMap<>();
 
@@ -252,7 +265,10 @@ public class CourseManager {
 
     }
 
-    //Method to read each of the files that pretain to the current user's major
+    /**
+     * Sets the lists for each elective type determined by major.
+     * @param files a map of files with the list to add the courses to
+     */
     private void initializeTotalElectives(Map<File, List<Course>> files) {
 
         //Iterator setup to read through each of the entries in the map
@@ -268,7 +284,10 @@ public class CourseManager {
             try {
                 scan = new Scanner(entry.getKey());
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Needed Elective File Missing");
+                String filename = entry.getKey().getName();
+                String content = "The file " + filename + " is missing or in the wrong directory";
+                alert.setContentText(content);
             }
 
             //While the file has another line
@@ -302,7 +321,8 @@ public class CourseManager {
                     description = split[1].substring(0, split[1].indexOf("("));
 
                 } else {
-                    //This means that the description doesn't contain credits so it is the full string
+                    //This means that the description doesn't contain credits
+                    // so it is the full string
                     description = split[1];
                 }
 
@@ -325,6 +345,22 @@ public class CourseManager {
 
     }
 
+    /**
+     * Returns all courses marked as WIP
+     * @return list of all courses the user is currently taking
+     */
+    public List<Course> getCurrentCourses() {
+        Set<String> courseNames = catalog.keySet();
+        List<Course> currentCourse = new ArrayList<>();
+        for (String course : courseNames) {
+            Course c = catalog.get(course);
+            if (c.getWIP()) {
+                currentCourse.add(c);
+            }
+        }
+        return currentCourse;
+    }
+
 
     /**
      * This method takes in a line from the pdf and process the course associated with it
@@ -345,15 +381,13 @@ public class CourseManager {
 
             String lastString = split[split.length - 1];
 
-            int firstIndex = lastString.indexOf('.') + 3;
             int lastIndex = lastString.lastIndexOf('.') + 3;
 
-            String qualPts = lastString.substring(0, firstIndex);
-            String credsEarned = lastString.substring(firstIndex, lastIndex);
             String grade = lastString.substring(lastIndex);
             Course lastCourse = coursesToDate.get(coursesToDate.size() - 1);
 
-            //If you failed or withdrew from the class, you didn't pass but you did complete the class
+            //If you failed or withdrew from the class,
+            //you didn't pass but you did complete the class
             if (grade.equals("F") || grade.equals("W")) {
                 lastCourse.setPassed(false);
                 lastCourse.setCompleted(true);
@@ -361,7 +395,7 @@ public class CourseManager {
                 //If you are currently working through the class, you completed it
             } else if (grade.equals("WIP")) {
                 lastCourse.setCompleted(true);
-
+                lastCourse.setWIP(true);
                 //Other than those two cases, you completed and passed it
             } else {
                 lastCourse.setPassed(true);
@@ -398,6 +432,11 @@ public class CourseManager {
         return coursesByTerm;
     }
 
+    /**
+     * Generates and returns the user's graduation plan
+     *
+     * @return list of courses the user should take until graduation
+     */
     public List<Course> graduationPlan() {
 
         List<Course> graduation = new ArrayList<>();
@@ -416,7 +455,10 @@ public class CourseManager {
 
             Course course = catalog.get(code);
             if (!Arrays.asList(electives).contains(code) && course != null) {
-                if (!coursesToDate.contains(course)) {
+                //In the real CS track CH200 is equal to BI102
+                boolean ch200Equivalent = code.equals("CH200") && courses.equals(csTrack)
+                        && coursesToDate.contains(catalog.get("BI102"));
+                if (!coursesToDate.contains(course) && !ch200Equivalent) {
                     graduation.add(course);
                 }
             } else {
@@ -443,7 +485,10 @@ public class CourseManager {
 
         //Checks to see if any courses were failed, if they were add them to the list.
         for (Course c : coursesToDate) {
-            if (!c.isPassed() && !c.isCompleted() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+            ArrayList majors = c.getTerm(NEXT_TERM);
+            boolean availableNextTerm = !majors.isEmpty() && majors.contains(major);
+            if (!c.isPassed() && !c.isCompleted() && availableNextTerm
+                    && getTotalCredits(recommendedCourses) < MIN_COURSES_IN_TERM) {
                 recommendedCourses.sort(Course::compareTo);
                 recommendedCourses.add(c);
             }
@@ -451,10 +496,13 @@ public class CourseManager {
 
         //Determining which track to use for your major
         List<String> courses = new ArrayList<>();
+        String majorCode = "";
         if (major.equals("Computer Science")) {
             courses = csTrack;
+            majorCode = "CS";
         } else if (major.equals("Software Engineering")) {
             courses = seTrack;
+            majorCode = "SE";
         }
 
         for (String code : courses) {
@@ -462,18 +510,24 @@ public class CourseManager {
             Course course = catalog.get(code);
 
             boolean electiveCourse = Arrays.asList(electives).contains(code);
-            boolean recCreditsLessThan15 = recommendedCoursesTotalCredits(recommendedCourses) < 15;
+            boolean notEnoughCredits = getTotalCredits(recommendedCourses) < MIN_COURSES_IN_TERM;
 
             /* Checks if:
             1. Recommended courses already contains the course
             2. If you have already taken the course
             3. If the total recommended course credits so far is more than 15
             4. If it is an elective course
+            5. Course isn't null
+            6. Course is available next Term
              */
-            if (!recommendedCourses.contains(course) && !coursesToDate.contains(course) &&
-                    recCreditsLessThan15 && !electiveCourse) {
-
-                recommendedCourses.add(course);
+            if (course != null && !recommendedCourses.contains(course)
+                    && !coursesToDate.contains(course)
+                    && notEnoughCredits && !electiveCourse) {
+                ArrayList majors = course.getTerm(NEXT_TERM);
+                boolean availableNextTerm = majors.contains(majorCode);
+                if (availableNextTerm) {
+                    recommendedCourses.add(course);
+                }
             }
 
         }
@@ -482,12 +536,12 @@ public class CourseManager {
     }
 
     /**
-     * Counts the total credits from recommended courses
+     * Counts the total credits from a list of courses
      *
      * @param recCourses The list of courses
      * @return The total credits the list is worth currently
      */
-    public double recommendedCoursesTotalCredits(List<Course> recCourses) {
+    public double getTotalCredits(List<Course> recCourses) {
         double totalCreds = 0;
         for (Course c : recCourses) {
             if (c != null) {
@@ -498,10 +552,12 @@ public class CourseManager {
     }
 
     /**
-     * Method to take in a course name and find the course associated and display the perquisites for that course
+     * Method to take in a course name
+     * and find the course associated and display the perquisites for that course
      *
      * @param courseName The course code/name taken from the user
-     * @return Returns a the list of courses that need to be taken before course, or null if course is invalid
+     * @return Returns a the list of course that need to be taken before course,
+     *          or null if course is invalid
      */
     public List<String> showPrerequisites(String courseName) {
         List<String> courses = new ArrayList<>();
@@ -519,7 +575,8 @@ public class CourseManager {
         // Splits prereq string into seperate entries
         for (String prereq : prerequisites) {
             if (prereq.contains("|")) {
-                // If there are classes with options for prereqs, split them and display in a visually pleasing way
+                // If there are classes with options for prereqs,
+                // split them and display in a visually pleasing way
                 StringBuilder optionsString = new StringBuilder();
                 String[] options = prereq.split("\\|");
                 for (String current : options) {
@@ -540,7 +597,8 @@ public class CourseManager {
                 // Otherwise just add the course to the list with description
                 Course singlePrereq = catalog.get(prereq);
                 if (singlePrereq != null) {
-                    courses.add(singlePrereq.getName() + " (" + singlePrereq.getDescription() + ")");
+                    courses.add(singlePrereq.getName()
+                            + " (" + singlePrereq.getDescription() + ")");
                 }
             }
         }

@@ -9,13 +9,24 @@
 
 package advising;
 
-
 import advising.courseGraph.CourseGraph;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.*;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Alert;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
 import javafx.stage.FileChooser;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,10 +52,10 @@ public class AdvisingToolController {
     private PDFManager pdfManager;
 
     @FXML
-    ListView listView, detailView;
+    ListView listView, detailView, currentCourses, failedRecommend, gradPlanFailed, failedViewer;
 
     @FXML
-    Button recommendButton, feature2Button, feature3Button, feature4Button;
+    Button recommendButton, feature2Button, feature3Button, failedButton;
 
     @FXML
     MenuButton optionBox;
@@ -59,15 +70,17 @@ public class AdvisingToolController {
     Canvas singleCourse;
 
     @FXML
-    ScrollPane nodeGraph;
+    ScrollPane nodeGraph, failedCourseScreen;
 
     @FXML
     CheckBox preReqTail, completedMark;
 
     @FXML
     ContextMenu courseMenu;
+
     /**
-     * Method that creates the instance of course manager, actually creates the context menu, and adds the courses by
+     * Method that creates the instance of course manager,
+     * actually creates the context menu, and adds the courses by
      * term to the button.
      */
     @FXML
@@ -100,7 +113,7 @@ public class AdvisingToolController {
      * Method for listing all CS courses in the catalog
      */
     @FXML
-    private void listCSCourses(){
+    private void listCSCourses() {
         hideGraph();
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCSTrack());
@@ -110,7 +123,7 @@ public class AdvisingToolController {
      * Method for listing all SE courses in the catalog
      */
     @FXML
-    private void listSECourses(){
+    private void listSECourses() {
         hideGraph();
         listView.getItems().clear();
         listView.getItems().addAll(manager.getSETrack());
@@ -122,22 +135,67 @@ public class AdvisingToolController {
     @FXML
     private void listCourseToDate() {
         hideGraph();
+        hideFailed();
         listView.getItems().clear();
         listView.getItems().addAll(manager.getCoursesToDate());
     }
 
-    private void hideGraph(){
+    private void hideGraph() {
         searchBar.setOnAction(null);
         nodeGraph.setDisable(true);
         nodeGraph.setVisible(false);
     }
 
+    private void hideFailed() {
+        failedCourseScreen.setVisible(false);
+        failedCourseScreen.setDisable(true);
+        manager.resetVirtual();
+    }
+
     @FXML
-    private void drawPreReq(){
-        if(!graphIsVisible()) {
+    private void openFailedImpact() {
+        failedCourseScreen.setVisible(true);
+        failedCourseScreen.setDisable(false);
+        updateFailed();
+    }
+
+    @FXML
+    private void markCompleted() {
+        Course course = (Course) currentCourses.getSelectionModel().getSelectedItem();
+        manager.removeFailedVirtual(course);
+        updateFailed();
+    }
+
+    private void updateFailed() {
+        List<Course> currCourses = manager.getCurrentCourses();
+        currentCourses.getItems().setAll(currCourses);
+        failedRecommend.getItems().setAll(manager.recommendCourses());
+        gradPlanFailed.getItems().setAll(manager.graduationPlan());
+        failedViewer.getItems().setAll(getFailedStatus(currCourses));
+    }
+
+    private List<Boolean> getFailedStatus(List<Course> courses) {
+        List<Boolean> failedStatus = new ArrayList<>();
+        for (Course course : courses) {
+            failedStatus.add(!course.isCompleted());
+        }
+        return failedStatus;
+    }
+
+    @FXML
+    private void markFailed() {
+        Course course = (Course) currentCourses.getSelectionModel().getSelectedItem();
+        manager.setFailedVirtual(course);
+        updateFailed();
+    }
+
+    @FXML
+    private void drawPreReq() {
+        if (!graphIsVisible()) {
             nodeGraph.setDisable(false);
             nodeGraph.setVisible(true);
-            singleCourse.getGraphicsContext2D().clearRect(0, 0, singleCourse.getWidth(), singleCourse.getHeight());
+            singleCourse.getGraphicsContext2D().clearRect(0, 0,
+                    singleCourse.getWidth(), singleCourse.getHeight());
             //searchBar.setText("");
             //searchBar.setPromptText("Enter Course Code");
         }
@@ -156,18 +214,15 @@ public class AdvisingToolController {
         }
     }
 
-    //@FXML
-    //private void search() {
-
-    public void recommendCourses(){
+    /**
+     * Shows the courses that the user should take next term.
+     */
+    public void recommendCourses() {
         hideGraph();
-        try {
-            if (transcriptFile != null) {
-                listView.getItems().clear();
-                listView.getItems().addAll(manager.recommendCourses());
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        hideFailed();
+        if (transcriptFile != null) {
+            listView.getItems().clear();
+            listView.getItems().addAll(manager.recommendCourses());
         }
     }
 
@@ -177,6 +232,7 @@ public class AdvisingToolController {
     @FXML
     private void listGraduationPlan() {
         hideGraph();
+        hideFailed();
         listView.getItems().clear();
         listView.getItems().addAll(manager.graduationPlan());
     }
@@ -184,7 +240,7 @@ public class AdvisingToolController {
     /**
      * Method to prompt for showing prerequisites and to set the onAction
      */
-    private void populateContextMenu(){
+    private void populateContextMenu() {
         MenuItem prereqs = new MenuItem("Show Prerequisites");
         prereqs.setOnAction(actionEvent -> showPrerequisites());
         courseMenu.getItems().add(prereqs);
@@ -193,54 +249,50 @@ public class AdvisingToolController {
     /**
      * Method called when transcript is imported and the course by term button is clicked
      */
-    private void showCourseByTerm(){
-        if(graphIsVisible()) {
+    private void showCourseByTerm() {
+        if (graphIsVisible()) {
             hideGraph();
-           // listView.getItems().clear();
+            // listView.getItems().clear();
             //searchBar.setText("");
             //searchBar.setPromptText("Please input a Term (1, 2, or 3)");
         }
         searchBar.setOnAction(actionEvent -> showCourseByTerm());
-        try {
-            String search = searchBar.getText();
-            if (!search.equals("")) {
-                Boolean found = false;
-                for (int i = 0; i < termAltNames.length && !found; i++) {
-                    if (termAltNames[i].contains(search)) {
-                        List courses = manager.listCourses(i + 1);
-                        listView.getItems().clear();
-                        listView.getItems().addAll(courses);
-                        found = true;
-                    }
+        String search = searchBar.getText();
+        if (!search.equals("")) {
+            Boolean found = false;
+            for (int i = 0; i < termAltNames.length && !found; i++) {
+                if (termAltNames[i].contains(search)) {
+                    List courses = manager.listCourses(i + 1);
+                    listView.getItems().clear();
+                    listView.getItems().addAll(courses);
+                    found = true;
                 }
-                if (!found) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING, "There are no matches " +
-                            "for the current input.");
-                    alert.setHeaderText("Unknown Input");
-                    alert.showAndWait();
-                }
-            } else{
-                searchBar.setPromptText("Please input a Term (1, 2, or 3)");
             }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+            if (!found) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "There are no matches " +
+                        "for the current input.");
+                alert.setHeaderText("Unknown Input");
+                alert.showAndWait();
+            }
+        } else {
+            searchBar.setPromptText("Please input a Term (1, 2, or 3)");
         }
     }
 
-    private boolean graphIsVisible(){
+    private boolean graphIsVisible() {
         return nodeGraph.isVisible();
     }
 
     /**
      * Method called using context menu that presents prerequisites in detail window
      */
-    private void showPrerequisites(){
+    private void showPrerequisites() {
         Object itemSelected = listView.getSelectionModel().getSelectedItem();
         String courseName = "";
         if (itemSelected instanceof Course) {
             courseName = ((Course) itemSelected).getName();
         } else if (itemSelected instanceof String) {
-            String[] strings = ((String) itemSelected).split(" ") ;
+            String[] strings = ((String) itemSelected).split(" ");
             courseName = strings[0];
         }
         detailView.getItems().clear();
@@ -269,20 +321,25 @@ public class AdvisingToolController {
             if (transcriptFile != null) {
                 pdfManager.importTranscript(transcriptFile);
                 listView.getItems().clear();
-                listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
+                listView.getItems().add("Hello " + manager.getMajor()
+                        + " student. Import is complete!");
                 feature2Button.setDisable(false);
                 feature3Button.setDisable(false);
-//                feature4Button.setDisable(false);
                 recommendButton.setDisable(false);
                 completedMark.setDisable(false);
                 colorPicker.setDisable(false);
-
+                failedButton.setDisable(false);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Critical Error");
+            alert.setContentText("The system had a critical error while loading the file.");
+            alert.showAndWait();
         }
     }
 
+    /**
+     * Exports the user's transcript
+     */
     public void exportTranscript() {
         FileChooser saveChooser = new FileChooser();
         saveChooser.setInitialDirectory(new File("./"));
@@ -296,8 +353,10 @@ public class AdvisingToolController {
                 listView.getItems().clear();
                 listView.getItems().add("Export successful");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Critical Error");
+            alert.setContentText("The system had a critical error while loading the file.");
+            alert.showAndWait();
         }
     }
 }
