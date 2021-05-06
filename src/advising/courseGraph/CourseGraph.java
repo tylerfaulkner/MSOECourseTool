@@ -79,7 +79,7 @@ public class CourseGraph {
      * @param node the node to generate pre-req nodes for
      */
     private void getPreReqNodes(CourseNode node) {
-        if (node.getCourse().getName() != "") {
+        if (!node.getCourse().getName().equals("")) {
             String[] preReqs = node.getCourse().getPrerequisites().split(" ");
             for (String preReq : preReqs) {
                 if (preReq != null) {
@@ -102,8 +102,7 @@ public class CourseGraph {
      * @return the node that matches the name or null if not found
      */
     private CourseNode findCourseNode(String name) {
-        for (int i = 0; i < nodes.size(); ++i) {
-            CourseNode node = nodes.get(i);
+        for (CourseNode node : nodes) {
             if (node.getCourse().getName().equals(name)) {
                 return node;
             }
@@ -133,7 +132,7 @@ public class CourseGraph {
     /**
      * Used for when an unknown course is given.
      */
-    public class UnknownCourseException extends Exception {
+    public static class UnknownCourseException extends Exception {
         /**
          * sets the message fore the error message
          *

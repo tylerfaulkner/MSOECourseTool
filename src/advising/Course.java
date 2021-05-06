@@ -12,7 +12,7 @@ package advising;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Course class contains data for an instance of a class.
@@ -31,6 +31,14 @@ public class Course implements Comparable<Course> {
     private boolean elective;
 
 
+    /**
+     * Initializes the course object
+     *
+     * @param name          name of the course
+     * @param credits       the credits the course has
+     * @param prerequisites the prerequisites for the course
+     * @param description   the general description of the course
+     */
     public Course(String name, int credits, String prerequisites, String description) {
         this.name = name;
         this.credits = credits;
@@ -51,18 +59,30 @@ public class Course implements Comparable<Course> {
         return name;
     }
 
-    public void setWIP(boolean wip){
+    public void setWIP(boolean wip) {
         this.wip = wip;
     }
 
-    public boolean getWIP(){
+    public boolean getWIP() {
         return wip;
     }
 
-    public ArrayList<String> getTerm(int term) {
+    /**
+     * Returns a list of all majors that can take the course in the term
+     *
+     * @param term the term to get majors from
+     * @return a list of all majors that can take the course in the term
+     */
+    public List<String> getTerm(int term) {
         return terms.get(term);
     }
 
+    /**
+     * Adds a major that can take a class in that term
+     *
+     * @param term  term to add to
+     * @param major major to add
+     */
     public void addTerm(int term, String major) {
         terms.get(term).add(major);
     }
@@ -98,7 +118,7 @@ public class Course implements Comparable<Course> {
 
     @Override
     public int compareTo(Course o) {
-        int compare = ((Course) o).getCredits();
+        int compare = o.getCredits();
         return compare - this.credits;
     }
 

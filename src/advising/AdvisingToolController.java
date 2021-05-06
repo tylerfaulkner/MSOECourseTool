@@ -46,7 +46,7 @@ public class AdvisingToolController {
             Arrays.asList("third", "third quarter", "3", "spring", "spring quarter", "quarter 3")
     };
 
-    private CourseManager manager;
+    private CourseManager manager = new CourseManager();
     private File transcriptFile;
     private CourseGraph courseGraph;
     private PDFManager pdfManager;
@@ -85,7 +85,6 @@ public class AdvisingToolController {
      */
     @FXML
     private void initialize() {
-        manager = new CourseManager();
         pdfManager = new PDFManager(manager);
         //comboBox.getItems().addAll(features);
         courseGraph = new CourseGraph(manager.getCatalog());
@@ -256,7 +255,7 @@ public class AdvisingToolController {
         searchBar.setOnAction(actionEvent -> showCourseByTerm());
         String search = searchBar.getText();
         if (!search.equals("")) {
-            Boolean found = false;
+            boolean found = false;
             for (int i = 0; i < termAltNames.length && !found; i++) {
                 if (termAltNames[i].contains(search)) {
                     List courses = manager.listCourses(i + 1);

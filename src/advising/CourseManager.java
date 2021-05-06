@@ -13,16 +13,7 @@ import javafx.scene.control.Alert;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,6 +158,7 @@ public class CourseManager {
 
     /**
      * Sets a class as failed for checking what would happen if a course was failed.
+     *
      * @param course the course to set as failed virtually
      */
     public void setFailedVirtual(Course course) {
@@ -190,6 +182,7 @@ public class CourseManager {
 
     /**
      * Removes one virtual failed course from the list
+     *
      * @param course the course to return to normal
      */
     public void removeFailedVirtual(Course course) {
@@ -202,7 +195,7 @@ public class CourseManager {
     /**
      * Used to sort listed course in list view
      */
-    private class Sort implements Comparator<String> {
+    private static class Sort implements Comparator<String> {
 
         public int compare(String a, String b) {
             a = a.split(" ")[0];
@@ -269,6 +262,7 @@ public class CourseManager {
 
     /**
      * Sets the lists for each elective type determined by major.
+     *
      * @param files a map of files with the list to add the courses to
      */
     private void initializeTotalElectives(Map<File, List<Course>> files) {
@@ -349,6 +343,7 @@ public class CourseManager {
 
     /**
      * Returns all courses marked as WIP
+     *
      * @return list of all courses the user is currently taking
      */
     public List<Course> getCurrentCourses() {
@@ -372,6 +367,7 @@ public class CourseManager {
      * 3. Check if it is an elective class
      *
      * @param line The line from the pdf
+     * @param term the term to set for the course
      */
     public void processCourses(String line, String term) {
 
@@ -382,7 +378,7 @@ public class CourseManager {
         String courseCode = courseMatcher.group();
 
         if (catalog.containsKey(courseCode)) {
-            String courseDetails = line.substring(courseCode.length());
+            //String courseDetails = line.substring(courseCode.length());
             Pattern gradePattern = Pattern.compile("[A-Z]+$");
             Matcher gradeMatcher;
             gradeMatcher = gradePattern.matcher(line);
@@ -556,7 +552,7 @@ public class CourseManager {
      * @param recCourses The list of courses
      * @return The total credits the list is worth currently
      */
-    public double getTotalCredits(List<Course> recCourses) {
+    private double getTotalCredits(List<Course> recCourses) {
         double totalCreds = 0;
         for (Course c : recCourses) {
             if (c != null) {
@@ -572,7 +568,7 @@ public class CourseManager {
      *
      * @param courseName The course code/name taken from the user
      * @return Returns a the list of course that need to be taken before course,
-     *          or null if course is invalid
+     * or null if course is invalid
      */
     public List<String> showPrerequisites(String courseName) {
         List<String> courses = new ArrayList<>();
@@ -599,7 +595,8 @@ public class CourseManager {
                     if (preCourse != null) {
                         String name = preCourse.getName();
                         String description = preCourse.getDescription();
-                        optionsString.append(name + " (" + description);
+                        String toAppend = name + " (" + description;
+                        optionsString.append(toAppend);
                         optionsString.append(") or ");
                     } else {
                         optionsString.append(current);
