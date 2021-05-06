@@ -181,38 +181,6 @@ public class CourseManager {
         }
     }
 
-//    public void importTranscript(File transcriptFile) throws IOException {
-//        coursesToDate.clear();
-//        PDDocument document = PDDocument.load(transcriptFile);
-//        PDFTextStripper pdfStripper = new PDFTextStripper();
-//        pdfStripper.setSortByPosition(false);
-//        String transcriptString = pdfStripper.getText(document);
-//        transcriptString.lines().forEach(this::processPDFLine);
-//    }
-//
-//    private void processPDFLine(String line) {
-//        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
-//        Matcher courseMatcher;
-//        if (line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")) {
-//            courseMatcher = coursePattern.matcher(line);
-//            courseMatcher.find();
-//            processCourses(line);
-//
-//        } else if (line.startsWith("BS in")) {
-//            if (line.contains("Computer Science")) {
-//                major = "Computer Science";
-//                initializeCSElectives();
-//
-//            } else if (line.contains("Software Engineering")) {
-//                major = "Software Engineering";
-//                initializeSEElectives();
-//
-//            } else {
-//                System.out.println("Unrecognized Major");
-//            }
-//        }
-//    }
-
     //Method to help count the amount of electives the user has taken
     private void countElectives() {
         electiveCount = 0;
