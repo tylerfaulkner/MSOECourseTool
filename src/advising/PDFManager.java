@@ -1,3 +1,11 @@
+/**
+ * Course: SE 2800
+ * Section 41
+ * Dr. Jonathon Magana
+ * Advising Tool
+ * Created by: Kian Dettlaff
+ * March 18th, 2021
+ */
 package advising;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -13,12 +21,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+/**
+ * Manages all PDF export and import functionality
+ */
 public class PDFManager {
 
-    CourseManager courseManager;
+    private CourseManager courseManager;
     private static final PDFont STANDARD_FONT = PDType1Font.HELVETICA;
     private static final PDFont BOLD_FONT = PDType1Font.HELVETICA_BOLD;
     private static final PDFont OBLIQUE_FONT = PDType1Font.HELVETICA_OBLIQUE;
@@ -28,14 +37,30 @@ public class PDFManager {
     private static final int TITLE_SIZE = 16;
     private static final int LEFT_MARGIN = 80;
     private static final int BOTTOM_MARGIN = 80;
+    private static final int THOUSAND = 1000;
+    private static final int X_OFFSET = 8;
+    private static final int COL_OFFSET = 5;
 
     private float x;
     private float y;
 
+    private String major = "External Institution";
+
+    /**
+     * Initializes PDF manager
+     *
+     * @param courseManager the course manager from the controller
+     */
     public PDFManager(CourseManager courseManager) {
         this.courseManager = courseManager;
     }
 
+    /**
+     * Attempts to import a transcript
+     *
+     * @param transcriptFile the file of the transcript
+     * @throws IOException if a file error occurs
+     */
     public void importTranscript(File transcriptFile) throws IOException {
         courseManager.getCoursesToDate().clear();
         PDDocument document = PDDocument.load(transcriptFile);
@@ -46,13 +71,11 @@ public class PDFManager {
     }
 
     private void processPDFLine(String line) {
-        Pattern coursePattern = Pattern.compile("[A-Z]{2}[0-9]{3,4}");
-        Matcher courseMatcher;
+        if (line.contains("Quarter")) {
+            major = line;
+        }
         if (line.matches("^[A-Z]{2}[0-9]{3,4}.*[A-Z]$")) {
-            courseMatcher = coursePattern.matcher(line);
-            courseMatcher.find();
-            String courseCode = courseMatcher.group();
-            courseManager.processCourses(line);
+            courseManager.processCourses(line, major);
         } else if (line.startsWith("BS in")) {
             if (line.contains("Computer Science")) {
                 courseManager.setMajor("Computer Science");
@@ -66,13 +89,20 @@ public class PDFManager {
         }
     }
 
+    /**
+     * Attempts to export the current transcript
+     *
+     * @param path the path to save the exported transcript
+     * @throws IOException if a file error occurs
+     */
     public void exportTranscript(Path path) throws IOException {
         PDDocument transcript = new PDDocument();
 
         HashMap<String, Set<Course>> coursesByTerm = courseManager.getCoursesByCompleteTerm();
-
         while (!coursesByTerm.isEmpty()) {
-            PDPage page = new PDPage(new PDRectangle(PDRectangle.LETTER.getHeight(), PDRectangle.LETTER.getWidth()));
+            PDPage page = new PDPage(
+                    new PDRectangle(PDRectangle.LETTER.getHeight(),
+                    PDRectangle.LETTER.getWidth()));
             transcript.addPage(page);
             PDPageContentStream stream = new PDPageContentStream(transcript, page);
 
@@ -88,7 +118,8 @@ public class PDFManager {
     private void writeHeader(PDPageContentStream stream, PDPage page) throws IOException {
         stream.setFont(PDFManager.OBLIQUE_FONT, TITLE_SIZE);
         stream.setLeading(TITLE_SIZE * PDFManager.LEADING_FACTOR);
-        float width = PDFManager.OBLIQUE_FONT.getStringWidth("Milwaukee School of Engineering") / 1000 * TITLE_SIZE;
+        float width = PDFManager.OBLIQUE_FONT.getStringWidth(
+                "Milwaukee School of Engineering") / THOUSAND * TITLE_SIZE;
         x = (page.getMediaBox().getWidth() - width) / 2;
         y = page.getMediaBox().getHeight() - TOP_MARGIN;
         stream.beginText();
@@ -115,7 +146,7 @@ public class PDFManager {
 
         stream.beginText();
         stream.setFont(PDFManager.STANDARD_FONT, TEXT_SIZE);
-        x = page.getMediaBox().getWidth() / 8;
+        x = page.getMediaBox().getWidth() / X_OFFSET;
         y = y - 4 * TEXT_SIZE;
         stream.newLineAtOffset(x, y);
         stream.showText("ID: 101010");
@@ -128,14 +159,17 @@ public class PDFManager {
         stream.endText();
     }
 
-    private void writeCourses(HashMap<String, Set<Course>> coursesByTerm, PDPageContentStream stream, PDPage page) throws IOException {
+    private void writeCourses(
+            HashMap<String, Set<Course>> coursesByTerm, PDPageContentStream stream, PDPage page) throws IOException {
         boolean firstColumnFull = false;
         boolean secondColumnFull = false;
 
         boolean result = false;
         startColumnOne(stream, page);
-        for (String term : coursesByTerm.keySet()) {
-            if(!secondColumnFull) {
+        String[] terms = {};
+        terms = coursesByTerm.keySet().toArray(terms);
+        for (String term : terms) {
+            if (!secondColumnFull) {
                 stream.setFont(BOLD_FONT, TEXT_SIZE);
                 stream.setLeading(TEXT_SIZE * LEADING_FACTOR);
 
@@ -166,33 +200,33 @@ public class PDFManager {
                         }
                     }
                 }
-                if(coursesByTerm.get(term).isEmpty()) {
+                if (coursesByTerm.get(term).isEmpty()) {
                     coursesByTerm.remove(term);
                 }
             }
-            stream.endText();
         }
-
+        stream.endText();
     }
 
-    private boolean newColumnLine(PDPageContentStream stream, PDPage page, String contents) throws IOException{
+    private boolean newColumnLine(
+            PDPageContentStream stream, PDPage page, String contents) throws IOException {
         stream.showText(contents);
         stream.newLine();
         y -= TEXT_SIZE * LEADING_FACTOR;
         return y < BOTTOM_MARGIN;
     }
 
-    private void startColumnOne(PDPageContentStream stream, PDPage page) throws IOException{
-        float columnTop = page.getMediaBox().getHeight() * 3 / 5;
+    private void startColumnOne(PDPageContentStream stream, PDPage page) throws IOException {
+        float columnTop = page.getMediaBox().getHeight() * 3 / COL_OFFSET;
         x = LEFT_MARGIN;
         y = columnTop;
         stream.beginText();
         stream.newLineAtOffset(x, y);
     }
 
-    private void startColumnTwo(PDPageContentStream stream, PDPage page) throws IOException{
-        float columnTop = page.getMediaBox().getHeight() * 3 / 5;
-        x = LEFT_MARGIN + page.getMediaBox().getWidth()/2;
+    private void startColumnTwo(PDPageContentStream stream, PDPage page) throws IOException {
+        float columnTop = page.getMediaBox().getHeight() * 3 / COL_OFFSET;
+        x = LEFT_MARGIN + page.getMediaBox().getWidth() / 2;
         y = columnTop;
         stream.beginText();
         stream.newLineAtOffset(x, y);
