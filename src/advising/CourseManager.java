@@ -52,12 +52,12 @@ public class CourseManager {
     /**
      * Course Manager reads in course data upon initialization
      */
-    public CourseManager() {
+    public CourseManager(File prerequisites, File offerings, File curr) {
         try {
 
-            readPreReqs();
-            readOfferings();
-            readCurriculum();
+            readPreReqs(prerequisites);
+            readOfferings(offerings);
+            readCurriculum(curr);
 
 
         } catch (FileNotFoundException e) {
@@ -68,8 +68,8 @@ public class CourseManager {
         }
     }
 
-    private void readPreReqs() throws FileNotFoundException{
-        Scanner prereqs = new Scanner(new File("src/Data/prerequisites_updated.csv"));
+    private void readPreReqs(File prerequisiteFile) throws FileNotFoundException{
+        Scanner prereqs = new Scanner(prerequisiteFile);
         prereqs.nextLine();
         while (prereqs.hasNextLine()) {
             Scanner line = new Scanner(prereqs.nextLine()).useDelimiter(",");
@@ -82,8 +82,8 @@ public class CourseManager {
         }
     }
 
-    private void readOfferings() throws FileNotFoundException{
-        Scanner offerings = new Scanner(new File("src/Data/offerings.csv"));
+    private void readOfferings(File offer) throws FileNotFoundException{
+        Scanner offerings = new Scanner(offer);
         String[] header = offerings.nextLine().split(",");
         while (offerings.hasNextLine()) {
             String[] line = offerings.nextLine().split(",");
@@ -102,8 +102,8 @@ public class CourseManager {
         }
     }
 
-    private void readCurriculum() throws FileNotFoundException{
-        Scanner curiculum = new Scanner(new File("src/Data/curriculum.csv"));
+    private void readCurriculum(File curr) throws FileNotFoundException{
+        Scanner curiculum = new Scanner(curr);
         curiculum.nextLine();
         while (curiculum.hasNextLine()) {
             String[] courses = curiculum.nextLine().split(",");
