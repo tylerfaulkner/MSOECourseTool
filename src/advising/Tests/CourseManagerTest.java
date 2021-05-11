@@ -58,7 +58,7 @@ public class CourseManagerTest {
     /**
      * Method for testing if the CS track is correctly returned
      */
-    @Test
+    @AfterTest
     public void testGetCSTrack() {
         //Arrange
         List<String> expectedCS = new ArrayList<>(Arrays.asList("this", "is", "valid", "CS"));

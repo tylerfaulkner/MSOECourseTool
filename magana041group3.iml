@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
-  <component name="CheckStyle-IDEA-Module">
-    <option name="configuration">
-      <map />
-    </option>
-  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -56,6 +51,17 @@
           <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/com/google/guava/guava/19.0/guava-19.0.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.21/snakeyaml-1.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="testng">
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/testng/testng/6.14.3/testng-6.14.3.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/com/beust/jcommander/1.72/jcommander-1.72.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
