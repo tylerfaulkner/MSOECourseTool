@@ -548,9 +548,7 @@ public class CourseManager {
                     recommendedCourses.add(course);
                 }
             }
-
         }
-
         return recommendedCourses;
     }
 

@@ -39,7 +39,7 @@
                         <Button fx:id="feature2Button" disable="true" layoutX="37.0" layoutY="235.0" mnemonicParsing="false" onAction="#listGraduationPlan" prefHeight="25.0" prefWidth="126.0" text="List Graduation Plan" />
                         <Button fx:id="feature3Button" disable="true" layoutX="38.0" layoutY="278.0" mnemonicParsing="false" onAction="#listCourseToDate" prefHeight="25.0" prefWidth="126.0" text="List Courses to Date" />
                         <Button layoutX="119.0" layoutY="38.0" mnemonicParsing="false" onAction="#exportTranscript" prefHeight="25.0" prefWidth="69.0" text="Export" />
-                        <Button fx:id="feature7Button" disable="true" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#exportGraduationPlan" prefHeight="25.0" prefWidth="143.0" text="Export Graduation Plan" />
+                        <Button fx:id="feature7Button" disable="true" layoutX="29.0" layoutY="365.0" mnemonicParsing="false" onAction="#exportGraduationPlan" prefHeight="25.0" prefWidth="143.0" text="Export Graduation Plan" />
                         <Button layoutX="119.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="69.0" text="Export" onAction="#exportTranscript" />
                         <Line endX="100.0" layoutX="100.0" layoutY="13.0" startX="-100.0" />
                         <Line endX="100.0" layoutX="100.0" layoutY="92.0" startX="-100.0" />

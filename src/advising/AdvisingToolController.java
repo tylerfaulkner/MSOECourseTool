@@ -60,8 +60,7 @@ public class AdvisingToolController {
     ListView listView, detailView, currentCourses, failedRecommend, gradPlanFailed, failedViewer, transcriptCourseList;
 
     @FXML
-    Button recommendButton, feature2Button, feature3Button, feature7Button;
-    Button recommendButton, feature2Button, feature3Button, failedButton, transcriptButton;
+    Button recommendButton, feature2Button, feature3Button, failedButton, transcriptButton, feature7Button;
 
     @FXML
     MenuButton optionBox;
@@ -185,6 +184,10 @@ public class AdvisingToolController {
         failedCourseScreen.setVisible(true);
         failedCourseScreen.setDisable(false);
         updateFailed();
+        transcriptScreen.setDisable(true);
+        transcriptScreen.setVisible(false);
+        toggleTranscript = false;
+
     }
 
     @FXML
@@ -254,274 +257,275 @@ public class AdvisingToolController {
         if (transcriptFile != null) {
             listView.getItems().clear();
             listView.getItems().addAll(manager.recommendCourses());
-        try {
-            if (transcriptFile != null) {
-                listView.getItems().clear();
-                List<Course> rec = manager.recommendCourses();
-                rec.remove(0);
-                listView.getItems().add("Recommended Courses for next trimester:");
-                listView.getItems().add("  ");
-                listView.getItems().addAll(rec);
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Presents the graduation plan of a given student based on transcript
-     */
-    @FXML
-    private void listGraduationPlan() {
-        hideGraph();
-        hideFailed();
-        listView.getItems().clear();
-        listView.getItems().add("List of classes needed to graduate:");
-        List<Course> termCourses = new ArrayList<>();
-        List<Course> gradCourses = manager.graduationPlan();
-        gradCourses.remove(0);
-        Iterator<Course> it = gradCourses.listIterator();
-        int termNumber = 1;
-        while (it.hasNext()) {
-            termCourses.clear();
-            String termDescription = "";
-            switch (termNumber) {
-                case 1:
-                    termDescription = "2021-2022 Fall Quarter";
-                    break;
-                case 2:
-                    termDescription = "2021-2022 Winter Quarter";
-                    break;
-                case 3:
-                    termDescription = "2021-2022 Spring Quarter";
-                    break;
-                case 4:
-                    termDescription = "2022-2023 Fall Quarter";
-                    break;
-                case 5:
-                    termDescription = "2022-2023 Winter Quarter";
-                    break;
-                case 6:
-                    termDescription = "2022-2023 Spring Quarter";
-                    break;
-                case 7:
-                    termDescription = "2023-2024 Fall Quarter";
-                    break;
-                case 8:
-                    termDescription = "2023-2024 Winter Quarter";
-                    break;
-                case 9:
-                    termDescription = "2023-2024 Spring Quarter";
-                    break;
-            }
-            listView.getItems().add(termDescription);
-            listView.getItems().add("  ");
-            while (manager.getTotalCredits(termCourses) < 15 && it.hasNext()) {
-                termCourses.add(it.next());
-            }
-            listView.getItems().addAll(termCourses);
-            listView.getItems().add("  ");
-            termNumber++;
-        }
-    }
-
-    @FXML
-    private void exportGraduationPlan() {
-        FileChooser saveChooser = new FileChooser();
-        saveChooser.setInitialDirectory(new File("./"));
-        saveChooser.setTitle("Save Graduation Plan File");
-        saveChooser.getExtensionFilters().add(new FileChooser.
-                ExtensionFilter("Text Files", "*.txt"));
-        File gradPlanExp = saveChooser.showSaveDialog(null);
-        try {
-            if (gradPlanExp != null) {
-                PrintWriter pw = new PrintWriter(gradPlanExp);
-                List<Course> termCourses = new ArrayList<>();
-                List<Course> gradCourses = manager.graduationPlan();
-                gradCourses.remove(0);
-                Iterator<Course> it = gradCourses.listIterator();
-                int termNumber = 1;
-                while (it.hasNext()) {
-                    termCourses.clear();
-                    String termDescription = "";
-                    switch (termNumber) {
-                        case 1:
-                            termDescription = "2021-2022 Fall Quarter";
-                            break;
-                        case 2:
-                            termDescription = "2021-2022 Winter Quarter";
-                            break;
-                        case 3:
-                            termDescription = "2021-2022 Spring Quarter";
-                            break;
-                        case 4:
-                            termDescription = "2022-2023 Fall Quarter";
-                            break;
-                        case 5:
-                            termDescription = "2022-2023 Winter Quarter";
-                            break;
-                        case 6:
-                            termDescription = "2022-2023 Spring Quarter";
-                            break;
-                        case 7:
-                            termDescription = "2023-2024 Fall Quarter";
-                            break;
-                        case 8:
-                            termDescription = "2023-2024 Winter Quarter";
-                            break;
-                        case 9:
-                            termDescription = "2023-2024 Spring Quarter";
-                            break;
-                    }
-                    pw.println(termDescription);
-                    while (manager.getTotalCredits(termCourses) < 15 && it.hasNext()) {
-                        termCourses.add(it.next());
-                    }
-                    pw.println(termCourses);
-                    pw.println("  ");
-                    termNumber++;
-                }
-                pw.close();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    /**
-     * Method to prompt for showing prerequisites and to set the onAction
-     */
-    private void populateContextMenu() {
-        MenuItem prereqs = new MenuItem("Show Prerequisites");
-        prereqs.setOnAction(actionEvent -> showPrerequisites());
-        courseMenu.getItems().add(prereqs);
-    }
-
-    /**
-     * Method called when transcript is imported and the course by term button is clicked
-     */
-    private void showCourseByTerm() {
-        if (graphIsVisible()) {
-            hideGraph();
-            // listView.getItems().clear();
-            //searchBar.setText("");
-            //searchBar.setPromptText("Please input a Term (1, 2, or 3)");
-        }
-
-        searchBar.setOnAction(actionEvent -> showCourseByTerm());
-
-        String search = searchBar.getText();
-        if (!search.equals("")) {
-            boolean found = false;
-            for (int i = 0; i < termAltNames.length && !found; i++) {
-                if (termAltNames[i].contains(search)) {
-                    List courses = manager.listCourses(i + 1);
+            try {
+                if (transcriptFile != null) {
                     listView.getItems().clear();
-                    listView.getItems().addAll(courses);
-                    found = true;
+                    List<Course> rec = manager.recommendCourses();
+                    listView.getItems().add("Recommended Courses for next trimester:");
+                    listView.getItems().add("  ");
+                    listView.getItems().addAll(rec);
                 }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
             }
-            if (!found) {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "There are no matches " +
-                        "for the current input.");
-                alert.setHeaderText("Unknown Input");
-                alert.showAndWait();
+        }
+    }
+
+        /**
+         * Presents the graduation plan of a given student based on transcript
+         */
+        @FXML
+        private void listGraduationPlan() {
+            hideGraph();
+            hideFailed();
+            listView.getItems().clear();
+            listView.getItems().add("List of classes needed to graduate:");
+            List<Course> termCourses = new ArrayList<>();
+            List<Course> gradCourses = manager.graduationPlan();
+            gradCourses.remove(0);
+            Iterator<Course> it = gradCourses.listIterator();
+            int termNumber = 1;
+            while (it.hasNext()) {
+                termCourses.clear();
+                String termDescription = "";
+                switch (termNumber) {
+                    case 1:
+                        termDescription = "2021-2022 Fall Quarter";
+                        break;
+                    case 2:
+                        termDescription = "2021-2022 Winter Quarter";
+                        break;
+                    case 3:
+                        termDescription = "2021-2022 Spring Quarter";
+                        break;
+                    case 4:
+                        termDescription = "2022-2023 Fall Quarter";
+                        break;
+                    case 5:
+                        termDescription = "2022-2023 Winter Quarter";
+                        break;
+                    case 6:
+                        termDescription = "2022-2023 Spring Quarter";
+                        break;
+                    case 7:
+                        termDescription = "2023-2024 Fall Quarter";
+                        break;
+                    case 8:
+                        termDescription = "2023-2024 Winter Quarter";
+                        break;
+                    case 9:
+                        termDescription = "2023-2024 Spring Quarter";
+                        break;
+                }
+                listView.getItems().add(termDescription);
+                listView.getItems().add("  ");
+                while (manager.getTotalCredits(termCourses) < 15 && it.hasNext()) {
+                    termCourses.add(it.next());
+                }
+                listView.getItems().addAll(termCourses);
+                listView.getItems().add("  ");
+                termNumber++;
             }
-        } else {
-            searchBar.clear();
-            searchBar.setPromptText("Please input a Term (1, 2, or 3)");
         }
-    }
 
-    /**
-     * This is the stupidest method I have ever written
-     * Author : Tyler Faulkner
-     * @return boolean if graph is visible
-     */
-    private boolean graphIsVisible() {
-        return nodeGraph.isVisible();
-    }
-
-    /**
-     * Method called using context menu that presents prerequisites in detail window
-     */
-    private void showPrerequisites() {
-        Object itemSelected = listView.getSelectionModel().getSelectedItem();
-        String courseName = "";
-        if (itemSelected instanceof Course) {
-            courseName = ((Course) itemSelected).getName();
-        } else if (itemSelected instanceof String) {
-            String[] strings = ((String) itemSelected).split(" ");
-            courseName = strings[0];
-        }
-        detailView.getItems().clear();
-        List<String> prereqs = manager.showPrerequisites(courseName);
-        if (prereqs == null) {
-            detailView.getItems().add("Class Entered is Invalid");
-        } else if (prereqs.size() == 0) {
-            detailView.getItems().add("No prerequisites found");
-        } else {
-            detailView.getItems().addAll(prereqs);
-        }
-    }
-
-    /**
-     * Method that prompts user for their unofficial transcript
-     */
-    @FXML
-    private void importTranscript() {
-        FileChooser loadChooser = new FileChooser();
-        loadChooser.setInitialDirectory(new File("./"));
-        loadChooser.setTitle("Open Transcript File");
-        loadChooser.getExtensionFilters().add(new FileChooser.
-                ExtensionFilter("PDF Files", "*.pdf"));
-        try {
-            transcriptFile = loadChooser.showOpenDialog(null);
-            if (transcriptFile != null) {
-                pdfManager.importTranscript(transcriptFile);
-                fileImportUnlockFunctionality();
+        @FXML
+        private void exportGraduationPlan() {
+            FileChooser saveChooser = new FileChooser();
+            saveChooser.setInitialDirectory(new File("./"));
+            saveChooser.setTitle("Save Graduation Plan File");
+            saveChooser.getExtensionFilters().add(new FileChooser.
+                    ExtensionFilter("Text Files", "*.txt"));
+            File gradPlanExp = saveChooser.showSaveDialog(null);
+            try {
+                if (gradPlanExp != null) {
+                    PrintWriter pw = new PrintWriter(gradPlanExp);
+                    List<Course> termCourses = new ArrayList<>();
+                    List<Course> gradCourses = manager.graduationPlan();
+                    gradCourses.remove(0);
+                    Iterator<Course> it = gradCourses.listIterator();
+                    int termNumber = 1;
+                    while (it.hasNext()) {
+                        termCourses.clear();
+                        String termDescription = "";
+                        switch (termNumber) {
+                            case 1:
+                                termDescription = "2021-2022 Fall Quarter";
+                                break;
+                            case 2:
+                                termDescription = "2021-2022 Winter Quarter";
+                                break;
+                            case 3:
+                                termDescription = "2021-2022 Spring Quarter";
+                                break;
+                            case 4:
+                                termDescription = "2022-2023 Fall Quarter";
+                                break;
+                            case 5:
+                                termDescription = "2022-2023 Winter Quarter";
+                                break;
+                            case 6:
+                                termDescription = "2022-2023 Spring Quarter";
+                                break;
+                            case 7:
+                                termDescription = "2023-2024 Fall Quarter";
+                                break;
+                            case 8:
+                                termDescription = "2023-2024 Winter Quarter";
+                                break;
+                            case 9:
+                                termDescription = "2023-2024 Spring Quarter";
+                                break;
+                        }
+                        pw.println(termDescription);
+                        while (manager.getTotalCredits(termCourses) < 15 && it.hasNext()) {
+                            termCourses.add(it.next());
+                        }
+                        pw.println(termCourses);
+                        pw.println("  ");
+                        termNumber++;
+                    }
+                    pw.close();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            showGenericAlert();
         }
-    }
+        /**
+         * Method to prompt for showing prerequisites and to set the onAction
+         */
+        private void populateContextMenu() {
+            MenuItem prereqs = new MenuItem("Show Prerequisites");
+            prereqs.setOnAction(actionEvent -> showPrerequisites());
+            courseMenu.getItems().add(prereqs);
+        }
 
-    private void fileImportUnlockFunctionality(){
-        listView.getItems().clear();
-        listView.getItems().add("Hello " + manager.getMajor()
-                + " student. Import is complete!");
-        feature2Button.setDisable(false);
-        feature3Button.setDisable(false);
-        recommendButton.setDisable(false);
-        completedMark.setDisable(false);
-        colorPicker.setDisable(false);
-        failedButton.setDisable(false);
-        transcriptButton.setDisable(false);
-    }
-
-    /**
-     * Exports the user's transcript
-     */
-    public void exportTranscript() {
-        FileChooser saveChooser = new FileChooser();
-        saveChooser.setInitialDirectory(new File("./"));
-        saveChooser.setTitle("Save Transcirpt File");
-        saveChooser.getExtensionFilters().add(new FileChooser.
-                ExtensionFilter("PDF Files", "*.pdf"));
-        try {
-            transcriptFile = saveChooser.showSaveDialog(null);
-            if (transcriptFile != null) {
-                pdfManager.exportTranscript(transcriptFile.toPath());
-                listView.getItems().clear();
-                listView.getItems().add("Export successful");
+        /**
+         * Method called when transcript is imported and the course by term button is clicked
+         */
+        private void showCourseByTerm() {
+            if (graphIsVisible()) {
+                hideGraph();
+                // listView.getItems().clear();
+                //searchBar.setText("");
+                //searchBar.setPromptText("Please input a Term (1, 2, or 3)");
             }
-        } catch (IOException e) {
-            showGenericAlert();
+
+            searchBar.setOnAction(actionEvent -> showCourseByTerm());
+
+            String search = searchBar.getText();
+            if (!search.equals("")) {
+                boolean found = false;
+                for (int i = 0; i < termAltNames.length && !found; i++) {
+                    if (termAltNames[i].contains(search)) {
+                        List courses = manager.listCourses(i + 1);
+                        listView.getItems().clear();
+                        listView.getItems().addAll(courses);
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "There are no matches " +
+                            "for the current input.");
+                    alert.setHeaderText("Unknown Input");
+                    alert.showAndWait();
+                }
+            } else {
+                searchBar.clear();
+                searchBar.setPromptText("Please input a Term (1, 2, or 3)");
+            }
+        }
+
+        /**
+         * This is the stupidest method I have ever written
+         * Author : Tyler Faulkner
+         * @return boolean if graph is visible
+         */
+        private boolean graphIsVisible() {
+            return nodeGraph.isVisible();
+        }
+
+        /**
+         * Method called using context menu that presents prerequisites in detail window
+         */
+        private void showPrerequisites() {
+            Object itemSelected = listView.getSelectionModel().getSelectedItem();
+            String courseName = "";
+            if (itemSelected instanceof Course) {
+                courseName = ((Course) itemSelected).getName();
+            } else if (itemSelected instanceof String) {
+                String[] strings = ((String) itemSelected).split(" ");
+                courseName = strings[0];
+            }
+            detailView.getItems().clear();
+            List<String> prereqs = manager.showPrerequisites(courseName);
+            if (prereqs == null) {
+                detailView.getItems().add("Class Entered is Invalid");
+            } else if (prereqs.size() == 0) {
+                detailView.getItems().add("No prerequisites found");
+            } else {
+                detailView.getItems().addAll(prereqs);
+            }
+        }
+
+        /**
+         * Method that prompts user for their unofficial transcript
+         */
+        @FXML
+        private void importTranscript() {
+            FileChooser loadChooser = new FileChooser();
+            loadChooser.setInitialDirectory(new File("./"));
+            loadChooser.setTitle("Open Transcript File");
+            loadChooser.getExtensionFilters().add(new FileChooser.
+                    ExtensionFilter("PDF Files", "*.pdf"));
+            try {
+                transcriptFile = loadChooser.showOpenDialog(null);
+                if (transcriptFile != null) {
+                    pdfManager.importTranscript(transcriptFile);
+                    fileImportUnlockFunctionality();
+                }
+            } catch (IOException e) {
+                showGenericAlert();
+            }
+        }
+
+        private void fileImportUnlockFunctionality(){
+            listView.getItems().clear();
+            listView.getItems().add("Hello " + manager.getMajor()
+                    + " student. Import is complete!");
+            feature2Button.setDisable(false);
+            feature3Button.setDisable(false);
+            recommendButton.setDisable(false);
+            completedMark.setDisable(false);
+            colorPicker.setDisable(false);
+            failedButton.setDisable(false);
+            transcriptButton.setDisable(false);
+            feature7Button.setDisable(false);
+        }
+
+        /**
+         * Exports the user's transcript
+         */
+        public void exportTranscript() {
+            FileChooser saveChooser = new FileChooser();
+            saveChooser.setInitialDirectory(new File("./"));
+            saveChooser.setTitle("Save Transcirpt File");
+            saveChooser.getExtensionFilters().add(new FileChooser.
+                    ExtensionFilter("PDF Files", "*.pdf"));
+            try {
+                transcriptFile = saveChooser.showSaveDialog(null);
+                if (transcriptFile != null) {
+                    pdfManager.exportTranscript(transcriptFile.toPath());
+                    listView.getItems().clear();
+                    listView.getItems().add("Export successful");
+                }
+            } catch (IOException e) {
+                showGenericAlert();
+            }
+        }
+
+        private void showGenericAlert(){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Critical Error");
+            alert.setContentText("The system had a critical error while loading the file.");
+            alert.showAndWait();
         }
     }
-
-    private void showGenericAlert(){
-        Alert alert = new Alert(Alert.AlertType.ERROR, "Critical Error");
-        alert.setContentText("The system had a critical error while loading the file.");
-        alert.showAndWait();
-    }
-}
