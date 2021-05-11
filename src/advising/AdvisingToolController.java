@@ -16,9 +16,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import java.io.File;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.*;
 
 /**
  * Controller for the Advising Tool GUI using FXML
@@ -44,7 +44,7 @@ public class AdvisingToolController {
     ListView listView, detailView;
 
     @FXML
-    Button recommendButton, feature2Button, feature3Button, feature4Button;
+    Button recommendButton, feature2Button, feature3Button, feature7Button;
 
     @FXML
     MenuButton optionBox;
@@ -157,7 +157,11 @@ public class AdvisingToolController {
         try {
             if (transcriptFile != null) {
                 listView.getItems().clear();
-                listView.getItems().addAll(manager.recommendCourses());
+                List<Course> rec = manager.recommendCourses();
+                rec.remove(0);
+                listView.getItems().add("Recommended Courses for next trimester:");
+                listView.getItems().add("  ");
+                listView.getItems().addAll(rec);
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -171,9 +175,117 @@ public class AdvisingToolController {
     private void listGraduationPlan() {
         hideGraph();
         listView.getItems().clear();
-        listView.getItems().addAll(manager.graduationPlan());
+        listView.getItems().add("List of classes needed to graduate:");
+        List<Course> termCourses = new ArrayList<>();
+        List<Course> gradCourses = manager.graduationPlan();
+        gradCourses.remove(0);
+        Iterator<Course> it = gradCourses.listIterator();
+        int termNumber = 1;
+        while (it.hasNext()) {
+            termCourses.clear();
+            String termDescription = "";
+            switch (termNumber) {
+                case 1:
+                    termDescription = "2021-2022 Fall Quarter";
+                    break;
+                case 2:
+                    termDescription = "2021-2022 Winter Quarter";
+                    break;
+                case 3:
+                    termDescription = "2021-2022 Spring Quarter";
+                    break;
+                case 4:
+                    termDescription = "2022-2023 Fall Quarter";
+                    break;
+                case 5:
+                    termDescription = "2022-2023 Winter Quarter";
+                    break;
+                case 6:
+                    termDescription = "2022-2023 Spring Quarter";
+                    break;
+                case 7:
+                    termDescription = "2023-2024 Fall Quarter";
+                    break;
+                case 8:
+                    termDescription = "2023-2024 Winter Quarter";
+                    break;
+                case 9:
+                    termDescription = "2023-2024 Spring Quarter";
+                    break;
+            }
+            listView.getItems().add(termDescription);
+            listView.getItems().add("  ");
+            while (manager.getTotalCredits(termCourses) < 15 && it.hasNext()) {
+                termCourses.add(it.next());
+            }
+            listView.getItems().addAll(termCourses);
+            listView.getItems().add("  ");
+            termNumber++;
+        }
     }
 
+    @FXML
+    private void exportGraduationPlan() {
+        FileChooser saveChooser = new FileChooser();
+        saveChooser.setInitialDirectory(new File("./"));
+        saveChooser.setTitle("Save Graduation Plan File");
+        saveChooser.getExtensionFilters().add(new FileChooser.
+                ExtensionFilter("Text Files", "*.txt"));
+        File gradPlanExp = saveChooser.showSaveDialog(null);
+        try {
+            if (gradPlanExp != null) {
+                PrintWriter pw = new PrintWriter(gradPlanExp);
+                List<Course> termCourses = new ArrayList<>();
+                List<Course> gradCourses = manager.graduationPlan();
+                gradCourses.remove(0);
+                Iterator<Course> it = gradCourses.listIterator();
+                int termNumber = 1;
+                while (it.hasNext()) {
+                    termCourses.clear();
+                    String termDescription = "";
+                    switch (termNumber) {
+                        case 1:
+                            termDescription = "2021-2022 Fall Quarter";
+                            break;
+                        case 2:
+                            termDescription = "2021-2022 Winter Quarter";
+                            break;
+                        case 3:
+                            termDescription = "2021-2022 Spring Quarter";
+                            break;
+                        case 4:
+                            termDescription = "2022-2023 Fall Quarter";
+                            break;
+                        case 5:
+                            termDescription = "2022-2023 Winter Quarter";
+                            break;
+                        case 6:
+                            termDescription = "2022-2023 Spring Quarter";
+                            break;
+                        case 7:
+                            termDescription = "2023-2024 Fall Quarter";
+                            break;
+                        case 8:
+                            termDescription = "2023-2024 Winter Quarter";
+                            break;
+                        case 9:
+                            termDescription = "2023-2024 Spring Quarter";
+                            break;
+                    }
+                    pw.println(termDescription);
+                    while (manager.getTotalCredits(termCourses) < 15 && it.hasNext()) {
+                        termCourses.add(it.next());
+                    }
+                    pw.println(termCourses);
+                    pw.println("  ");
+                    termNumber++;
+                }
+                pw.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Method to prompt for showing prerequisites and to set the onAction
      */
@@ -189,7 +301,7 @@ public class AdvisingToolController {
     private void showCourseByTerm(){
         if(graphIsVisible()) {
             hideGraph();
-           // listView.getItems().clear();
+            // listView.getItems().clear();
             //searchBar.setText("");
             //searchBar.setPromptText("Please input a Term (1, 2, or 3)");
         }
@@ -265,7 +377,7 @@ public class AdvisingToolController {
                 listView.getItems().add("Hello " + manager.getMajor() + " student. Import is complete!");
                 feature2Button.setDisable(false);
                 feature3Button.setDisable(false);
-//                feature4Button.setDisable(false);
+                feature7Button.setDisable(false);
                 recommendButton.setDisable(false);
 
             }

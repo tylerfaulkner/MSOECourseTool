@@ -443,7 +443,7 @@ public class CourseManager {
 
         //Checks to see if any courses were failed, if they were add them to the list.
         for (Course c : coursesToDate) {
-            if (!c.isPassed() && !c.isCompleted() && recommendedCoursesTotalCredits(recommendedCourses) < 15) {
+            if (!c.isPassed() && !c.isCompleted() && getTotalCredits(recommendedCourses) < 15) {
                 recommendedCourses.sort(Course::compareTo);
                 recommendedCourses.add(c);
             }
@@ -462,7 +462,7 @@ public class CourseManager {
             Course course = catalog.get(code);
 
             boolean electiveCourse = Arrays.asList(electives).contains(code);
-            boolean recCreditsLessThan15 = recommendedCoursesTotalCredits(recommendedCourses) < 15;
+            boolean recCreditsLessThan15 = getTotalCredits(recommendedCourses) < 15;
 
             /* Checks if:
             1. Recommended courses already contains the course
@@ -487,7 +487,7 @@ public class CourseManager {
      * @param recCourses The list of courses
      * @return The total credits the list is worth currently
      */
-    public double recommendedCoursesTotalCredits(List<Course> recCourses) {
+    public double getTotalCredits(List<Course> recCourses) {
         double totalCreds = 0;
         for (Course c : recCourses) {
             if (c != null) {
