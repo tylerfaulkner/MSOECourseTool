@@ -416,6 +416,7 @@ public class CourseManager {
                 //If you are currently working through the class, you completed it
             } else if (grade.equals("WIP")) {
                 lastCourse.setCompleted(true);
+                lastCourse.setPassed(false);
                 lastCourse.setWIP(true);
                 //Other than those two cases, you completed and passed it
             } else {

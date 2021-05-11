@@ -207,8 +207,8 @@ public class PDFManager {
         stream.endText();
     }
 
-    private String[] getOrderedTerms(Set<String> coursesByTerm) {
-        Set<String> terms = new HashSet<>(coursesByTerm);
+    private String[] getOrderedTerms(Set<String> courseTerms) {
+        Set<String> terms = new HashSet<>(courseTerms);
         List<String> orderedTerms = new LinkedList<>();
         if (terms.contains("External Institution")) {
             terms.remove("External Institution");

@@ -174,7 +174,8 @@ public class AdvisingToolController {
 
     @FXML
     private void saveEntry(){
-
+        String courseLine = classCodeArea.getText() + " " + passFailArea.getText();
+        manager.processCourses(courseLine, termTakenArea.getText());
     }
     @FXML
     private void openFailedImpact() {
