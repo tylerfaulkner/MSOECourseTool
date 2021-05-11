@@ -21,9 +21,9 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="763.0" prefWidth="1097.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="advising.AdvisingToolController">
+<VBox alignment="CENTER" prefHeight="763.0" prefWidth="1097.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="advising.AdvisingToolController">
   <children>
-    <SplitPane dividerPositions="0.26506024096385544" focusTraversable="true" prefHeight="607.0" prefWidth="920.0" VBox.vgrow="ALWAYS">
+    <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="607.0" prefWidth="920.0" VBox.vgrow="ALWAYS">
       <items>
         <AnchorPane maxWidth="200.0" prefWidth="217.0">
           <children>
@@ -42,8 +42,10 @@
                         <Line endX="100.0" layoutX="100.0" layoutY="13.0" startX="-100.0" />
                         <Line endX="100.0" layoutX="100.0" layoutY="92.0" startX="-100.0" />
                         <Button fx:id="failedButton" disable="true" layoutX="28.0" layoutY="322.0" mnemonicParsing="false" onAction="#openFailedImpact" prefHeight="25.0" prefWidth="145.0" text="Failed Course Impact" />
+                        <Line endX="100.0" layoutX="100.0" layoutY="436.0" startX="-100.0" />
                      </children>
                   </AnchorPane>
+                  <Button fx:id="transcriptButton" disable="true" layoutX="41.0" layoutY="526.0" mnemonicParsing="false" onAction="#openEditTranscript" prefHeight="25.0" prefWidth="145.0" text="Edit Transcript Export" />
           </children>
                <effect>
                   <InnerShadow radius="5.5525" width="3.21" />
@@ -189,7 +191,52 @@
                         </VBox>
                      </content>
                   </ScrollPane>
+                  <ScrollPane fx:id="transcriptScreen" disable="true" layoutX="16.0" layoutY="16.0" prefHeight="717.0" prefWidth="838.0" visible="false">
+                     <content>
+                        <HBox alignment="CENTER" prefHeight="624.0" prefWidth="831.0">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="624.0" prefWidth="317.0" spacing="30.0">
+                                 <children>
+                                    <Label text="Class Code" translateY="30.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="classCodeArea" />
+                                    <Label text="Term Taken" translateY="30.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="termTakenArea" />
+                                    <Label text="Pass/Fail" translateY="30.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="passFailArea" />
+                                    <Button mnemonicParsing="false" onAction="#saveEntry" text="Save" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="60.0" right="60.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </VBox>
+                              <ListView fx:id="transcriptCourseList" prefHeight="626.0" prefWidth="322.0">
+                                 <HBox.margin>
+                                    <Insets bottom="30.0" top="100.0" />
+                                 </HBox.margin>
+                              </ListView>
+                           </children>
+                        </HBox>
+                     </content>
+                  </ScrollPane>
                </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
             </AnchorPane>
       </items>
     </SplitPane>

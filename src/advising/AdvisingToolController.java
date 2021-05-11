@@ -22,6 +22,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -46,16 +47,17 @@ public class AdvisingToolController {
             Arrays.asList("third", "third quarter", "3", "spring", "spring quarter", "quarter 3")
     };
 
-    private CourseManager manager = new CourseManager();
+    private CourseManager manager;
     private File transcriptFile;
     private CourseGraph courseGraph;
     private PDFManager pdfManager;
+    private boolean toggleTranscript = false;
 
     @FXML
-    ListView listView, detailView, currentCourses, failedRecommend, gradPlanFailed, failedViewer;
+    ListView listView, detailView, currentCourses, failedRecommend, gradPlanFailed, failedViewer, transcriptCourseList;
 
     @FXML
-    Button recommendButton, feature2Button, feature3Button, failedButton;
+    Button recommendButton, feature2Button, feature3Button, failedButton, transcriptButton;
 
     @FXML
     MenuButton optionBox;
@@ -64,20 +66,19 @@ public class AdvisingToolController {
     ColorPicker colorPicker;
 
     @FXML
-    TextField searchBar;
+    TextField searchBar, classCodeArea, termTakenArea, passFailArea;
 
     @FXML
     Canvas singleCourse;
 
     @FXML
-    ScrollPane nodeGraph, failedCourseScreen;
+    ScrollPane nodeGraph, failedCourseScreen, transcriptScreen;
 
     @FXML
     CheckBox preReqTail, completedMark;
 
     @FXML
     ContextMenu courseMenu;
-
     /**
      * Method that creates the instance of course manager,
      * actually creates the context menu, and adds the courses by
@@ -85,13 +86,14 @@ public class AdvisingToolController {
      */
     @FXML
     private void initialize() {
-        pdfManager = new PDFManager(manager);
-
-        courseGraph = new CourseGraph(manager.getCatalog());
         File prerequisites = new File("src/Data/prerequisites_updated.csv");
         File offerings = new File("src/Data/offerings.csv");
         File curriculum = new File("src/Data/curriculum.csv");
         manager = new CourseManager(prerequisites, offerings, curriculum);
+
+        pdfManager = new PDFManager(manager);
+        courseGraph = new CourseGraph(manager.getCatalog());
+
         // Create the context menu and have a menuitem that calls show prerequisites
         populateContextMenu();
 
@@ -146,6 +148,8 @@ public class AdvisingToolController {
         searchBar.setOnAction(null);
         nodeGraph.setDisable(true);
         nodeGraph.setVisible(false);
+        transcriptScreen.setDisable(true);
+        transcriptScreen.setVisible(false);
     }
 
     private void hideFailed() {
@@ -153,7 +157,25 @@ public class AdvisingToolController {
         failedCourseScreen.setDisable(true);
         manager.resetVirtual();
     }
+    @FXML
+    private void openEditTranscript(){
+        if(!toggleTranscript){
+            transcriptScreen.setDisable(false);
+            transcriptScreen.setVisible(true);
+            toggleTranscript = true;
+        } else{
+            transcriptScreen.setDisable(true);
+            transcriptScreen.setVisible(false);
+            toggleTranscript = false;
+        }
 
+
+    }
+
+    @FXML
+    private void saveEntry(){
+
+    }
     @FXML
     private void openFailedImpact() {
         failedCourseScreen.setVisible(true);
@@ -347,6 +369,7 @@ public class AdvisingToolController {
         completedMark.setDisable(false);
         colorPicker.setDisable(false);
         failedButton.setDisable(false);
+        transcriptButton.setDisable(false);
     }
 
     /**
