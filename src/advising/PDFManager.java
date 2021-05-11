@@ -19,8 +19,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Manages all PDF export and import functionality
@@ -40,6 +39,7 @@ public class PDFManager {
     private static final int THOUSAND = 1000;
     private static final int X_OFFSET = 8;
     private static final int COL_OFFSET = 5;
+    private static final int TERM_YEAR_END_INDEX = 8;
 
     private float x;
     private float y;
@@ -102,7 +102,7 @@ public class PDFManager {
         while (!coursesByTerm.isEmpty()) {
             PDPage page = new PDPage(
                     new PDRectangle(PDRectangle.LETTER.getHeight(),
-                    PDRectangle.LETTER.getWidth()));
+                            PDRectangle.LETTER.getWidth()));
             transcript.addPage(page);
             PDPageContentStream stream = new PDPageContentStream(transcript, page);
 
@@ -167,14 +167,13 @@ public class PDFManager {
         boolean result = false;
         startColumnOne(stream, page);
         String[] terms = {};
-        terms = coursesByTerm.keySet().toArray(terms);
+        terms = getOrderedTerms(coursesByTerm.keySet());
         for (String term : terms) {
             if (!secondColumnFull) {
                 stream.setFont(BOLD_FONT, TEXT_SIZE);
                 stream.setLeading(TEXT_SIZE * LEADING_FACTOR);
 
                 newColumnLine(stream, page, term);
-
                 Course[] termCourses = coursesByTerm.get(term).toArray(Course[]::new);
                 for (Course course : termCourses) {
                     stream.setFont(STANDARD_FONT, TEXT_SIZE);
@@ -206,6 +205,42 @@ public class PDFManager {
             }
         }
         stream.endText();
+    }
+
+    private String[] getOrderedTerms(Set<String> coursesByTerm) {
+        Set<String> terms = new HashSet<>(coursesByTerm);
+        List<String> orderedTerms = new LinkedList<>();
+        if (terms.contains("External Institution")) {
+            terms.remove("External Institution");
+            orderedTerms.add("External Institution");
+        }
+        HashMap<String, List<String>> termsByYear = new HashMap<>();
+        for (String term : terms) {
+            String year = term.substring(0, TERM_YEAR_END_INDEX);
+            if(!termsByYear.containsKey(year)){
+                termsByYear.put(year, new LinkedList<>());
+            }
+            termsByYear.get(year).add(term);
+        }
+        String[] sortedYears = termsByYear.keySet().toArray(String[]::new);
+        Arrays.sort(sortedYears);
+        String[] quarterOrder = {"Fall", "Winter", "Spring", "Summer"};
+        for (String year : sortedYears){
+            for(String quarter : quarterOrder){
+                String foundTerm = "";
+                for(String term : termsByYear.get(year)){
+                    if(term.contains(quarter)){
+                        foundTerm = term;
+                        orderedTerms.add(term);
+                    }
+                }
+                if(!foundTerm.equals("")){
+                    termsByYear.get(year).remove(orderedTerms.get(orderedTerms.size()-1));
+                }
+            }
+        }
+        String[] orderedTermArray = orderedTerms.toArray(String[]::new);
+        return orderedTermArray;
     }
 
     private boolean newColumnLine(
