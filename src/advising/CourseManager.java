@@ -549,9 +549,7 @@ public class CourseManager {
                     recommendedCourses.add(course);
                 }
             }
-
         }
-
         return recommendedCourses;
     }
 
@@ -561,7 +559,7 @@ public class CourseManager {
      * @param recCourses The list of courses
      * @return The total credits the list is worth currently
      */
-    private double getTotalCredits(List<Course> recCourses) {
+    public double getTotalCredits(List<Course> recCourses) {
         double totalCreds = 0;
         for (Course c : recCourses) {
             if (c != null) {
