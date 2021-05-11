@@ -182,7 +182,7 @@ public class PDFManager {
                         if (course.isPassed()) {
                             result = newColumnLine(stream, page,
                                     course.getName() + " " + course.getDescription() + "   P");
-                        } else if (course.isCompleted()) {
+                        } else if (course.getWIP()) {
                             result = newColumnLine(stream, page,
                                     course.getName() + " " + course.getDescription() + "   WIP");
                         } else {
