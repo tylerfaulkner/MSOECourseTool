@@ -1,45 +1,246 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="advising.AdvisingToolController">
-   <children>
-      <MenuBar prefHeight="25.0" prefWidth="600.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#importTranscript" text="Import" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Features">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#listCSCourses" text="View CS Courses" />
-                  <MenuItem mnemonicParsing="false" onAction="#listSECourses" text="View SE Courses" />
-                <MenuItem mnemonicParsing="false" onAction="#listCourseToDate" text="Courses to Date" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <TextField fx:id="searchBar" layoutX="93.0" layoutY="72.0" onAction="#search" prefHeight="25.0" prefWidth="346.0" />
-      <ScrollPane layoutX="54.0" layoutY="113.0" prefHeight="259.0" prefWidth="474.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+<VBox alignment="CENTER" prefHeight="763.0" prefWidth="1097.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="advising.AdvisingToolController">
+  <children>
+    <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="607.0" prefWidth="920.0" VBox.vgrow="ALWAYS">
+      <items>
+        <AnchorPane maxWidth="200.0" prefWidth="217.0">
+          <children>
+            <Label alignment="CENTER" layoutX="38.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Transcript Features" textAlignment="CENTER" textFill="#393939" wrapText="false">
+              <font>
+                <Font size="18.0" fx:id="x1" />
+              </font>
+            </Label>
+                  <AnchorPane layoutX="13.0" layoutY="41.0" prefHeight="469.0" prefWidth="200.0">
+                     <children>
+                        <Button layoutX="14.0" layoutY="38.0" mnemonicParsing="false" onAction="#importTranscript" prefHeight="25.0" prefWidth="69.0" text="Import" />
+                        <Button fx:id="recommendButton" disable="true" layoutX="32.0" layoutY="194.0" mnemonicParsing="false" onAction="#recommendCourses" prefHeight="25.0" prefWidth="137.0" text="Recommend Courses" />
+                        <Button fx:id="feature2Button" disable="true" layoutX="37.0" layoutY="235.0" mnemonicParsing="false" onAction="#listGraduationPlan" prefHeight="25.0" prefWidth="126.0" text="List Graduation Plan" />
+                        <Button fx:id="feature3Button" disable="true" layoutX="38.0" layoutY="278.0" mnemonicParsing="false" onAction="#listCourseToDate" prefHeight="25.0" prefWidth="126.0" text="List Courses to Date" />
+                        <Button layoutX="119.0" layoutY="38.0" mnemonicParsing="false" onAction="#exportTranscript" prefHeight="25.0" prefWidth="69.0" text="Export" />
+                        <Button fx:id="feature7Button" disable="true" layoutX="29.0" layoutY="365.0" mnemonicParsing="false" onAction="#exportGraduationPlan" prefHeight="25.0" prefWidth="143.0" text="Export Graduation Plan" />
+                        <Button layoutX="119.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="69.0" text="Export" onAction="#exportTranscript" />
+                        <Line endX="100.0" layoutX="100.0" layoutY="13.0" startX="-100.0" />
+                        <Line endX="100.0" layoutX="100.0" layoutY="92.0" startX="-100.0" />
+                        <Button fx:id="failedButton" disable="true" layoutX="28.0" layoutY="322.0" mnemonicParsing="false" onAction="#openFailedImpact" prefHeight="25.0" prefWidth="145.0" text="Failed Course Impact" />
+                        <Line endX="100.0" layoutX="100.0" layoutY="436.0" startX="-100.0" />
+                     </children>
+                  </AnchorPane>
+                  <Button fx:id="transcriptButton" disable="true" layoutX="41.0" layoutY="526.0" mnemonicParsing="false" onAction="#openEditTranscript" prefHeight="25.0" prefWidth="145.0" text="Edit Transcript Export" />
+          </children>
+               <effect>
+                  <InnerShadow radius="5.5525" width="3.21" />
+               </effect>
+        </AnchorPane>
+            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="583.0" prefWidth="535.0">
                <children>
-                  <ListView fx:id="listView" layoutY="-4.0" prefHeight="259.0" prefWidth="474.0" />
+                  <Label fx:id="errorLabel" layoutX="313.0" layoutY="14.0" textFill="#c30101">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <VBox prefHeight="605.0" prefWidth="622.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <AnchorPane prefHeight="98.0" prefWidth="875.0">
+                           <children>
+                              <HBox alignment="CENTER" prefHeight="62.0" prefWidth="875.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <TextField fx:id="searchBar" prefHeight="29.0" prefWidth="391.0" />
+                                    <MenuButton fx:id="optionBox" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" text="Choose Action">
+                                       <effect>
+                                          <InnerShadow height="12.11" radius="3.33" width="3.21" />
+                                       </effect>
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#listCSCourses" text="List CS Courses" />
+                                          <MenuItem mnemonicParsing="false" onAction="#listSECourses" text="List SE Courses" />
+                                       </items>
+                                    </MenuButton>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="646.0" prefWidth="875.0">
+                           <children>
+                              <HBox alignment="CENTER" prefHeight="507.0" prefWidth="875.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <AnchorPane prefHeight="636.0" prefWidth="550.0">
+                                       <children>
+                                          <ListView fx:id="listView" layoutX="-81.0" prefHeight="624.0" prefWidth="508.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <contextMenu>
+                                                <ContextMenu fx:id="courseMenu" />
+                                             </contextMenu></ListView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="636.0" prefWidth="261.0">
+                                       <children>
+                                          <ListView fx:id="detailView" prefHeight="485.0" prefWidth="142.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" />
+                     </padding>
+                  </VBox>
+                  <ScrollPane fx:id="nodeGraph" disable="true" fitToWidth="true" hbarPolicy="NEVER" layoutY="76.0" prefHeight="685.0" prefWidth="875.0" vbarPolicy="NEVER" visible="false">
+                     <content>
+                        <VBox alignment="CENTER" prefHeight="686.0" prefWidth="873.0" spacing="10.0">
+                           <children>
+                              <CheckBox fx:id="preReqTail" mnemonicParsing="false" onAction="#drawPreReq" text="(show pre-req chain)" />
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <CheckBox fx:id="completedMark" disable="true" mnemonicParsing="false" onAction="#drawPreReq" text="Mark completed courses as " />
+                                    <ColorPicker fx:id="colorPicker" disable="true" onAction="#drawPreReq" />
+                                 </children>
+                              </HBox>
+                              <Canvas fx:id="singleCourse" height="617.0" width="846.0" />
+                           </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+                  <ScrollPane fx:id="failedCourseScreen" disable="true" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="761.0" prefWidth="875.0" vbarPolicy="NEVER" visible="false">
+                     <content>
+                        <VBox prefHeight="761.0">
+                           <children>
+                              <Pane prefHeight="216.0" prefWidth="873.0">
+                                 <children>
+                                    <Label layoutX="110.0" layoutY="14.0" text="Current Courses:">
+                                       <font>
+                                          <Font size="28.0" />
+                                       </font>
+                                    </Label>
+                                    <ListView fx:id="currentCourses" layoutX="99.0" layoutY="56.0" prefHeight="149.0" prefWidth="411.0">
+                                       <contextMenu>
+                                          <ContextMenu>
+                                            <items>
+                                              <MenuItem mnemonicParsing="false" onAction="#markFailed" text="Mark as Failed" />
+                                                <MenuItem mnemonicParsing="false" onAction="#markCompleted" text="Mark as Completed" />
+                                            </items>
+                                          </ContextMenu>
+                                       </contextMenu>
+                                    </ListView>
+                                    <ListView fx:id="failedViewer" layoutX="551.0" layoutY="56.0" prefHeight="149.0" prefWidth="201.0">
+                                       <contextMenu>
+                                          <ContextMenu>
+                                             <items>
+                                                <MenuItem mnemonicParsing="false" onAction="#markFailed" text="Mark as Failed" />
+                                             </items>
+                                          </ContextMenu>
+                                       </contextMenu>
+                                    </ListView>
+                                    <Label layoutX="558.0" layoutY="14.0" text="Failed?">
+                                       <font>
+                                          <Font size="28.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                              <HBox prefHeight="558.0" prefWidth="873.0">
+                                 <children>
+                                    <Pane prefHeight="551.0" prefWidth="454.0">
+                                       <children>
+                                          <ListView fx:id="failedRecommend" layoutX="60.0" layoutY="176.0" prefHeight="200.0" prefWidth="335.0" />
+                                          <Label layoutX="66.0" layoutY="73.0" prefHeight="132.0" prefWidth="323.0" text="Recommended Courses for Next Term:" wrapText="true">
+                                             <font>
+                                                <Font size="26.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </Pane>
+                                    <Pane prefHeight="551.0" prefWidth="472.0">
+                                       <children>
+                                          <ListView fx:id="gradPlanFailed" layoutX="34.0" layoutY="38.0" prefHeight="501.0" prefWidth="378.0" />
+                                          <Label layoutX="34.0" layoutY="7.0" text="Graduation Plan:">
+                                             <font>
+                                                <Font size="26.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+                  <ScrollPane fx:id="transcriptScreen" disable="true" layoutX="16.0" layoutY="16.0" prefHeight="717.0" prefWidth="838.0" visible="false">
+                     <content>
+                        <HBox alignment="CENTER" prefHeight="624.0" prefWidth="831.0">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="624.0" prefWidth="317.0" spacing="30.0">
+                                 <children>
+                                    <Label text="Class Code" translateY="30.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="classCodeArea" />
+                                    <Label text="Term Taken" translateY="30.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="termTakenArea" />
+                                    <Label text="Pass/Fail" translateY="30.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="passFailArea" />
+                                    <Button mnemonicParsing="false" onAction="#saveEntry" text="Save" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="60.0" right="60.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </VBox>
+                              <ListView fx:id="transcriptCourseList" prefHeight="626.0" prefWidth="322.0">
+                                 <HBox.margin>
+                                    <Insets bottom="30.0" top="100.0" />
+                                 </HBox.margin>
+                              </ListView>
+                           </children>
+                        </HBox>
+                     </content>
+                  </ScrollPane>
                </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
             </AnchorPane>
-        </content>
-      </ScrollPane>
-      <ComboBox fx:id="comboBox" layoutX="172.0" layoutY="38.0" prefHeight="25.0" prefWidth="256.0" />
-      <Button layoutX="447.0" layoutY="72.0" mnemonicParsing="false" onAction="#search" text="Submit" />
-   </children>
-</Pane>
+      </items>
+    </SplitPane>
+  </children>
+</VBox>

@@ -12,20 +12,33 @@ package advising;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Course class contains data for an instance of a class.
  */
-public class Course implements Comparable<Course>{
+public class Course implements Comparable<Course> {
     private String name;
     private int credits;
     private String prerequisites;
     private String description;
     private HashMap<Integer, ArrayList<String>> terms = new HashMap<>();
+    private boolean wip;
     private boolean completed;
     private boolean passed;
-    private String gradeReceived;
+    private String completedTerm;
 
+    private boolean elective;
+
+
+    /**
+     * Initializes the course object
+     *
+     * @param name          name of the course
+     * @param credits       the credits the course has
+     * @param prerequisites the prerequisites for the course
+     * @param description   the general description of the course
+     */
     public Course(String name, int credits, String prerequisites, String description) {
         this.name = name;
         this.credits = credits;
@@ -35,33 +48,47 @@ public class Course implements Comparable<Course>{
         terms.put(2, new ArrayList<>());
         terms.put(3, new ArrayList<>());
         completed = false;
+        completedTerm = "N/A";
     }
 
-    public String getPrerequisites(){
+    public String getPrerequisites() {
         return prerequisites;
     }
-    public void setGradeReceived (String grade) {
-        this.gradeReceived = grade;
-    }
 
-    public String getGradeReceived () {
-        return gradeReceived;
-    }
-
-    public String getName () {
+    public String getName() {
         return name;
     }
 
-    public ArrayList getTerm(int term){
+    public void setWIP(boolean wip) {
+        this.wip = wip;
+    }
+
+    public boolean getWIP() {
+        return wip;
+    }
+
+    /**
+     * Returns a list of all majors that can take the course in the term
+     *
+     * @param term the term to get majors from
+     * @return a list of all majors that can take the course in the term
+     */
+    public List<String> getTerm(int term) {
         return terms.get(term);
     }
 
-    public void addTerm(int term, String major){
+    /**
+     * Adds a major that can take a class in that term
+     *
+     * @param term  term to add to
+     * @param major major to add
+     */
+    public void addTerm(int term, String major) {
         terms.get(term).add(major);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return name + " " + description;
     }
 
@@ -85,12 +112,29 @@ public class Course implements Comparable<Course>{
         return credits;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
+
     @Override
     public int compareTo(Course o) {
-        int compare = ((Course)o).getCredits();
-        return compare - this.credits ;
+        int compare = o.getCredits();
+        return compare - this.credits;
+    }
+
+    public String getCompletedTerm() {
+        return completedTerm;
+    }
+
+    public void setCompletedTerm(String completedTerm) {
+        this.completedTerm = completedTerm;
+    }
+
+    public boolean isElective() {
+        return elective;
+    }
+
+    public void setElective(boolean elective) {
+        this.elective = elective;
     }
 }

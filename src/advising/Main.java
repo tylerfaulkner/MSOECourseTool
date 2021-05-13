@@ -15,6 +15,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Launches the program
+ */
 public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
@@ -28,6 +31,7 @@ public class Main extends Application {
 
         stage.setTitle("Advising Tool");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 }
